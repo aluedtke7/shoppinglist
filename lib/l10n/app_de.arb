@@ -1,0 +1,43 @@
+{
+  "com_app_name": "Shoppinglist",
+  "com_ok": "Ok",
+  "com_cancel": "Abbruch",
+  "com_yes": "Ja",
+  "com_no": "Nein",
+  "com_back": "Zurück",
+  "com_article": "Artikel",
+  "com_shop": "Geschäft",
+  "com_change_theme": "Farbschema ändern",
+  "com_change_language": "Sprache ändern",
+  "com_search_term": "Suchbegriff (3 oder mehr Zeichen eingeben)",
+  "com_num_articles": "{count, plural, =0{keine Artikel} =1{ein Artikel} other{{count} Artikel}}",
+
+  "drawer_title": "Shoppinglist App",
+  "drawer_version": "Version {v}",
+  "drawer_expires": "Läuft aus {dt}",
+  "drawer_end_shopping": "Einkauf beenden",
+  "drawer_end_shopping_q": "Sollen alle gekauften Artikel in die Artikelliste verschoben werden?",
+  "drawer_logout": "Abmelden",
+  "drawer_logout_q": "Möchten Sie wirklich die App beenden?",
+
+  "l_p_error": "Ein Fehler ist aufgetreten!",
+  "l_p_okay": "Ok",
+  "l_p_authfailed": "Authentifizierung fehlgeschlagen:\n{err}",
+  "l_p_login": "Anmelden",
+  "l_p_login_btn": "Anmelden...",
+  "l_p_email": "E-Mail",
+  "l_p_email_val": "Bitte geben Sie eine gültige E-Mail Adresse ein",
+  "l_p_password": "Passwort",
+  "l_p_password_val": "Bitte geben Sie ein Passwort ein",
+
+  "p_active_title": "Einkaufsliste",
+  "p_active_tooltip": "Artikel suchen",
+  
+  "p_articles_title": "Artikelliste",
+  "p_articles_tooltip": "Artikel hinzufügen",
+  
+  "p_edit_new": "Neuer Artikel",
+  "p_edit_change": "Artikel ändern",
+  "p_edit_delete": "Artikel löschen",
+  "p_edit_delete_q": "Soll der Artikel '{name}' wirklich gelöscht werden?"
+}

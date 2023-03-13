@@ -1,0 +1,73 @@
+{
+  "com_app_name": "Shoppinglist",
+  "com_ok": "Ok",
+  "com_cancel": "Cancel",
+  "com_yes": "Yes",
+  "com_no": "No",
+  "com_back": "Back",
+  "com_article": "article",
+  "com_shop": "shop",
+  "com_change_theme": "change theme",
+  "com_change_language": "change language",
+  "com_search_term": "search term (enter 3 or more character)",
+  "com_num_articles": "{count, plural, =0{no articles} =1{one article} other{{count} articles}}",
+  "@com_num_articles": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "drawer_title": "Shoppinglist App",
+  "drawer_version": "version {v}",
+  "@drawer_version": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "drawer_expires": "expires {dt}",
+  "@drawer_expires": {
+    "placeholders": {
+      "dt": {
+        "type": "String"
+      }
+    }
+  },
+  "drawer_end_shopping": "end shopping",
+  "drawer_end_shopping_q": "Shall all bought articles be moved to the article list?",
+  "drawer_logout": "logout",
+  "drawer_logout_q": "Really close the app?",
+
+  "l_p_error": "An Error Occurred!",
+  "l_p_okay": "Okay",
+  "l_p_authfailed": "Authentication failed:\n{err}",
+  "@l_p_authfailed": {
+    "placeholders": {
+      "err": {
+        "type": "String"
+      }
+    }
+  },
+  "l_p_login": "Login",
+  "l_p_login_btn": "Login...",
+  "l_p_email": "E-mail",
+  "l_p_email_val": "Please enter a valid e-mail",
+  "l_p_password": "Password",
+  "l_p_password_val": "Please enter a password",
+
+  "p_active_title": "shopping list",
+  "p_active_tooltip": "search article",
+  "p_articles_title": "article list",
+  "p_articles_tooltip": "add article",
+  "p_edit_new": "new article",
+  "p_edit_change": "change article",
+  "p_edit_delete": "delete article",
+  "p_edit_delete_q": "Do you really want to delete article '{name}'?",
+  "@p_edit_delete_q": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
+}
