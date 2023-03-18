@@ -151,7 +151,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                       backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
                                           .slideBtnBackgroundColor(context),
                                       onPressed: (context) {
-                                        pbp.toggleBought(itm).catchError((e) {
+                                        pbp.toggleinCart(itm).catchError((e) {
                                           Statics.showErrorSnackbar(context, e);
                                         });
                                       },
@@ -161,7 +161,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                   child: Builder(builder: (c) {
                                     return GestureDetector(
                                       onDoubleTap: () {
-                                        pbp.toggleBought(itm);
+                                        pbp.toggleinCart(itm);
                                       },
                                       onLongPress: () {
                                         Slidable.of(c)?.openStartActionPane();

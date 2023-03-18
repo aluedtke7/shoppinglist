@@ -5,7 +5,7 @@ typedef ThemedBoxDecoration = BoxDecoration Function(BuildContext context);
 typedef ColorGetter = Color Function(BuildContext context);
 
 class ThemeOptions implements AppThemeOptions {
-  final Color boughtBackgroundColor;
+  final Color inCartBackgroundColor;
   final ColorGetter slideBtnBackgroundColor;
   final double cardTextScaleFactor;
   final FontWeight cardTextFontWeight;
@@ -14,7 +14,7 @@ class ThemeOptions implements AppThemeOptions {
   final ThemedBoxDecoration drawerHeaderDecoration;
 
   ThemeOptions(
-    this.boughtBackgroundColor,
+    this.inCartBackgroundColor,
     this.slideBtnBackgroundColor,
     this.cardTextScaleFactor,
     this.cardTextFontWeight,

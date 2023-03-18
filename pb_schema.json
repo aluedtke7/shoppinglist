@@ -52,7 +52,7 @@
       "manageRule": null,
       "minPasswordLength": 8,
       "onlyEmailDomains": null,
-      "requireEmail": false
+      "requireEmail": true
     }
   },
   {
@@ -84,7 +84,7 @@
       },
       {
         "id": "l6vkoreu",
-        "name": "bought",
+        "name": "inCart",
         "type": "bool",
         "system": false,
         "required": false,

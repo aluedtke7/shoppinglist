@@ -34,7 +34,7 @@
     }
   },
   "drawer_end_shopping": "end shopping",
-  "drawer_end_shopping_q": "Shall all bought articles be moved to the article list?",
+  "drawer_end_shopping_q": "Shall all articles in the cart be moved to the article list?",
   "drawer_logout": "logout",
   "drawer_logout_q": "Really close the app?",
 

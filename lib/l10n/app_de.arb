@@ -16,7 +16,7 @@
   "drawer_version": "Version {v}",
   "drawer_expires": "Läuft aus {dt}",
   "drawer_end_shopping": "Einkauf beenden",
-  "drawer_end_shopping_q": "Sollen alle gekauften Artikel in die Artikelliste verschoben werden?",
+  "drawer_end_shopping_q": "Sollen alle Artikel aus dem Warenkorb in die Artikelliste verschoben werden?",
   "drawer_logout": "Abmelden",
   "drawer_logout_q": "Möchten Sie wirklich die App beenden?",
 

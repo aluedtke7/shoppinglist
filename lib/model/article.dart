@@ -4,7 +4,7 @@ class Article {
   String article = '';
   int amount = 0;
   bool active = false;
-  bool bought = false;
+  bool inCart = false;
 
   Article({
     this.id = '',
@@ -12,7 +12,7 @@ class Article {
     this.article = '',
     this.amount = 0,
     this.active = false,
-    this.bought = false,
+    this.inCart = false,
   });
 
   factory Article.fromJson(Map<String, dynamic> json) => Article(
@@ -21,6 +21,6 @@ class Article {
         article: json['article'],
         amount: json['amount'],
         active: json['active'],
-        bought: json['bought'],
+        inCart: json['inCart'],
       );
 }

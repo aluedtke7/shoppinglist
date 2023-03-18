@@ -16,8 +16,8 @@ class ArticleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: article.bought
-          ? ThemeProvider.optionsOf<ThemeOptions>(context).boughtBackgroundColor
+      color: article.inCart
+          ? ThemeProvider.optionsOf<ThemeOptions>(context).inCartBackgroundColor
           : Theme.of(context).cardTheme.color,
       elevation: 4,
       child: Container(
@@ -32,7 +32,7 @@ class ArticleCard extends StatelessWidget {
               textScaleFactor: ThemeProvider.optionsOf<ThemeOptions>(context).cardTextScaleFactor,
               style: TextStyle(
                 fontWeight: ThemeProvider.optionsOf<ThemeOptions>(context).cardTextFontWeight,
-                decoration: article.bought ? TextDecoration.lineThrough : TextDecoration.none,
+                decoration: article.inCart ? TextDecoration.lineThrough : TextDecoration.none,
               ),
             ),
           ],

@@ -136,8 +136,8 @@ class PocketBaseProvider extends ChangeNotifier {
 
   void _sortActive(List<Article> list) {
     list.sort((a, b) {
-      if (a.bought != b.bought) {
-        if (a.bought) {
+      if (a.inCart != b.inCart) {
+        if (a.inCart) {
           return 1;
         } else {
           return -1;
@@ -156,7 +156,7 @@ class PocketBaseProvider extends ChangeNotifier {
       'shop': article.shop,
       'article': article.article,
       'amount': article.amount,
-      'bought': article.bought,
+      'inCart': article.inCart,
       'active': article.active
     };
   }
@@ -168,7 +168,7 @@ class PocketBaseProvider extends ChangeNotifier {
     _pb.collection(collectionName).update(article.id, body: _articleToMap(article));
   }
 
-  Future<void> toggleBought(Article article) async {
+  Future<void> toggleinCart(Article article) async {
     if (article.id.isEmpty) {
       return;
     }
@@ -181,14 +181,14 @@ class PocketBaseProvider extends ChangeNotifier {
         debugPrint('Vibration impossible: $e');
       }
     }
-    article.bought = !article.bought;
+    article.inCart = !article.inCart;
     _pb.collection(collectionName).update(article.id, body: _articleToMap(article));
   }
 
   Future<void> endShopping() async {
-    final boughtItems = _active.where((element) => element.bought).toList();
-    for (var itm in boughtItems) {
-      itm.bought = false;
+    final inCartItems = _active.where((element) => element.inCart).toList();
+    for (var itm in inCartItems) {
+      itm.inCart = false;
       itm.active = false;
       updateArticle(itm);
     }

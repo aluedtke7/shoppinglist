@@ -19,24 +19,24 @@ about fly.io further down below.
 - works on Linux, Android, Windows, iOS, MacOS (Web version lacks realtime events, see [caveats](#caveats))
 
 ### Screenshots
-<img src="./screenshots/login.png" title="The login page" width="280">
-<img src="./screenshots/dark_theme.png" title="A dark theme" width="280">
-<img src="./screenshots/shoppinglist-1.png" title="The shopping list" width="280">
-<img src="./screenshots/shoppinglist-2.png" title="Swipe right for editing" width="280">
-<img src="./screenshots/shoppinglist-3.png" title="Swipe left for marking" width="280">
-<img src="./screenshots/shoppinglist-4.png" title="2 articles bought" width="280">
-<img src="./screenshots/search_article.png" title="Search article" width="280">
-<img src="./screenshots/drawer_open.png" title="Open drawer" width="280">
-<img src="./screenshots/end_shopping.png" title="End shopping" width="280">
-<img src="./screenshots/article_list.png" title="Article list" width="280">
-<img src="./screenshots/logout.png" title="Logout" width="280">
+<img src="./screenshots/login.png" title="The login page" width="30%">
+<img src="./screenshots/dark_theme.png" title="A dark theme" width="30%">
+<img src="./screenshots/shoppinglist-1.png" title="The shopping list" width="30%">
+<img src="./screenshots/shoppinglist-2.png" title="Swipe right for editing" width="30%">
+<img src="./screenshots/shoppinglist-3.png" title="Swipe left for marking" width="30%">
+<img src="./screenshots/shoppinglist-4.png" title="2 articles inCart" width="30%">
+<img src="./screenshots/search_article.png" title="Search article" width="30%">
+<img src="./screenshots/drawer_open.png" title="Open drawer" width="30%">
+<img src="./screenshots/end_shopping.png" title="End shopping" width="30%">
+<img src="./screenshots/article_list.png" title="Article list" width="30%">
+<img src="./screenshots/logout.png" title="Logout" width="30%">
 
 Here are some tips for the shopping list:
 
-- you can mark an article as bought either by swiping left and press the checkmark icon
+- you can mark an article as *inCart* either by swiping left and press the checkmark icon
 or by double clicking the article itself
 - click on the plus or minus sign to change the quantity of that article
-- bought articles are placed at the end of the list to have a clearer view
+- *inCart* articles are placed at the end of the list to have a clearer view
 - articles are grouped by shop and sorted alphabetically
 - in the search dialog, a new article can be be added by pressing the plus sign
 
@@ -46,12 +46,17 @@ has the following fields that must be created beforehand:
 
 - `active`  : Bool
 - `amount`  : Number, Min=0, Max=100
-- `bought`  : Bool
+- `inCart`  : Bool
 - `article` : Plain text, Min length=1, Max length=120, Nonempty, Unique
 - `shop`    : Plain text, Max length=80
 
-There is also a schema file in JSON format (`pb_schema.json`) that can be imported in PocketBase to 
+> **Info**
+>
+> There is also a schema file in JSON format (`pb_schema.json`) that can be imported in PocketBase to 
 create this collection.
+
+When an article is marked *`active`*, it will be visible on the **shopping list**. Otherwise the article will
+show up in the **article list**.
 
 ## Caveats
 PocketBase is offering realtime events to inform the client (shoppinglist app) about data changes. Unfortunately, 
