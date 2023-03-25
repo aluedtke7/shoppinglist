@@ -32,6 +32,7 @@
 
   "p_active_title": "Einkaufsliste",
   "p_active_tooltip": "Artikel suchen",
+  "p_active_empty": "Es wurde\nkein Artikel\nausgewählt",
   
   "p_articles_title": "Artikelliste",
   "p_articles_tooltip": "Artikel hinzufügen",

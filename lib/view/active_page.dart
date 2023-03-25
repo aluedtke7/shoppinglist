@@ -96,86 +96,97 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: SlidableAutoCloseBehavior(
-                            child: ListView.builder(
-                              itemBuilder: (ctx, idx) {
-                                final itm = pbp.activeArticles[idx];
-                                return Slidable(
-                                  groupTag: '0',
-                                  startActionPane: ActionPane(
-                                    motion: const StretchMotion(),
-                                    children: [
-                                      SlidableAction(
-                                        autoClose: false,
-                                        borderRadius: const BorderRadius.all(Radius.circular(12)),
-                                        padding: const EdgeInsets.all(8),
-                                        backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                            .slideBtnBackgroundColor(context),
-                                        onPressed: (context) {
-                                          itm.amount = min(12, itm.amount + 1);
-                                          pbp.updateArticle(itm).catchError((e) {
-                                            Statics.showErrorSnackbar(context, e);
-                                          });
-                                        },
-                                        icon: Icons.add,
+                            child: pbp.activeArticles.isEmpty
+                                ? Center(
+                                    child: Text(
+                                      textAlign: TextAlign.center,
+                                      AppLocalizations.of(context)!.p_active_empty,
+                                      style: const TextStyle(
+                                        fontSize: 30,
+                                        height: 1.5,
                                       ),
-                                      SlidableAction(
-                                        autoClose: false,
-                                        borderRadius: const BorderRadius.all(Radius.circular(12)),
-                                        padding: const EdgeInsets.all(8),
-                                        backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                            .slideBtnBackgroundColor(context),
-                                        onPressed: (context) {
-                                          itm.amount = max(1, itm.amount - 1);
-                                          pbp.updateArticle(itm).catchError((e) {
-                                            Statics.showErrorSnackbar(context, e);
-                                          });
-                                        },
-                                        icon: Icons.remove,
-                                      ),
-                                      SlidableAction(
-                                        borderRadius: const BorderRadius.all(Radius.circular(12)),
-                                        padding: const EdgeInsets.all(8),
-                                        backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                            .slideBtnBackgroundColor(context),
-                                        onPressed: (context) {
-                                          Navigator.pushNamed(context, ArticleEditPage.routeName, arguments: itm);
-                                        },
-                                        icon: Icons.edit,
-                                      ),
-                                    ],
-                                  ),
-                                  endActionPane: ActionPane(motion: const StretchMotion(), children: [
-                                    SlidableAction(
-                                      borderRadius: const BorderRadius.all(Radius.circular(12)),
-                                      padding: const EdgeInsets.all(8),
-                                      backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                          .slideBtnBackgroundColor(context),
-                                      onPressed: (context) {
-                                        pbp.toggleinCart(itm).catchError((e) {
-                                          Statics.showErrorSnackbar(context, e);
-                                        });
-                                      },
-                                      icon: Icons.check,
                                     ),
-                                  ]),
-                                  child: Builder(builder: (c) {
-                                    return GestureDetector(
-                                      onDoubleTap: () {
-                                        pbp.toggleinCart(itm);
-                                      },
-                                      onLongPress: () {
-                                        Slidable.of(c)?.openStartActionPane();
-                                      },
-                                      child: ArticleCard(
-                                        article: itm,
-                                        isArticleList: false,
-                                      ),
-                                    );
-                                  }),
-                                );
-                              },
-                              itemCount: pbp.activeArticles.length,
-                            ),
+                                  )
+                                : ListView.builder(
+                                    itemBuilder: (ctx, idx) {
+                                      final itm = pbp.activeArticles[idx];
+                                      return Slidable(
+                                        groupTag: '0',
+                                        startActionPane: ActionPane(
+                                          motion: const StretchMotion(),
+                                          children: [
+                                            SlidableAction(
+                                              autoClose: false,
+                                              borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                              padding: const EdgeInsets.all(8),
+                                              backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                  .slideBtnBackgroundColor(context),
+                                              onPressed: (context) {
+                                                itm.amount = min(12, itm.amount + 1);
+                                                pbp.updateArticle(itm).catchError((e) {
+                                                  Statics.showErrorSnackbar(context, e);
+                                                });
+                                              },
+                                              icon: Icons.add,
+                                            ),
+                                            SlidableAction(
+                                              autoClose: false,
+                                              borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                              padding: const EdgeInsets.all(8),
+                                              backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                  .slideBtnBackgroundColor(context),
+                                              onPressed: (context) {
+                                                itm.amount = max(1, itm.amount - 1);
+                                                pbp.updateArticle(itm).catchError((e) {
+                                                  Statics.showErrorSnackbar(context, e);
+                                                });
+                                              },
+                                              icon: Icons.remove,
+                                            ),
+                                            SlidableAction(
+                                              borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                              padding: const EdgeInsets.all(8),
+                                              backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                  .slideBtnBackgroundColor(context),
+                                              onPressed: (context) {
+                                                Navigator.pushNamed(context, ArticleEditPage.routeName, arguments: itm);
+                                              },
+                                              icon: Icons.edit,
+                                            ),
+                                          ],
+                                        ),
+                                        endActionPane: ActionPane(motion: const StretchMotion(), children: [
+                                          SlidableAction(
+                                            borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                            padding: const EdgeInsets.all(8),
+                                            backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                .slideBtnBackgroundColor(context),
+                                            onPressed: (context) {
+                                              pbp.toggleinCart(itm).catchError((e) {
+                                                Statics.showErrorSnackbar(context, e);
+                                              });
+                                            },
+                                            icon: Icons.check,
+                                          ),
+                                        ]),
+                                        child: Builder(builder: (c) {
+                                          return GestureDetector(
+                                            onDoubleTap: () {
+                                              pbp.toggleinCart(itm);
+                                            },
+                                            onLongPress: () {
+                                              Slidable.of(c)?.openStartActionPane();
+                                            },
+                                            child: ArticleCard(
+                                              article: itm,
+                                              isArticleList: false,
+                                            ),
+                                          );
+                                        }),
+                                      );
+                                    },
+                                    itemCount: pbp.activeArticles.length,
+                                  ),
                           ),
                         ),
                       ),

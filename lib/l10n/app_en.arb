@@ -16,6 +16,7 @@
       "count": {}
     }
   },
+
   "drawer_title": "Shoppinglist App",
   "drawer_version": "version {v}",
   "@drawer_version": {
@@ -57,8 +58,11 @@
 
   "p_active_title": "shopping list",
   "p_active_tooltip": "search article",
+  "p_active_empty": "No article\nhas been\nselected",
+
   "p_articles_title": "article list",
   "p_articles_tooltip": "add article",
+  
   "p_edit_new": "new article",
   "p_edit_change": "change article",
   "p_edit_delete": "delete article",
