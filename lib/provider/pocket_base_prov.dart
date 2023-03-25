@@ -18,8 +18,8 @@ class PocketBaseProvider extends ChangeNotifier {
   List<Article> _allArticles = [];
   List<Article> _searchArticles = [];
   Timer? _healthCheckTimer;
-  bool _lastHealthy = false;
-  bool _healthy = false;
+  bool _lastHealthy = true;
+  bool _healthy = true;
   String _userName = '';
 
   bool get isAuth {
@@ -61,7 +61,7 @@ class PocketBaseProvider extends ChangeNotifier {
 
   Future<void> ensureKeepAlive() async {
     _healthCheckTimer?.cancel();
-    _healthCheckTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+    _healthCheckTimer = Timer.periodic(const Duration(seconds: 15), (timer) {
       doHealthCheck();
     });
   }

@@ -1,6 +1,8 @@
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:shoppinglist/provider/pocket_base_prov.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import 'package:shoppinglist/application.dart';
@@ -23,9 +25,16 @@ class SlappAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _SlappAppBarState extends State<SlappAppBar> {
   @override
   Widget build(BuildContext context) {
+    final pbp = Provider.of<PocketBaseProvider>(context, listen: true);
+
     return AppBar(
       title: Text(widget.title),
       actions: [
+        if (!pbp.isHealthy)
+          const Padding(
+            padding: EdgeInsets.only(right: 32),
+            child: Icon(Icons.cloud_off),
+          ),
         IconButton(
           onPressed: () {
             ThemeProvider.controllerOf(context).nextTheme();

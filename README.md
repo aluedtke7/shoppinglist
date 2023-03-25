@@ -18,7 +18,7 @@ about fly.io further down below.
 
 - several themes with custom options
 - localization (English and German)
-- works on Linux, Android, Windows, iOS, MacOS (Web version lacks realtime events, see [caveats](#caveats))
+- works on Android, iOS, Linux, MacOS and Windows (Web version lacks realtime events, see [caveats](#caveats))
 
 ### Screenshots
 
@@ -29,8 +29,8 @@ about fly.io further down below.
 </p>
 <p float="left">
     <img src="./screenshots/shoppinglist-2.png" title="Swipe right for editing" width="30%">
-    <img src="./screenshots/shoppinglist-3.png" title="Swipe left for marking" width="30%">
-    <img src="./screenshots/shoppinglist-4.png" title="2 articles inCart" width="30%">
+    <img src="./screenshots/shoppinglist-3.png" title="Swipe left for marking or double tap" width="30%">
+    <img src="./screenshots/shoppinglist-4.png" title="2 articles in cart" width="30%">
 </p>
 <p float="left">
     <img src="./screenshots/search_article.png" title="Search article" width="30%">
@@ -50,6 +50,12 @@ Here are some tips for the shopping list:
 - _inCart_ articles are placed at the end of the list to have a clearer view
 - articles are grouped by shop and sorted alphabetically
 - in the search dialog, a new article can be be added by pressing the plus sign
+
+When the server can't be reached, an icon is displayed in the app bar.
+<p float="left">
+    <img src="./screenshots/no_connection.png" title="No connection" width="50%">
+</p>
+
 
 ## Technical description
 
