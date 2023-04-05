@@ -5,6 +5,7 @@
   "com_yes": "Yes",
   "com_no": "No",
   "com_back": "Back",
+  "com_new": "New",
   "com_article": "article",
   "com_shop": "shop",
   "com_change_theme": "change theme",
@@ -58,7 +59,7 @@
 
   "p_active_title": "shopping list",
   "p_active_tooltip": "search article",
-  "p_active_empty": "No article\nhas been\nselected",
+  "p_active_empty": "No article\nhas been\nselected.",
 
   "p_articles_title": "article list",
   "p_articles_tooltip": "add article",

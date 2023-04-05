@@ -5,6 +5,7 @@
   "com_yes": "Ja",
   "com_no": "Nein",
   "com_back": "Zurück",
+  "com_new": "Neu",
   "com_article": "Artikel",
   "com_shop": "Geschäft",
   "com_change_theme": "Farbschema ändern",
@@ -32,7 +33,7 @@
 
   "p_active_title": "Einkaufsliste",
   "p_active_tooltip": "Artikel suchen",
-  "p_active_empty": "Es wurde\nkein Artikel\nausgewählt",
+  "p_active_empty": "Es wurde\nkein Artikel\nausgewählt.",
   
   "p_articles_title": "Artikelliste",
   "p_articles_tooltip": "Artikel hinzufügen",

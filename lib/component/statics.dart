@@ -65,8 +65,6 @@ class Statics {
     return BoxDecoration(
       gradient: LinearGradient(
         colors: [
-          // const Color.fromARGB(255, 250, 250, 250).withOpacity(0.5),
-          // const Color.fromARGB(255, 200, 200, 200).withOpacity(0.9),
           ThemeProvider.controllerOf(ctx).theme.data.colorScheme.surface.withOpacity(.1),
           ThemeProvider.controllerOf(ctx).theme.data.colorScheme.onSurfaceVariant.withAlpha(100),
         ],
@@ -100,7 +98,6 @@ class Statics {
   static BoxDecoration getSimpleDrawerHeaderDecoration(BuildContext ctx) {
     return BoxDecoration(
       color: ThemeProvider.controllerOf(ctx).theme.data.colorScheme.primary,
-      // ThemeProvider.controllerOf(ctx).theme.data.colorScheme.primary.withAlpha(100),
     );
   }
 
@@ -183,20 +180,6 @@ class Statics {
               ),
             ),
             actions: <Widget>[
-              IconButton(
-                onPressed: textController.text.isNotEmpty
-                    ? () {
-                        Navigator.pushReplacementNamed(context, ArticleEditPage.routeName,
-                            arguments: Article(
-                              active: true,
-                              amount: 1,
-                              article: textController.text,
-                            ));
-                      }
-                    : null,
-                icon: const Icon(Icons.add_sharp),
-              ),
-              Text(AppLocalizations.of(context)!.com_num_articles(pbp.searchArticles.length)),
               ElevatedButton(
                 autofocus: false,
                 onPressed: () {
@@ -204,6 +187,20 @@ class Statics {
                 },
                 child: Text(AppLocalizations.of(context)!.com_back),
               ),
+              Text(AppLocalizations.of(context)!.com_num_articles(pbp.searchArticles.length)),
+              ElevatedButton.icon(
+                  onPressed: textController.text.isNotEmpty
+                      ? () {
+                          Navigator.pushReplacementNamed(context, ArticleEditPage.routeName,
+                              arguments: Article(
+                                active: true,
+                                amount: 1,
+                                article: textController.text,
+                              ));
+                        }
+                      : null,
+                  icon: const Icon(Icons.add_sharp),
+                  label: Text(AppLocalizations.of(context)!.com_new)),
             ],
           ),
         );
