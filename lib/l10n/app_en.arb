@@ -56,6 +56,10 @@
   "l_p_email_val": "Please enter a valid e-mail",
   "l_p_password": "Password",
   "l_p_password_val": "Please enter a password",
+  "l_p_forgot_password": "Forgot password?",
+  "l_p_forgot_password_info": "We send an e-mail to the given address.",
+  "l_p_reset_password": "Recover",
+  "l_p_email_sent": "E-Mail has been sent.",
 
   "p_active_title": "shopping list",
   "p_active_tooltip": "search article",

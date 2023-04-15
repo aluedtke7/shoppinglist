@@ -30,6 +30,10 @@
   "l_p_email_val": "Bitte geben Sie eine gültige E-Mail Adresse ein",
   "l_p_password": "Passwort",
   "l_p_password_val": "Bitte geben Sie ein Passwort ein",
+  "l_p_forgot_password": "Passwort vergessen?",
+  "l_p_forgot_password_info": "Wir schicken eine E-Mail an die eingegebene Adresse.",
+  "l_p_reset_password": "Zurücksetzen",
+  "l_p_email_sent": "E-Mail wurde verschickt.",
 
   "p_active_title": "Einkaufsliste",
   "p_active_tooltip": "Artikel suchen",

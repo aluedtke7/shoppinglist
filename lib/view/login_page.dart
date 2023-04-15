@@ -250,7 +250,33 @@ class _LoginCardState extends State<_LoginCard> {
                                 ),
                               ),
                             ],
-                          )
+                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextButton(
+                                  onPressed: () {
+                                    Statics.showInputDialog(
+                                      context,
+                                      AppLocalizations.of(context)!.l_p_forgot_password,
+                                      AppLocalizations.of(context)!.l_p_forgot_password_info,
+                                      _email,
+                                    ).then((value) {
+                                      if (value != null && value.isNotEmpty) {
+                                        Provider.of<PocketBaseProvider>(context, listen: false)
+                                            .sendPasswordResetEmail(value)
+                                            .then((value) => Statics.showInfoSnackbar(
+                                                context, AppLocalizations.of(context)!.l_p_email_sent))
+                                            .onError((error, stackTrace) => Statics.showErrorSnackbar(context, error));
+                                      }
+                                    });
+                                  },
+                                  child: Text(AppLocalizations.of(context)!.l_p_forgot_password)),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ),

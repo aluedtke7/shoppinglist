@@ -70,7 +70,6 @@ class PocketBaseProvider extends ChangeNotifier {
     _healthCheckTimer?.cancel();
     _healthCheckTimer = null;
     _pb.authStore.clear();
-    _healthy = false;
     final prefs = await SharedPreferences.getInstance();
     prefs.remove(PrefKeys.accessTokenPrefsKey);
     prefs.remove(PrefKeys.accessModelPrefsKey);
@@ -226,5 +225,9 @@ class PocketBaseProvider extends ChangeNotifier {
 
   Future<void> deleteArticle(String id) async {
     return _pb.collection(collectionName).delete(id);
+  }
+
+  Future<void> sendPasswordResetEmail(String email) {
+    return _pb.collection('users').requestPasswordReset(email);
   }
 }

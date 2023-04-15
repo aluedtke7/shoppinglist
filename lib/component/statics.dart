@@ -14,7 +14,9 @@ class Statics {
   static Future<void> showErrorSnackbar(BuildContext ctx, dynamic e) async {
     final String msg;
     if (e is ClientException) {
-      msg = 'Error\nServer ${e.url?.host}\n${e.originalError}';
+      String? errMsg = e.originalError?.toString();
+      errMsg ??= e.response.entries.firstWhere((element) => element.key == 'message').value;
+      msg = 'Error\nServer ${e.url?.host}\n$errMsg';
     } else {
       msg = e.toString();
     }
@@ -22,8 +24,29 @@ class Statics {
     ScaffoldMessenger.of(ctx).showSnackBar(
       SnackBar(
         backgroundColor: Theme.of(ctx).colorScheme.error,
-        content: Text(msg, style: TextStyle(color: Theme.of(ctx).colorScheme.onErrorContainer)),
+        content: Text(
+          msg,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Theme.of(ctx).colorScheme.onErrorContainer),
+        ),
         duration: const Duration(milliseconds: 5000),
+        padding: const EdgeInsets.all(8.0),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+      ),
+    );
+  }
+
+  static Future<void> showInfoSnackbar(BuildContext ctx, dynamic e) async {
+    final String msg = e.toString();
+
+    ScaffoldMessenger.of(ctx).showSnackBar(
+      SnackBar(
+        backgroundColor: Theme.of(ctx).colorScheme.primary,
+        content: Text(msg, textAlign: TextAlign.center, style: TextStyle(color: Theme.of(ctx).cardTheme.color)),
+        duration: const Duration(milliseconds: 3000),
         padding: const EdgeInsets.all(8.0),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
@@ -124,6 +147,51 @@ class Statics {
           ),
         ],
       ),
+    );
+  }
+
+  static Future<String?> showInputDialog(BuildContext context, String title, String message, String initValue) async {
+    var input = initValue;
+
+    return showDialog<String?>(
+      context: context,
+      builder: (ctx) {
+        var textFormField = TextFormField(
+          initialValue: initValue,
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.l_p_email,
+          ),
+          keyboardType: TextInputType.emailAddress,
+          onChanged: (value) => input = value,
+        );
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                Text(message),
+                textFormField,
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              autofocus: true,
+              onPressed: () {
+                Navigator.of(ctx).pop(null);
+              },
+              child: Text(AppLocalizations.of(context)!.com_cancel),
+            ),
+            ElevatedButton(
+              autofocus: false,
+              onPressed: () {
+                Navigator.of(ctx).pop(input);
+              },
+              child: Text(AppLocalizations.of(context)!.l_p_reset_password),
+            ),
+          ],
+        );
+      },
     );
   }
 
