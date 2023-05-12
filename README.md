@@ -16,6 +16,7 @@ about fly.io further down below.
 
 ### Features
 
+- Dart 3 and Flutter 3.10 compatible
 - several themes with custom options
 - localization (English and German)
 - works on Android, iOS, Linux, MacOS and Windows (Web version lacks realtime events, see [caveats](#caveats))
