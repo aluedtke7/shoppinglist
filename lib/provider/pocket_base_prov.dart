@@ -160,16 +160,16 @@ class PocketBaseProvider extends ChangeNotifier {
     };
   }
 
-  Future<void> updateArticle(Article article) async {
+  Future<RecordModel> updateArticle(Article article) async {
     if (article.id.isEmpty) {
-      _pb.collection(collectionName).create(body: _articleToMap(article));
+      return _pb.collection(collectionName).create(body: _articleToMap(article));
     }
-    _pb.collection(collectionName).update(article.id, body: _articleToMap(article));
+    return _pb.collection(collectionName).update(article.id, body: _articleToMap(article));
   }
 
-  Future<void> toggleinCart(Article article) async {
+  Future<RecordModel> toggleinCart(Article article) async {
     if (article.id.isEmpty) {
-      return;
+      return RecordModel();
     }
     if (![TargetPlatform.linux, TargetPlatform.macOS, TargetPlatform.windows].contains(defaultTargetPlatform)) {
       try {
@@ -181,7 +181,7 @@ class PocketBaseProvider extends ChangeNotifier {
       }
     }
     article.inCart = !article.inCart;
-    _pb.collection(collectionName).update(article.id, body: _articleToMap(article));
+    return _pb.collection(collectionName).update(article.id, body: _articleToMap(article));
   }
 
   Future<void> endShopping() async {

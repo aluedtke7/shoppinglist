@@ -71,6 +71,7 @@
   "p_edit_new": "new article",
   "p_edit_change": "change article",
   "p_edit_delete": "delete article",
+  "p_edit_unique_error": "article name must be unique",
   "p_edit_delete_q": "Do you really want to delete article '{name}'?",
   "@p_edit_delete_q": {
     "placeholders": {

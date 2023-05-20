@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
+import 'package:shoppinglist/model/article.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import 'package:shoppinglist/component/article_card.dart';
@@ -121,11 +122,13 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                               padding: const EdgeInsets.all(8),
                                               backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
                                                   .slideBtnBackgroundColor(context),
-                                              onPressed: (context) {
+                                              onPressed: (context) async {
                                                 itm.amount = min(12, itm.amount + 1);
-                                                pbp.updateArticle(itm).catchError((e) {
+                                                try {
+                                                  await pbp.updateArticle(itm);
+                                                } catch (e) {
                                                   Statics.showErrorSnackbar(context, e);
-                                                });
+                                                }
                                               },
                                               icon: Icons.add,
                                             ),
@@ -135,11 +138,13 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                               padding: const EdgeInsets.all(8),
                                               backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
                                                   .slideBtnBackgroundColor(context),
-                                              onPressed: (context) {
+                                              onPressed: (context) async {
                                                 itm.amount = max(1, itm.amount - 1);
-                                                pbp.updateArticle(itm).catchError((e) {
+                                                try {
+                                                  await pbp.updateArticle(itm);
+                                                } catch (e) {
                                                   Statics.showErrorSnackbar(context, e);
-                                                });
+                                                }
                                               },
                                               icon: Icons.remove,
                                             ),
@@ -161,12 +166,34 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                             padding: const EdgeInsets.all(8),
                                             backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
                                                 .slideBtnBackgroundColor(context),
-                                            onPressed: (context) {
-                                              pbp.toggleinCart(itm).catchError((e) {
+                                            onPressed: (context) async {
+                                              try {
+                                                await pbp.toggleinCart(itm);
+                                              } catch (e) {
                                                 Statics.showErrorSnackbar(context, e);
-                                              });
+                                              }
                                             },
                                             icon: Icons.check,
+                                          ),
+                                          SlidableAction(
+                                            borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                            padding: const EdgeInsets.all(8),
+                                            backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                .slideBtnBackgroundColor(context),
+                                            onPressed: (context) {
+                                              final newItm = Article(
+                                                active: true,
+                                                amount: 1,
+                                                shop: itm.shop,
+                                                article: itm.article,
+                                              );
+                                              Navigator.pushNamed(
+                                                context,
+                                                ArticleEditPage.routeName,
+                                                arguments: newItm,
+                                              );
+                                            },
+                                            icon: Icons.copy,
                                           ),
                                         ]),
                                         child: Builder(builder: (c) {

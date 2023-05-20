@@ -45,5 +45,6 @@
   "p_edit_new": "Neuer Artikel",
   "p_edit_change": "Artikel ändern",
   "p_edit_delete": "Artikel löschen",
+  "p_edit_unique_error": "Artikelname muss einmalig sein",
   "p_edit_delete_q": "Soll der Artikel '{name}' wirklich gelöscht werden?"
 }

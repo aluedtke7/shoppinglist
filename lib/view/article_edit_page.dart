@@ -22,6 +22,29 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
   bool? _isValid;
   final _formKey = GlobalKey<FormState>();
 
+  void copyArticle(PocketBaseProvider pbp, Article article, BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      await pbp.updateArticle(article);
+      pbp.fetchAllArticles();
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
+    } catch (err) {
+      if (err is ClientException && err.response['data']?['article']?['code'] == 'validation_not_unique') {
+        Statics.showErrorSnackbar(context, AppLocalizations.of(context)!.p_edit_unique_error);
+      } else {
+        Statics.showErrorSnackbar(context, err);
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final pbp = Provider.of<PocketBaseProvider>(context, listen: false);
@@ -45,7 +68,6 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
                     if (value != null && value) {
                       pbp.deleteArticle(article.id).then((_) => Navigator.of(context).pop());
                       pbp.fetchAllArticles();
-                      pbp.fetchActive();
                     }
                   });
                 },
@@ -57,22 +79,7 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
               : () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    setState(() {
-                      _isLoading = true;
-                    });
-                    pbp.updateArticle(article).then((_) {
-                      pbp.fetchAllArticles();
-                      pbp.fetchActive();
-                      Navigator.of(context).pop();
-                    }).catchError((e) {
-                      if (e is ClientException) {
-                        Statics.showErrorSnackbar(context, e);
-                      }
-                    }).whenComplete(() {
-                      setState(() {
-                        _isLoading = false;
-                      });
-                    });
+                    copyArticle(pbp, article, context);
                   }
                 },
         ),
