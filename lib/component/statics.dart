@@ -23,11 +23,11 @@ class Statics {
 
     ScaffoldMessenger.of(ctx).showSnackBar(
       SnackBar(
-        backgroundColor: Theme.of(ctx).colorScheme.error,
+        backgroundColor: Theme.of(ctx).colorScheme.errorContainer,
         content: Text(
           msg,
           textAlign: TextAlign.center,
-          style: TextStyle(color: Theme.of(ctx).colorScheme.onErrorContainer),
+          style: const TextStyle(color: Colors.white),
         ),
         duration: const Duration(milliseconds: 5000),
         padding: const EdgeInsets.all(8.0),

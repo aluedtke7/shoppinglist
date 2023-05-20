@@ -226,10 +226,10 @@ class _LoginCardState extends State<_LoginCard> {
                           ],
                         ),
                         if (_isLoading)
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
+                            children: [
                               Padding(
                                 padding: EdgeInsets.all(16),
                                 child: CircularProgressIndicator(),

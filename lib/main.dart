@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     final String initialLanguage;
     if (kIsWeb) {
-      initialLanguage = window.locale.languageCode;
+      initialLanguage = PlatformDispatcher.instance.locale.languageCode;
     } else {
       initialLanguage = Platform.localeName.substring(0, 2);
     }
