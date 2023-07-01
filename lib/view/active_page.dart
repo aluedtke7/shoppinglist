@@ -148,16 +148,6 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                               },
                                               icon: Icons.remove,
                                             ),
-                                            SlidableAction(
-                                              borderRadius: const BorderRadius.all(Radius.circular(12)),
-                                              padding: const EdgeInsets.all(8),
-                                              backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                  .slideBtnBackgroundColor(context),
-                                              onPressed: (context) {
-                                                Navigator.pushNamed(context, ArticleEditPage.routeName, arguments: itm);
-                                              },
-                                              icon: Icons.edit,
-                                            ),
                                           ],
                                         ),
                                         endActionPane: ActionPane(motion: const StretchMotion(), children: [
@@ -166,14 +156,10 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                             padding: const EdgeInsets.all(8),
                                             backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
                                                 .slideBtnBackgroundColor(context),
-                                            onPressed: (context) async {
-                                              try {
-                                                await pbp.toggleinCart(itm);
-                                              } catch (e) {
-                                                Statics.showErrorSnackbar(context, e);
-                                              }
+                                            onPressed: (context) {
+                                              Navigator.pushNamed(context, ArticleEditPage.routeName, arguments: itm);
                                             },
-                                            icon: Icons.check,
+                                            icon: Icons.edit,
                                           ),
                                           SlidableAction(
                                             borderRadius: const BorderRadius.all(Radius.circular(12)),
