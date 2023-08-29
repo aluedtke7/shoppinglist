@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shoppinglist/provider/fetch_dummy.dart' 
+          if (dart.library.html) 'package:shoppinglist/provider/fetch_stub.dart';
 import 'package:vibration/vibration.dart' as vib;
 import 'package:pocketbase/pocketbase.dart';
 
@@ -12,6 +14,7 @@ class PocketBaseProvider extends ChangeNotifier {
   final PocketBase _pb = PocketBase(
     const String.fromEnvironment('SHOPPINGLIST_HOST', defaultValue: 'http://localhost:8090'),
     lang: const String.fromEnvironment('SHOPPINGLIST_LANG', defaultValue: 'en-US'),
+    httpClientFactory: kIsWeb ? () => getClient() : null,
   );
   final collectionName = 'shoppinglist';
   List<Article> _active = [];

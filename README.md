@@ -16,10 +16,10 @@ about fly.io further down below.
 
 ### Features
 
-- Dart 3 and Flutter 3.10 compatible
-- several themes with custom options
+- Dart 3 and Flutter 3.13 compatible
+- several themes with custom options including dark modes
 - localization (English and German)
-- works on Android, iOS, Linux, MacOS and Windows (Web version lacks realtime events, see [caveats](#caveats))
+- works on Android, iOS, Linux, MacOS, Windows and Web
 
 ### Screenshots
 
@@ -45,10 +45,10 @@ about fly.io further down below.
 
 Here are some tips for the shopping list:
 
-- you can mark an article as _inCart_ either by swiping left and press the checkmark icon
-  or by double clicking the article itself
+- you can mark an article as _inCart_ by double clicking the article itself
 - click on the plus or minus sign to change the quantity of that article
-- _inCart_ articles are placed at the end of the list to have a clearer view
+- when you swipe the article to the left, the article can be edited (pen symbol) and duplicated (copy symbol)
+- _inCart_ articles are placed at the end of the list to have a clearer view about what is left
 - articles are grouped by shop and sorted alphabetically
 - in the search dialog, a new article can be be added by pressing the plus sign
 
@@ -76,12 +76,6 @@ has the following fields that must be created beforehand:
 
 When an article is marked _`active`_, it will be visible on the **shopping list**. Otherwise the article will
 show up in the **article list**.
-
-## Caveats
-
-PocketBase is offering realtime events to inform the client (shoppinglist app) about data changes. Unfortunately,
-this doesn't work with Flutter Web. More details about the technical facts can be found in
-[this thread in the discussion board](https://github.com/pocketbase/pocketbase/discussions/1485) of PocketBase.
 
 ## Get it working
 
@@ -121,6 +115,12 @@ That's it. Have fun and go shopping!
 > `SHOPPINGLIST_HOST` with the correct ip-address of your host machine like `http://192.168.0.52`. The address depends
 > on your network and you should look it up with tools like `ip a`, `ipconfig` or `ifconfig`.
 
+## Run a debug Web version with external host
+
+If you want to run the app as a Web app together with an external host, you have to use a commandline like this:
+
+    > flutter run -d chrome --dart-define=SHOPPINGLIST_HOST=https://YOUR-POCKETBASE-DOMAIN.com
+
 ## Create release builds
 
 To create a release build that uses the right PocketBase url, you have to set a command line option to supply the environment variable to flutter:
@@ -151,11 +151,11 @@ have to create a launch configuration `.vscode/launch.json` and have a configura
 ## Localization
 
 The app uses the `Intl` package to maintain different localizations. Run the following command, if you change
-the content of the `./lib/l10n/*.arb` files:
+the content of the `./lib/l10n/*.arb` files or if you are compiling the source for the first time:
 
     > flutter gen-l10n
 
-This will update the files in `.dart_tool/flutter_gen/gen_l10n`.
+This will update or create the files in `.dart_tool/flutter_gen/gen_l10n`.
 
 ## PocketBase running on fly.io
 
