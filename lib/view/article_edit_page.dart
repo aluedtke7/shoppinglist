@@ -33,10 +33,15 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
         Navigator.of(context).pop();
       }
     } catch (err) {
-      if (err is ClientException && err.response['data']?['article']?['code'] == 'validation_not_unique') {
-        Statics.showErrorSnackbar(context, AppLocalizations.of(context)!.p_edit_unique_error);
+      if (err is ClientException &&
+          err.response['data']?['article']?['code'] == 'validation_not_unique') {
+        if (context.mounted) {
+          Statics.showErrorSnackbar(context, AppLocalizations.of(context)!.p_edit_unique_error);
+        }
       } else {
-        Statics.showErrorSnackbar(context, err);
+        if (context.mounted) {
+          Statics.showErrorSnackbar(context, err);
+        }
       }
     } finally {
       setState(() {
@@ -52,8 +57,9 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
     _isValid ??= article.article.length > 1;
 
     var appBar = AppBar(
-      title: Text(
-          article.id.isEmpty ? AppLocalizations.of(context)!.p_edit_new : AppLocalizations.of(context)!.p_edit_change),
+      title: Text(article.id.isEmpty
+          ? AppLocalizations.of(context)!.p_edit_new
+          : AppLocalizations.of(context)!.p_edit_change),
       actions: [
         IconButton(
           icon: const Icon(Icons.delete_rounded),
@@ -116,7 +122,8 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
                                 initialValue: article.shop,
                                 textInputAction: TextInputAction.next,
                                 keyboardType: TextInputType.text,
-                                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.com_shop),
+                                decoration: InputDecoration(
+                                    labelText: AppLocalizations.of(context)!.com_shop),
                                 onSaved: (newValue) => article.shop = newValue ?? '',
                               ),
                             ),
@@ -127,7 +134,8 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
                                 initialValue: article.article,
                                 textInputAction: TextInputAction.next,
                                 keyboardType: TextInputType.text,
-                                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.com_article),
+                                decoration: InputDecoration(
+                                    labelText: AppLocalizations.of(context)!.com_article),
                                 onChanged: (value) {
                                   setState(() {
                                     _isValid = value.length > 1;

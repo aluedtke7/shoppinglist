@@ -95,7 +95,9 @@ class _LoginCardState extends State<_LoginCard> {
         await Provider.of<PocketBaseProvider>(context, listen: false).login(_email, _password);
         _savePrefs();
       } on ClientException catch (error) {
-        Statics.showErrorSnackbar(context, error);
+        if (context.mounted) {
+          Statics.showErrorSnackbar(context, error);
+        }
       }
       setState(() {
         _isLoading = false;
@@ -191,7 +193,9 @@ class _LoginCardState extends State<_LoginCard> {
                               },
                               child: SizedBox(
                                 width: 50,
-                                child: _hidePW ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
+                                child: _hidePW
+                                    ? const Icon(Icons.visibility_off)
+                                    : const Icon(Icons.visibility),
                               ),
                             ),
                             Padding(
@@ -267,9 +271,10 @@ class _LoginCardState extends State<_LoginCard> {
                                       if (value != null && value.isNotEmpty) {
                                         Provider.of<PocketBaseProvider>(context, listen: false)
                                             .sendPasswordResetEmail(value)
-                                            .then((value) => Statics.showInfoSnackbar(
-                                                context, AppLocalizations.of(context)!.l_p_email_sent))
-                                            .onError((error, stackTrace) => Statics.showErrorSnackbar(context, error));
+                                            .then((value) => Statics.showInfoSnackbar(context,
+                                                AppLocalizations.of(context)!.l_p_email_sent))
+                                            .onError((error, stackTrace) =>
+                                                Statics.showErrorSnackbar(context, error));
                                       }
                                     });
                                   },

@@ -67,7 +67,9 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
       pbp?.subscribeActive();
       await Future.wait([_fetchActive()]);
     } on ClientException catch (e) {
-      Statics.showErrorSnackbar(context, e);
+      if (context.mounted) {
+        Statics.showErrorSnackbar(context, e);
+      }
     } finally {
       setState(() {
         _isLoading = false;
@@ -118,54 +120,69 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                           children: [
                                             SlidableAction(
                                               autoClose: false,
-                                              borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                              borderRadius:
+                                                  const BorderRadius.all(Radius.circular(12)),
                                               padding: const EdgeInsets.all(8),
-                                              backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                  .slideBtnBackgroundColor(context),
+                                              backgroundColor:
+                                                  ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                      .slideBtnBackgroundColor(context),
                                               onPressed: (context) async {
                                                 itm.amount = min(12, itm.amount + 1);
                                                 try {
                                                   await pbp.updateArticle(itm);
                                                 } catch (e) {
-                                                  Statics.showErrorSnackbar(context, e);
+                                                  if (context.mounted) {
+                                                    Statics.showErrorSnackbar(context, e);
+                                                  }
                                                 }
                                               },
                                               icon: Icons.add,
                                             ),
                                             SlidableAction(
                                               autoClose: false,
-                                              borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                              borderRadius:
+                                                  const BorderRadius.all(Radius.circular(12)),
                                               padding: const EdgeInsets.all(8),
-                                              backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                  .slideBtnBackgroundColor(context),
+                                              backgroundColor:
+                                                  ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                      .slideBtnBackgroundColor(context),
                                               onPressed: (context) async {
                                                 itm.amount = max(1, itm.amount - 1);
                                                 try {
                                                   await pbp.updateArticle(itm);
                                                 } catch (e) {
-                                                  Statics.showErrorSnackbar(context, e);
+                                                  if (context.mounted) {
+                                                    Statics.showErrorSnackbar(context, e);
+                                                  }
                                                 }
                                               },
                                               icon: Icons.remove,
                                             ),
                                           ],
                                         ),
-                                        endActionPane: ActionPane(motion: const StretchMotion(), children: [
+                                        endActionPane:
+                                            ActionPane(motion: const StretchMotion(), children: [
                                           SlidableAction(
-                                            borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                            borderRadius:
+                                                const BorderRadius.all(Radius.circular(12)),
                                             padding: const EdgeInsets.all(8),
-                                            backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                .slideBtnBackgroundColor(context),
+                                            backgroundColor:
+                                                ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                    .slideBtnBackgroundColor(context),
                                             onPressed: (context) {
-                                              Navigator.pushNamed(context, ArticleEditPage.routeName, arguments: itm);
+                                              Navigator.pushNamed(
+                                                  context, ArticleEditPage.routeName,
+                                                  arguments: itm);
                                             },
                                             icon: Icons.edit,
                                           ),
                                           SlidableAction(
-                                            borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                            borderRadius:
+                                                const BorderRadius.all(Radius.circular(12)),
                                             padding: const EdgeInsets.all(8),
-                                            backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                .slideBtnBackgroundColor(context),
+                                            backgroundColor:
+                                                ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                    .slideBtnBackgroundColor(context),
                                             onPressed: (context) {
                                               final newItm = Article(
                                                 active: true,

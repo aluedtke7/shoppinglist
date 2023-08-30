@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shoppinglist/provider/fetch_dummy.dart' 
-          if (dart.library.html) 'package:shoppinglist/provider/fetch_stub.dart';
+import 'package:shoppinglist/provider/fetch_dummy.dart'
+    if (dart.library.html) 'package:shoppinglist/provider/fetch_stub.dart';
 import 'package:vibration/vibration.dart' as vib;
 import 'package:pocketbase/pocketbase.dart';
 
@@ -82,8 +82,8 @@ class PocketBaseProvider extends ChangeNotifier {
   Future<bool> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
     _userName = prefs.getString(PrefKeys.accessNamePrefsKey) ?? '';
-    _pb.authStore
-        .save(prefs.getString(PrefKeys.accessTokenPrefsKey) ?? '', prefs.getString(PrefKeys.accessModelPrefsKey) ?? '');
+    _pb.authStore.save(prefs.getString(PrefKeys.accessTokenPrefsKey) ?? '',
+        prefs.getString(PrefKeys.accessModelPrefsKey) ?? '');
     if (!_pb.authStore.isValid) {
       return false;
     }
@@ -120,7 +120,8 @@ class PocketBaseProvider extends ChangeNotifier {
 
   Future<void> searchForArticles(String what) async {
     final searchString = 'active = false && (article ~ "$what" || shop ~ "$what")';
-    final result = await _pb.collection(collectionName).getList(filter: searchString, sort: '+article');
+    final result =
+        await _pb.collection(collectionName).getList(filter: searchString, sort: '+article');
     List<Article> al = [];
     for (var element in result.items) {
       Article art = Article.fromJson(element.toJson());
@@ -174,7 +175,8 @@ class PocketBaseProvider extends ChangeNotifier {
     if (article.id.isEmpty) {
       return RecordModel();
     }
-    if (![TargetPlatform.linux, TargetPlatform.macOS, TargetPlatform.windows].contains(defaultTargetPlatform)) {
+    if (![TargetPlatform.linux, TargetPlatform.macOS, TargetPlatform.windows]
+        .contains(defaultTargetPlatform)) {
       try {
         if (await vib.Vibration.hasVibrator() ?? false) {
           await vib.Vibration.vibrate(duration: 50);

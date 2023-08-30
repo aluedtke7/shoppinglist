@@ -48,7 +48,9 @@ class _ArticlePageState extends State<ArticlePage> {
     try {
       await Future.wait([_fetchAllArticles(pbp)]);
     } on ClientException catch (e) {
-      Statics.showErrorSnackbar(context, e);
+      if (context.mounted) {
+        Statics.showErrorSnackbar(context, e);
+      }
     } finally {
       setState(() {
         _isLoading = false;
@@ -87,7 +89,8 @@ class _ArticlePageState extends State<ArticlePage> {
                       Flexible(
                         flex: 3,
                         child: TextField(
-                          decoration: InputDecoration(labelText: AppLocalizations.of(context)!.com_search_term),
+                          decoration: InputDecoration(
+                              labelText: AppLocalizations.of(context)!.com_search_term),
                           autofocus: true,
                           onChanged: (text) {
                             // debugPrint('Search text: $text');
@@ -103,7 +106,8 @@ class _ArticlePageState extends State<ArticlePage> {
                       const SizedBox(width: 8),
                       Flexible(
                         flex: 2,
-                        child: Text(AppLocalizations.of(context)!.com_num_articles(filteredArticles.length)),
+                        child: Text(AppLocalizations.of(context)!
+                            .com_num_articles(filteredArticles.length)),
                       ),
                     ],
                   ),
