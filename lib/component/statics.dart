@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import 'package:shoppinglist/component/article_selection_card.dart';
+import 'package:shoppinglist/component/i18n_util.dart';
 import 'package:shoppinglist/model/article.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
 import 'package:shoppinglist/view/article_edit_page.dart';
@@ -45,7 +45,8 @@ class Statics {
     ScaffoldMessenger.of(ctx).showSnackBar(
       SnackBar(
         backgroundColor: Theme.of(ctx).colorScheme.primary,
-        content: Text(msg, textAlign: TextAlign.center, style: TextStyle(color: Theme.of(ctx).cardTheme.color)),
+        content: Text(msg,
+            textAlign: TextAlign.center, style: TextStyle(color: Theme.of(ctx).cardTheme.color)),
         duration: const Duration(milliseconds: 3000),
         padding: const EdgeInsets.all(8.0),
         behavior: SnackBarBehavior.floating,
@@ -136,21 +137,22 @@ class Statics {
             onPressed: () {
               Navigator.of(ctx).pop(false);
             },
-            child: Text(AppLocalizations.of(context)!.com_no),
+            child: Text(i18n(context).com_no),
           ),
           ElevatedButton(
             autofocus: false,
             onPressed: () {
               Navigator.of(ctx).pop(true);
             },
-            child: Text(AppLocalizations.of(context)!.com_yes),
+            child: Text(i18n(context).com_yes),
           ),
         ],
       ),
     );
   }
 
-  static Future<String?> showInputDialog(BuildContext context, String title, String message, String initValue) async {
+  static Future<String?> showInputDialog(
+      BuildContext context, String title, String message, String initValue) async {
     var input = initValue;
 
     return showDialog<String?>(
@@ -159,7 +161,7 @@ class Statics {
         var textFormField = TextFormField(
           initialValue: initValue,
           decoration: InputDecoration(
-            labelText: AppLocalizations.of(context)!.l_p_email,
+            labelText: i18n(context).l_p_email,
           ),
           keyboardType: TextInputType.emailAddress,
           onChanged: (value) => input = value,
@@ -180,14 +182,14 @@ class Statics {
               onPressed: () {
                 Navigator.of(ctx).pop(null);
               },
-              child: Text(AppLocalizations.of(context)!.com_cancel),
+              child: Text(i18n(context).com_cancel),
             ),
             ElevatedButton(
               autofocus: false,
               onPressed: () {
                 Navigator.of(ctx).pop(input);
               },
-              child: Text(AppLocalizations.of(context)!.l_p_reset_password),
+              child: Text(i18n(context).l_p_reset_password),
             ),
           ],
         );
@@ -199,7 +201,7 @@ class Statics {
     Timer? delayedSearch;
     var textController = TextEditingController();
     var textField = TextField(
-      decoration: InputDecoration(labelText: AppLocalizations.of(context)!.com_search_term),
+      decoration: InputDecoration(labelText: i18n(context).com_search_term),
       autofocus: true,
       controller: textController,
       onChanged: (text) {
@@ -224,7 +226,7 @@ class Statics {
         return Scaffold(
           backgroundColor: const Color.fromARGB(0, 0, 0, 0),
           body: AlertDialog(
-            title: Text(AppLocalizations.of(context)!.p_active_tooltip),
+            title: Text(i18n(context).p_active_tooltip),
             backgroundColor: Theme.of(context).dialogBackgroundColor,
             actionsAlignment: MainAxisAlignment.spaceBetween,
             content: SizedBox(
@@ -253,9 +255,9 @@ class Statics {
                 onPressed: () {
                   Navigator.of(ctx).pop(null);
                 },
-                child: Text(AppLocalizations.of(context)!.com_back),
+                child: Text(i18n(context).com_back),
               ),
-              Text(AppLocalizations.of(context)!.com_num_articles(pbp.searchArticles.length)),
+              Text(i18n(context).com_num_articles(pbp.searchArticles.length)),
               ElevatedButton.icon(
                   onPressed: textController.text.isNotEmpty
                       ? () {
@@ -268,7 +270,7 @@ class Statics {
                         }
                       : null,
                   icon: const Icon(Icons.add_sharp),
-                  label: Text(AppLocalizations.of(context)!.com_new)),
+                  label: Text(i18n(context).com_new)),
             ],
           ),
         );

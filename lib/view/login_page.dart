@@ -1,6 +1,5 @@
 import 'package:email_validator/email_validator.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -9,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:theme_provider/theme_provider.dart';
 
+import 'package:shoppinglist/component/i18n_util.dart';
 import 'package:shoppinglist/component/selected_page.dart';
 import 'package:shoppinglist/component/slapp_app_bar.dart';
 import 'package:shoppinglist/component/statics.dart';
@@ -18,7 +18,7 @@ import 'package:shoppinglist/model/sel_page.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
   static const routeName = '/';
   final String title = 'Shoppinglist';
 
@@ -41,7 +41,7 @@ class LoginPage extends StatelessWidget {
 }
 
 class _LoginCard extends StatefulWidget {
-  const _LoginCard({Key? key}) : super(key: key);
+  const _LoginCard();
 
   @override
   _LoginCardState createState() => _LoginCardState();
@@ -136,7 +136,7 @@ class _LoginCardState extends State<_LoginCard> {
                             Padding(
                               padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                               child: Text(
-                                AppLocalizations.of(context)!.l_p_login,
+                                i18n(context).l_p_login,
                                 textScaleFactor: 2,
                                 style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
@@ -165,13 +165,13 @@ class _LoginCardState extends State<_LoginCard> {
                                   textInputAction: TextInputAction.next,
                                   keyboardType: TextInputType.emailAddress,
                                   decoration: InputDecoration(
-                                    labelText: AppLocalizations.of(context)!.l_p_email,
+                                    labelText: i18n(context).l_p_email,
                                   ),
                                   validator: (value) {
                                     if (EmailValidator.validate(value!)) {
                                       return null;
                                     }
-                                    return AppLocalizations.of(context)!.l_p_email_val;
+                                    return i18n(context).l_p_email_val;
                                   },
                                   onFieldSubmitted: (value) {
                                     _emailFocus.unfocus();
@@ -211,11 +211,11 @@ class _LoginCardState extends State<_LoginCard> {
                                   keyboardType: TextInputType.text,
                                   textInputAction: TextInputAction.done,
                                   decoration: InputDecoration(
-                                    labelText: AppLocalizations.of(context)!.l_p_password,
+                                    labelText: i18n(context).l_p_password,
                                   ),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return AppLocalizations.of(context)!.l_p_password_val;
+                                      return i18n(context).l_p_password_val;
                                     }
                                     return null;
                                   },
@@ -247,7 +247,7 @@ class _LoginCardState extends State<_LoginCard> {
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(16, 16, 34, 16),
                                 child: ElevatedButton(
-                                  child: Text(AppLocalizations.of(context)!.l_p_login_btn),
+                                  child: Text(i18n(context).l_p_login_btn),
                                   onPressed: () {
                                     _submit();
                                   },
@@ -264,21 +264,21 @@ class _LoginCardState extends State<_LoginCard> {
                                   onPressed: () {
                                     Statics.showInputDialog(
                                       context,
-                                      AppLocalizations.of(context)!.l_p_forgot_password,
-                                      AppLocalizations.of(context)!.l_p_forgot_password_info,
+                                      i18n(context).l_p_forgot_password,
+                                      i18n(context).l_p_forgot_password_info,
                                       _email,
                                     ).then((value) {
                                       if (value != null && value.isNotEmpty) {
                                         Provider.of<PocketBaseProvider>(context, listen: false)
                                             .sendPasswordResetEmail(value)
-                                            .then((value) => Statics.showInfoSnackbar(context,
-                                                AppLocalizations.of(context)!.l_p_email_sent))
+                                            .then((value) => Statics.showInfoSnackbar(
+                                                context, i18n(context).l_p_email_sent))
                                             .onError((error, stackTrace) =>
                                                 Statics.showErrorSnackbar(context, error));
                                       }
                                     });
                                   },
-                                  child: Text(AppLocalizations.of(context)!.l_p_forgot_password)),
+                                  child: Text(i18n(context).l_p_forgot_password)),
                             ),
                           ],
                         )

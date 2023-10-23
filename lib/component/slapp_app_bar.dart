@@ -1,17 +1,18 @@
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:shoppinglist/provider/pocket_base_prov.dart';
-import 'package:theme_provider/theme_provider.dart';
 
 import 'package:shoppinglist/application.dart';
+import 'package:shoppinglist/component/i18n_util.dart';
+import 'package:shoppinglist/provider/pocket_base_prov.dart';
+
+import 'package:theme_provider/theme_provider.dart';
 
 class SlappAppBar extends StatefulWidget implements PreferredSizeWidget {
   const SlappAppBar({
-    Key? key,
+    super.key,
     required this.title,
-  }) : super(key: key);
+  });
 
   final String title;
 
@@ -40,7 +41,7 @@ class _SlappAppBarState extends State<SlappAppBar> {
             ThemeProvider.controllerOf(context).nextTheme();
           },
           icon: const Icon(Icons.color_lens),
-          tooltip: AppLocalizations.of(context)!.com_change_theme,
+          tooltip: i18n(context).com_change_theme,
         ),
         IconButton(
           onPressed: () {
@@ -53,7 +54,7 @@ class _SlappAppBarState extends State<SlappAppBar> {
             }
           },
           icon: const Icon(Icons.language),
-          tooltip: AppLocalizations.of(context)!.com_change_language,
+          tooltip: i18n(context).com_change_language,
         )
       ],
     );

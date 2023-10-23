@@ -1,19 +1,19 @@
 import 'dart:math';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
-import 'package:shoppinglist/model/article.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import 'package:shoppinglist/component/article_card.dart';
+import 'package:shoppinglist/component/i18n_util.dart';
 import 'package:shoppinglist/component/selected_page.dart';
 import 'package:shoppinglist/component/slapp_app_bar.dart';
 import 'package:shoppinglist/component/slapp_drawer.dart';
 import 'package:shoppinglist/component/statics.dart';
 import 'package:shoppinglist/component/theme_options.dart';
+import 'package:shoppinglist/model/article.dart';
 import 'package:shoppinglist/model/sel_page.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
 import 'package:shoppinglist/view/article_edit_page.dart';
@@ -83,7 +83,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
     page = SelPage.activeList;
 
     return Scaffold(
-      appBar: SlappAppBar(title: AppLocalizations.of(context)!.p_active_title),
+      appBar: SlappAppBar(title: i18n(context).p_active_title),
       drawer: const SlappDrawer(),
       body: RefreshIndicator(
         onRefresh: _fetchAll,
@@ -103,7 +103,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                 ? Center(
                                     child: Text(
                                       textAlign: TextAlign.center,
-                                      AppLocalizations.of(context)!.p_active_empty,
+                                      i18n(context).p_active_empty,
                                       style: const TextStyle(
                                         fontSize: 30,
                                         height: 1.5,
@@ -205,7 +205,9 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                               pbp.toggleinCart(itm);
                                             },
                                             onLongPress: () {
-                                              Slidable.of(c)?.openStartActionPane();
+                                              Navigator.pushNamed(
+                                                  context, ArticleEditPage.routeName,
+                                                  arguments: itm);
                                             },
                                             child: ArticleCard(
                                               article: itm,
@@ -236,7 +238,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
             }
           });
         },
-        tooltip: AppLocalizations.of(context)!.p_active_tooltip,
+        tooltip: i18n(context).p_active_tooltip,
         backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
         child: const Icon(Icons.add),
       ),

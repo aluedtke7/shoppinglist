@@ -6,10 +6,10 @@ import 'package:shoppinglist/model/article.dart';
 
 class ArticleCard extends StatelessWidget {
   const ArticleCard({
-    Key? key,
+    super.key,
     required this.article,
     required this.isArticleList,
-  }) : super(key: key);
+  });
   final Article article;
   final bool isArticleList;
 

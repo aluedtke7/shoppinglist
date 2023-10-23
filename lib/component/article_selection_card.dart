@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:shoppinglist/component/theme_options.dart';
 import 'package:theme_provider/theme_provider.dart';
 
+import 'package:shoppinglist/component/theme_options.dart';
 import 'package:shoppinglist/model/article.dart';
 
 class ArticleSelectionCard extends StatelessWidget {
   const ArticleSelectionCard({
-    Key? key,
+    super.key,
     required this.article,
-  }) : super(key: key);
+  });
   final Article article;
 
   @override

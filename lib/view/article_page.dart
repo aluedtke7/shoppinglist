@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import 'package:shoppinglist/component/article_card.dart';
+import 'package:shoppinglist/component/i18n_util.dart';
 import 'package:shoppinglist/component/selected_page.dart';
 import 'package:shoppinglist/component/slapp_app_bar.dart';
 import 'package:shoppinglist/component/slapp_drawer.dart';
@@ -70,7 +70,7 @@ class _ArticlePageState extends State<ArticlePage> {
     page = SelPage.articleList;
 
     return Scaffold(
-      appBar: SlappAppBar(title: AppLocalizations.of(context)!.p_articles_title),
+      appBar: SlappAppBar(title: i18n(context).p_articles_title),
       drawer: const SlappDrawer(),
       body: RefreshIndicator(
         onRefresh: _fetchAll,
@@ -89,8 +89,7 @@ class _ArticlePageState extends State<ArticlePage> {
                       Flexible(
                         flex: 3,
                         child: TextField(
-                          decoration: InputDecoration(
-                              labelText: AppLocalizations.of(context)!.com_search_term),
+                          decoration: InputDecoration(labelText: i18n(context).com_search_term),
                           autofocus: true,
                           onChanged: (text) {
                             // debugPrint('Search text: $text');
@@ -106,8 +105,7 @@ class _ArticlePageState extends State<ArticlePage> {
                       const SizedBox(width: 8),
                       Flexible(
                         flex: 2,
-                        child: Text(AppLocalizations.of(context)!
-                            .com_num_articles(filteredArticles.length)),
+                        child: Text(i18n(context).com_num_articles(filteredArticles.length)),
                       ),
                     ],
                   ),
@@ -141,7 +139,7 @@ class _ArticlePageState extends State<ArticlePage> {
           Navigator.pushNamed(context, ArticleEditPage.routeName, arguments: Article());
         },
         backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-        tooltip: AppLocalizations.of(context)!.p_articles_tooltip,
+        tooltip: i18n(context).p_articles_tooltip,
         child: const Icon(Icons.add),
       ),
     );

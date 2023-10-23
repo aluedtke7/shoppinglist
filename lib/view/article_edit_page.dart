@@ -1,9 +1,9 @@
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
+import 'package:shoppinglist/component/i18n_util.dart';
 import 'package:shoppinglist/component/statics.dart';
 import 'package:shoppinglist/component/theme_options.dart';
 import 'package:shoppinglist/model/article.dart';
@@ -36,7 +36,7 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
       if (err is ClientException &&
           err.response['data']?['article']?['code'] == 'validation_not_unique') {
         if (context.mounted) {
-          Statics.showErrorSnackbar(context, AppLocalizations.of(context)!.p_edit_unique_error);
+          Statics.showErrorSnackbar(context, i18n(context).p_edit_unique_error);
         }
       } else {
         if (context.mounted) {
@@ -57,9 +57,7 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
     _isValid ??= article.article.length > 1;
 
     var appBar = AppBar(
-      title: Text(article.id.isEmpty
-          ? AppLocalizations.of(context)!.p_edit_new
-          : AppLocalizations.of(context)!.p_edit_change),
+      title: Text(article.id.isEmpty ? i18n(context).p_edit_new : i18n(context).p_edit_change),
       actions: [
         IconButton(
           icon: const Icon(Icons.delete_rounded),
@@ -68,8 +66,8 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
               : () {
                   Statics.showConfirmDialog(
                     context,
-                    AppLocalizations.of(context)!.p_edit_delete,
-                    AppLocalizations.of(context)!.p_edit_delete_q(article.article),
+                    i18n(context).p_edit_delete,
+                    i18n(context).p_edit_delete_q(article.article),
                   ).then((value) {
                     if (value != null && value) {
                       pbp.deleteArticle(article.id).then((_) => Navigator.of(context).pop());
@@ -122,8 +120,7 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
                                 initialValue: article.shop,
                                 textInputAction: TextInputAction.next,
                                 keyboardType: TextInputType.text,
-                                decoration: InputDecoration(
-                                    labelText: AppLocalizations.of(context)!.com_shop),
+                                decoration: InputDecoration(labelText: i18n(context).com_shop),
                                 onSaved: (newValue) => article.shop = newValue ?? '',
                               ),
                             ),
@@ -134,8 +131,7 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
                                 initialValue: article.article,
                                 textInputAction: TextInputAction.next,
                                 keyboardType: TextInputType.text,
-                                decoration: InputDecoration(
-                                    labelText: AppLocalizations.of(context)!.com_article),
+                                decoration: InputDecoration(labelText: i18n(context).com_article),
                                 onChanged: (value) {
                                   setState(() {
                                     _isValid = value.length > 1;
