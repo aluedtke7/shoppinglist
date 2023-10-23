@@ -76,60 +76,63 @@ class _ArticlePageState extends State<ArticlePage> {
         onRefresh: _fetchAll,
         child: Container(
           decoration: ThemeProvider.optionsOf<ThemeOptions>(context).pageDecoration,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
-                    children: [
-                      Flexible(
-                        flex: 3,
-                        child: TextField(
-                          decoration: InputDecoration(labelText: i18n(context).com_search_term),
-                          autofocus: true,
-                          onChanged: (text) {
-                            // debugPrint('Search text: $text');
-                            delayedSearch?.cancel();
-                            delayedSearch = Timer(const Duration(milliseconds: 750), () {
-                              setState(() {
-                                _searchFor = text;
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: [
+                        Flexible(
+                          flex: 3,
+                          child: TextField(
+                            decoration: InputDecoration(labelText: i18n(context).com_search_term),
+                            autofocus: true,
+                            onChanged: (text) {
+                              // debugPrint('Search text: $text');
+                              delayedSearch?.cancel();
+                              delayedSearch = Timer(const Duration(milliseconds: 750), () {
+                                setState(() {
+                                  _searchFor = text;
+                                });
                               });
-                            });
-                          },
+                            },
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        flex: 2,
-                        child: Text(i18n(context).com_num_articles(filteredArticles.length)),
-                      ),
-                    ],
+                        const SizedBox(width: 8),
+                        Flexible(
+                          flex: 2,
+                          child: Text(i18n(context).com_num_articles(filteredArticles.length)),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                _isLoading
-                    ? const SizedBox(height: 50, width: 50, child: CircularProgressIndicator())
-                    : Expanded(
-                        child: ListView.builder(
-                          itemBuilder: (ctx, idx) {
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(context, ArticleEditPage.routeName,
-                                    arguments: filteredArticles[idx]);
-                              },
-                              child: ArticleCard(
-                                article: filteredArticles[idx],
-                                isArticleList: true,
-                              ),
-                            );
-                          },
-                          itemCount: filteredArticles.length,
+                  _isLoading
+                      ? const SizedBox(height: 50, width: 50, child: CircularProgressIndicator())
+                      : Expanded(
+                          child: ListView.builder(
+                            itemBuilder: (ctx, idx) {
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(context, ArticleEditPage.routeName,
+                                      arguments: filteredArticles[idx]);
+                                },
+                                child: ArticleCard(
+                                  article: filteredArticles[idx],
+                                  isArticleList: true,
+                                ),
+                              );
+                            },
+                            itemCount: filteredArticles.length,
+                          ),
                         ),
-                      ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
