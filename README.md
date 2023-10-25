@@ -48,6 +48,7 @@ Here are some tips for the shopping list:
 - you can mark an article as _inCart_ by double clicking the article itself
 - click on the plus or minus sign to change the quantity of that article
 - when you swipe the article to the left, the article can be edited (pen symbol) and duplicated (copy symbol)
+- a long press on the article will also open the edit dialog
 - _inCart_ articles are placed at the end of the list to have a clearer view about what is left
 - articles are grouped by shop and sorted alphabetically
 - in the search dialog, a new article can be be added by pressing the plus sign
@@ -97,9 +98,8 @@ your gonna use.
 1. run **`flutter run`** to start the application with a local installed PocketBase
 1. if your PocketBase instance is not on localhost, you have to run
    **`flutter run --dart-define=SHOPPINGLIST_HOST=https://YOUR-POCKETBASE-DOMAIN.com`**
-1. to create an Android app i.e. run **`flutter build apk`**
-1. if your PocketBase instance is not on localhost, you have to run
-   **`flutter build apk --dart-define=SHOPPINGLIST_HOST=https://YOUR-POCKETBASE-DOMAIN.com`**
+1. to create an Android app i.e. run **`flutter build apk --dart-define=SHOPPINGLIST_HOST=http://IP-ADDRESS-OF-POCKETBASE-SERVER:8090`**
+Please use a *real* ip-address and **not** localhost!
 1. inside the app, login with email and password
 
 That's it. Have fun and go shopping!
