@@ -137,7 +137,7 @@ class _LoginCardState extends State<_LoginCard> {
                               padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                               child: Text(
                                 i18n(context).l_p_login,
-                                textScaleFactor: 2,
+                                textScaler: const TextScaler.linear(2),
                                 style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ),
