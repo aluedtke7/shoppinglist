@@ -9,7 +9,7 @@ var customThemes = [
     id: 'light',
     description: 'Light',
     data: ThemeData(
-      useMaterial3: false,
+      useMaterial3: true,
       dialogBackgroundColor: const Color.fromARGB(255, 240, 240, 240),
     ),
     options: ThemeOptions(
@@ -26,7 +26,7 @@ var customThemes = [
     id: 'dark',
     description: 'Dark',
     data: ThemeData(
-      useMaterial3: false,
+      useMaterial3: true,
       colorScheme: ColorScheme.fromSwatch(
         brightness: Brightness.dark,
         primarySwatch: Colors.cyan,
@@ -48,7 +48,7 @@ var customThemes = [
     id: 'orange',
     description: 'Orange',
     data: ThemeData(
-      useMaterial3: false,
+      useMaterial3: true,
       colorScheme: ColorScheme.fromSwatch(
         primarySwatch: Colors.deepOrange,
         accentColor: Colors.deepOrange.shade700,
@@ -90,7 +90,7 @@ var customThemes = [
     id: 'dark-orange',
     description: 'Dark orange',
     data: ThemeData(
-      useMaterial3: false,
+      useMaterial3: true,
       colorScheme: ColorScheme.fromSwatch(
         brightness: Brightness.dark,
         primarySwatch: Colors.orange,
