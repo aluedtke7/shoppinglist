@@ -15,7 +15,9 @@ class Statics {
     final String msg;
     if (e is ClientException) {
       String? errMsg = e.originalError?.toString();
-      errMsg ??= e.response.entries.firstWhere((element) => element.key == 'message').value;
+      errMsg ??= e.response.entries
+          .firstWhere((element) => element.key == 'message')
+          .value;
       msg = 'Error\nServer ${e.url?.host}\n$errMsg';
     } else {
       msg = e.toString();
@@ -46,7 +48,8 @@ class Statics {
       SnackBar(
         backgroundColor: Theme.of(ctx).colorScheme.primary,
         content: Text(msg,
-            textAlign: TextAlign.center, style: TextStyle(color: Theme.of(ctx).cardTheme.color)),
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Theme.of(ctx).cardTheme.color)),
         duration: const Duration(milliseconds: 3000),
         padding: const EdgeInsets.all(8.0),
         behavior: SnackBarBehavior.floating,
@@ -89,8 +92,18 @@ class Statics {
     return BoxDecoration(
       gradient: LinearGradient(
         colors: [
-          ThemeProvider.controllerOf(ctx).theme.data.colorScheme.surface.withOpacity(.1),
-          ThemeProvider.controllerOf(ctx).theme.data.colorScheme.onSurfaceVariant.withAlpha(100),
+          ThemeProvider.controllerOf(ctx)
+              .theme
+              .data
+              .colorScheme
+              .surface
+              .withOpacity(.1),
+          ThemeProvider.controllerOf(ctx)
+              .theme
+              .data
+              .colorScheme
+              .onSurfaceVariant
+              .withAlpha(100),
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -101,7 +114,12 @@ class Statics {
 
   static BoxDecoration getSimpleDrawerDecoration(BuildContext ctx) {
     return BoxDecoration(
-      color: ThemeProvider.controllerOf(ctx).theme.data.colorScheme.surface.withOpacity(.1),
+      color: ThemeProvider.controllerOf(ctx)
+          .theme
+          .data
+          .colorScheme
+          .surface
+          .withOpacity(.1),
     );
   }
 
@@ -110,7 +128,12 @@ class Statics {
       gradient: LinearGradient(
         colors: [
           ThemeProvider.controllerOf(ctx).theme.data.colorScheme.primary,
-          ThemeProvider.controllerOf(ctx).theme.data.colorScheme.primary.withAlpha(100),
+          ThemeProvider.controllerOf(ctx)
+              .theme
+              .data
+              .colorScheme
+              .primary
+              .withAlpha(100),
         ],
         begin: Alignment.bottomLeft,
         end: Alignment.topRight,
@@ -125,7 +148,8 @@ class Statics {
     );
   }
 
-  static Future<bool?> showConfirmDialog(BuildContext context, String title, String message) async {
+  static Future<bool?> showConfirmDialog(
+      BuildContext context, String title, String message) async {
     return showDialog<bool?>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -151,8 +175,8 @@ class Statics {
     );
   }
 
-  static Future<String?> showInputDialog(
-      BuildContext context, String title, String message, String initValue) async {
+  static Future<String?> showInputDialog(BuildContext context, String title,
+      String message, String initValue) async {
     var input = initValue;
 
     return showDialog<String?>(
@@ -197,7 +221,8 @@ class Statics {
     );
   }
 
-  static Future<Article?> searchForArticle(BuildContext context, PocketBaseProvider pbp) async {
+  static Future<Article?> searchForArticle(
+      BuildContext context, PocketBaseProvider pbp) async {
     Timer? delayedSearch;
     var textController = TextEditingController();
     var textField = TextField(
@@ -226,6 +251,10 @@ class Statics {
         return Scaffold(
           backgroundColor: const Color.fromARGB(0, 0, 0, 0),
           body: AlertDialog(
+            insetPadding: EdgeInsets.all(8),
+            titlePadding: EdgeInsets.only(left: 12, right: 12, top: 12),
+            contentPadding: EdgeInsets.only(left: 12, right: 12),
+            actionsPadding: EdgeInsets.only(left: 12, right: 12, bottom: 8),
             title: Text(i18n(context).p_active_tooltip),
             backgroundColor: Theme.of(context).dialogBackgroundColor,
             actionsAlignment: MainAxisAlignment.spaceBetween,
@@ -233,6 +262,7 @@ class Statics {
               width: double.maxFinite,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   textField,
                   Expanded(
@@ -261,7 +291,8 @@ class Statics {
               ElevatedButton.icon(
                   onPressed: textController.text.isNotEmpty
                       ? () {
-                          Navigator.pushReplacementNamed(context, ArticleEditPage.routeName,
+                          Navigator.pushReplacementNamed(
+                              context, ArticleEditPage.routeName,
                               arguments: Article(
                                 active: true,
                                 amount: 1,
