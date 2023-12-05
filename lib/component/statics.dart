@@ -251,10 +251,11 @@ class Statics {
         return Scaffold(
           backgroundColor: const Color.fromARGB(0, 0, 0, 0),
           body: AlertDialog(
-            insetPadding: EdgeInsets.all(8),
-            titlePadding: EdgeInsets.only(left: 12, right: 12, top: 12),
-            contentPadding: EdgeInsets.only(left: 12, right: 12),
-            actionsPadding: EdgeInsets.only(left: 12, right: 12, bottom: 8),
+            insetPadding: const EdgeInsets.all(8),
+            titlePadding: const EdgeInsets.only(left: 12, right: 12, top: 12),
+            contentPadding: const EdgeInsets.only(left: 12, right: 12),
+            actionsPadding:
+                const EdgeInsets.only(left: 12, right: 12, bottom: 8),
             title: Text(i18n(context).p_active_tooltip),
             backgroundColor: Theme.of(context).dialogBackgroundColor,
             actionsAlignment: MainAxisAlignment.spaceBetween,

@@ -21,19 +21,20 @@ class SlappDrawer extends StatelessWidget {
 
     return Drawer(
       child: Container(
-        decoration: ThemeProvider.optionsOf<ThemeOptions>(context).drawerDecoration(context),
+        decoration: ThemeProvider.optionsOf<ThemeOptions>(context)
+            .drawerDecoration(context),
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration:
-                  ThemeProvider.optionsOf<ThemeOptions>(context).drawerHeaderDecoration(context),
+              decoration: ThemeProvider.optionsOf<ThemeOptions>(context)
+                  .drawerHeaderDecoration(context),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     i18n(context).drawer_title,
-                    textScaleFactor: 1.6,
+                    textScaler: const TextScaler.linear(1.6),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -42,7 +43,7 @@ class SlappDrawer extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       pbp.userName,
-                      textScaleFactor: 1.2,
+                      textScaler: const TextScaler.linear(1.2),
                     ),
                   ),
                   Padding(
@@ -52,7 +53,8 @@ class SlappDrawer extends StatelessWidget {
                         builder: (ctx, snapshot) {
                           var defText = '---';
                           if (snapshot.hasData) {
-                            defText = '${snapshot.data!.version}+${snapshot.data!.buildNumber}';
+                            defText =
+                                '${snapshot.data!.version}+${snapshot.data!.buildNumber}';
                           }
                           return Text(i18n(context).drawer_version(defText));
                         }),
@@ -62,7 +64,8 @@ class SlappDrawer extends StatelessWidget {
             ),
             ListTile(
               title: Text(i18n(context).p_active_title),
-              selected: ModalRoute.of(context)?.settings.name == ActivePage.routeName,
+              selected:
+                  ModalRoute.of(context)?.settings.name == ActivePage.routeName,
               onTap: () {
                 Navigator.pushNamed(context, ActivePage.routeName);
               },
@@ -72,7 +75,8 @@ class SlappDrawer extends StatelessWidget {
             ),
             ListTile(
               title: Text(i18n(context).p_articles_title),
-              selected: ModalRoute.of(context)?.settings.name == ArticlePage.routeName,
+              selected: ModalRoute.of(context)?.settings.name ==
+                  ArticlePage.routeName,
               onTap: () {
                 Navigator.pushNamed(context, ArticlePage.routeName);
               },
@@ -84,7 +88,9 @@ class SlappDrawer extends StatelessWidget {
             ListTile(
               title: Text(i18n(context).drawer_end_shopping),
               onTap: () {
-                Statics.showConfirmDialog(context, i18n(context).drawer_end_shopping,
+                Statics.showConfirmDialog(
+                        context,
+                        i18n(context).drawer_end_shopping,
                         i18n(context).drawer_end_shopping_q)
                     .then((value) {
                   if (value != null && value) {
@@ -101,8 +107,8 @@ class SlappDrawer extends StatelessWidget {
             ListTile(
               title: Text(i18n(context).drawer_logout),
               onTap: () {
-                Statics.showConfirmDialog(
-                        context, i18n(context).drawer_logout, i18n(context).drawer_logout_q)
+                Statics.showConfirmDialog(context, i18n(context).drawer_logout,
+                        i18n(context).drawer_logout_q)
                     .then((value) {
                   if (value != null && value) {
                     pbp.logout();

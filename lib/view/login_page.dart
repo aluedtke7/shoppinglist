@@ -20,14 +20,13 @@ import 'package:shoppinglist/provider/pocket_base_prov.dart';
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
   static const routeName = '/';
-  final String title = 'Shoppinglist';
 
   @override
   Widget build(BuildContext context) {
     page = SelPage.login;
 
     return Scaffold(
-      appBar: SlappAppBar(title: title),
+      appBar: const SlappAppBar(title: 'Shoppinglist'),
       body: Stack(
         children: [
           Container(

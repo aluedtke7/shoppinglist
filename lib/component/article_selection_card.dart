@@ -9,6 +9,7 @@ class ArticleSelectionCard extends StatelessWidget {
     super.key,
     required this.article,
   });
+
   final Article article;
 
   @override
@@ -30,9 +31,12 @@ class ArticleSelectionCard extends StatelessWidget {
               if (article.shop.isNotEmpty) Text(article.shop),
               Text(
                 article.article,
-                textScaleFactor: ThemeProvider.optionsOf<ThemeOptions>(context).cardTextScaleFactor,
+                textScaler: TextScaler.linear(
+                    ThemeProvider.optionsOf<ThemeOptions>(context)
+                        .cardTextScaleFactor),
                 style: TextStyle(
-                  fontWeight: ThemeProvider.optionsOf<ThemeOptions>(context).cardTextFontWeight,
+                  fontWeight: ThemeProvider.optionsOf<ThemeOptions>(context)
+                      .cardTextFontWeight,
                 ),
               ),
             ],
