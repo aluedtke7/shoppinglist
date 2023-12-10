@@ -10,6 +10,11 @@ var customThemes = [
     description: 'Light',
     data: ThemeData(
       useMaterial3: true,
+      colorScheme: ColorScheme.fromSwatch(
+        brightness: Brightness.light,
+        primarySwatch: Colors.lightBlue,
+        accentColor: Colors.blueAccent,
+      ),
       dialogBackgroundColor: const Color.fromARGB(255, 240, 240, 240),
     ),
     options: ThemeOptions(
