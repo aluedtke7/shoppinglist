@@ -6,14 +6,13 @@ import 'package:shoppinglist/component/theme_options.dart';
 
 var customThemes = [
   AppTheme(
-    id: 'light',
-    description: 'Light',
+    id: 'light-blue',
+    description: 'Light blue',
     data: ThemeData(
       useMaterial3: true,
-      colorScheme: ColorScheme.fromSwatch(
+      colorScheme: ColorScheme.fromSeed(
         brightness: Brightness.light,
-        primarySwatch: Colors.lightBlue,
-        accentColor: Colors.blueAccent,
+        seedColor: Colors.lightBlue,
       ),
       dialogBackgroundColor: const Color.fromARGB(255, 240, 240, 240),
     ),
@@ -28,20 +27,19 @@ var customThemes = [
     ),
   ),
   AppTheme(
-    id: 'dark',
-    description: 'Dark',
+    id: 'light-green',
+    description: 'Light green',
     data: ThemeData(
       useMaterial3: true,
-      colorScheme: ColorScheme.fromSwatch(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.cyan,
-        accentColor: Colors.cyan.shade700,
+      colorScheme: ColorScheme.fromSeed(
+        brightness: Brightness.light,
+        seedColor: Colors.lightGreen,
       ),
-      dialogBackgroundColor: const Color.fromARGB(255, 50, 50, 50),
+      dialogBackgroundColor: const Color.fromARGB(255, 240, 240, 240),
     ),
     options: ThemeOptions(
-      Colors.grey.shade600,
-      Statics.getSlideBtnBackgroundDark,
+      Colors.grey.shade400,
+      Statics.getSlideBtnBackgroundLight,
       1.4,
       FontWeight.bold,
       Statics.getGradientPageDecoration(),
@@ -54,9 +52,9 @@ var customThemes = [
     description: 'Orange',
     data: ThemeData(
       useMaterial3: true,
-      colorScheme: ColorScheme.fromSwatch(
-        primarySwatch: Colors.deepOrange,
-        accentColor: Colors.deepOrange.shade700,
+      colorScheme: ColorScheme.fromSeed(
+        brightness: Brightness.light,
+        seedColor: Colors.orange,
       ),
       dialogBackgroundColor: const Color.fromARGB(255, 240, 240, 240),
     ),
@@ -75,9 +73,9 @@ var customThemes = [
     description: 'Light orange',
     data: ThemeData(
       useMaterial3: false,
-      colorScheme: ColorScheme.fromSwatch(
-        primarySwatch: Colors.deepOrange,
-        accentColor: Colors.deepOrange,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.orange,
+        brightness: Brightness.light,
       ),
       dialogBackgroundColor: const Color.fromARGB(255, 240, 240, 240),
     ),
@@ -92,14 +90,34 @@ var customThemes = [
     ),
   ),
   AppTheme(
+    id: 'dark-cyan',
+    description: 'Dark cyan',
+    data: ThemeData(
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        brightness: Brightness.dark,
+        seedColor: Colors.cyan,
+      ),
+      dialogBackgroundColor: const Color.fromARGB(255, 50, 50, 50),
+    ),
+    options: ThemeOptions(
+      Colors.grey.shade600,
+      Statics.getSlideBtnBackgroundDark,
+      1.4,
+      FontWeight.bold,
+      Statics.getGradientPageDecoration(),
+      Statics.getGradientDrawerDecoration,
+      Statics.getGradientDrawerHeaderDecoration,
+    ),
+  ),
+  AppTheme(
     id: 'dark-orange',
     description: 'Dark orange',
     data: ThemeData(
       useMaterial3: true,
-      colorScheme: ColorScheme.fromSwatch(
+      colorScheme: ColorScheme.fromSeed(
         brightness: Brightness.dark,
-        primarySwatch: Colors.orange,
-        accentColor: Colors.orange.shade700,
+        seedColor: Colors.orange,
       ),
     ),
     options: ThemeOptions(

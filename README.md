@@ -17,7 +17,7 @@ about fly.io further down below.
 ### Features
 
 - Dart 3 and Flutter 3.16 compatible
-- several themes with custom options including dark modes (using Material 2 themes for the moment)
+- several themes with custom options including dark modes
 - localization (English and German)
 - works on Android, iOS, Linux, MacOS, Windows and Web
 

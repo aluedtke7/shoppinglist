@@ -29,7 +29,12 @@ class _SlappAppBarState extends State<SlappAppBar> {
     final pbp = Provider.of<PocketBaseProvider>(context, listen: true);
 
     return AppBar(
-      title: Text(widget.title),
+      iconTheme: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      title: Text(
+        widget.title,
+        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+      ),
       actions: [
         if (!pbp.isHealthy)
           const Padding(
