@@ -54,6 +54,7 @@ var customThemes = [
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
         brightness: Brightness.light,
+        primary: Colors.orange,
         seedColor: Colors.orange,
       ),
       dialogBackgroundColor: const Color.fromARGB(255, 240, 240, 240),
@@ -74,7 +75,8 @@ var customThemes = [
     data: ThemeData(
       useMaterial3: false,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.orange,
+        seedColor:  Colors.orange,
+        primary: Colors.orange,
         brightness: Brightness.light,
       ),
       dialogBackgroundColor: const Color.fromARGB(255, 240, 240, 240),
