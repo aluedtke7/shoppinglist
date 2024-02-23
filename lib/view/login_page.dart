@@ -94,7 +94,7 @@ class _LoginCardState extends State<_LoginCard> {
         await Provider.of<PocketBaseProvider>(context, listen: false).login(_email, _password);
         _savePrefs();
       } on ClientException catch (error) {
-        if (context.mounted) {
+        if (mounted) {
           Statics.showErrorSnackbar(context, error);
         }
       }

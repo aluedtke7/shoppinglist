@@ -67,7 +67,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
       pbp?.subscribeActive();
       await Future.wait([_fetchActive()]);
     } on ClientException catch (e) {
-      if (context.mounted) {
+      if (mounted) {
         Statics.showErrorSnackbar(context, e);
       }
     } finally {

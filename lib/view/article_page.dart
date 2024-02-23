@@ -48,7 +48,7 @@ class _ArticlePageState extends State<ArticlePage> {
     try {
       await Future.wait([_fetchAllArticles(pbp)]);
     } on ClientException catch (e) {
-      if (context.mounted) {
+      if (mounted) {
         Statics.showErrorSnackbar(context, e);
       }
     } finally {
