@@ -39,7 +39,7 @@ dependencies:
   pocketbase: ^0.18.1
   provider: ^6.0.5
   email_validator: ^2.1.17
-  package_info_plus: ^5.0.1
+  package_info_plus: ^8.0.0
   shared_preferences: ^2.0.17
   flutter_slidable: ^3.0.0
   vibration: ^1.7.6
