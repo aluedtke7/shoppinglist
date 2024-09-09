@@ -1,13 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:form_validator/form_validator.dart';
+import 'package:intl/intl.dart';
 import 'package:pocketbase/pocketbase.dart';
+import 'package:theme_provider/theme_provider.dart';
+
 import 'package:shoppinglist/component/article_selection_card.dart';
 import 'package:shoppinglist/component/i18n_util.dart';
 import 'package:shoppinglist/model/article.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
 import 'package:shoppinglist/view/article_edit_page.dart';
-import 'package:theme_provider/theme_provider.dart';
 
 class Statics {
   static Future<void> showErrorSnackbar(BuildContext ctx, dynamic e) async {
@@ -22,7 +25,7 @@ class Statics {
 
     ScaffoldMessenger.of(ctx).showSnackBar(
       SnackBar(
-        backgroundColor: Theme.of(ctx).colorScheme.errorContainer,
+        backgroundColor: Theme.of(ctx).colorScheme.error,
         content: Text(
           msg,
           textAlign: TextAlign.center,
@@ -149,6 +152,76 @@ class Statics {
     );
   }
 
+  static Future<String?> showSettingsDialog(BuildContext context, String title, String info, String initVal) async {
+    var input = initVal;
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    final TextEditingController textEditingController = TextEditingController(text: initVal);
+    // the url ValidationBuilder accepts no localhost as valid url, so we have to allow that separately
+    final validator = ValidationBuilder(localeName: Intl.defaultLocale)
+        .or((builder) => builder.regExp(RegExp('^http[s]?://localhost'), 'No valid localhost url'),
+            (builder) => builder.url())
+        .build();
+
+    return showDialog<String?>(
+      context: context,
+      builder: (ctx) {
+        var textFormField = TextFormField(
+          autofocus: true,
+          controller: textEditingController,
+          textInputAction: TextInputAction.done,
+          decoration: InputDecoration(
+            labelText: i18n(context).l_p_server_example,
+            errorText: validator(input),
+          ),
+          keyboardType: TextInputType.url,
+          validator: validator,
+          onChanged: (value) => input = value,
+          onFieldSubmitted: (value) {
+            // debugPrint('onFieldSubmitted: $value');
+            // debugPrint('Validation: ${validator(value)}');
+            if (formKey.currentState?.validate() ?? false) {
+              Navigator.of(ctx).pop(value);
+            }
+          },
+        );
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: Text(title),
+            content: Form(
+              key: formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(info),
+                    const SizedBox(height: 16),
+                    textFormField,
+                  ],
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                autofocus: false,
+                onPressed: () {
+                  Navigator.of(ctx).pop(null);
+                },
+                child: Text(i18n(context).com_cancel),
+              ),
+              ElevatedButton(
+                autofocus: false,
+                onPressed: () {
+                  Navigator.of(ctx).pop(input);
+                },
+                child: Text(i18n(context).com_save),
+              ),
+            ],
+          );
+        });
+      },
+    );
+  }
+
   static Future<String?> showInputDialog(BuildContext context, String title, String message, String initValue) async {
     var input = initValue;
 
@@ -208,7 +281,7 @@ class Statics {
             pbp.clearSearchList();
           } else {
             pbp.searchForArticles(text).catchError((e) {
-              if (e is ClientException) {
+              if (e is ClientException && context.mounted) {
                 Statics.showErrorSnackbar(context, e);
               }
             });

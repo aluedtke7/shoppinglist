@@ -6,10 +6,12 @@
   "com_no": "Nein",
   "com_back": "Zurück",
   "com_new": "Neu",
+  "com_save": "Speichern",
   "com_article": "Artikel",
   "com_shop": "Geschäft",
   "com_change_theme": "Farbschema ändern",
   "com_change_language": "Sprache ändern",
+  "com_change_server": "Server Verbindung ändern",
   "com_search_term": "Suchbegriff (3 oder mehr Zeichen eingeben)",
   "com_num_articles": "{count, plural, =0{keine Artikel} =1{ein Artikel} other{{count} Artikel}}",
 
@@ -34,6 +36,10 @@
   "l_p_forgot_password_info": "Wir schicken eine E-Mail an die eingegebene Adresse.",
   "l_p_reset_password": "Zurücksetzen",
   "l_p_email_sent": "E-Mail wurde verschickt.",
+  "l_p_server_url_not_set": "Verbindung zum Server nicht gesetzt",
+  "l_p_server_url": "Verbindung zum PocketBase Server",
+  "l_p_server_example": "z.B. https://Ihr_PocketBase_Server.de",
+  "l_p_server_url_info": "Bitte geben Sie die URL Ihres PocketBase Server ein.\nInkl. http/https und evtl. nötiger Portnummer.",
 
   "p_active_title": "Einkaufsliste",
   "p_active_tooltip": "Artikel suchen",

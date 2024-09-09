@@ -6,10 +6,12 @@
   "com_no": "No",
   "com_back": "Back",
   "com_new": "New",
+  "com_save": "Save",
   "com_article": "article",
   "com_shop": "shop",
   "com_change_theme": "change theme",
   "com_change_language": "change language",
+  "com_change_server": "change server connection",
   "com_search_term": "search term (enter 3 or more character)",
   "com_num_articles": "{count, plural, =0{no articles} =1{one article} other{{count} articles}}",
   "@com_num_articles": {
@@ -60,6 +62,10 @@
   "l_p_forgot_password_info": "We send an e-mail to the given address.",
   "l_p_reset_password": "Recover",
   "l_p_email_sent": "E-Mail has been sent.",
+  "l_p_server_url_not_set": "Server connection not set",
+  "l_p_server_url": "Connection to PocketBase server",
+  "l_p_server_example": "i.e. https://Your_PocketBase_Server.com",
+  "l_p_server_url_info": "Please enter the URL of your PocketBase server.\nIncl. http/https and port number if needed.",
 
   "p_active_title": "shopping list",
   "p_active_tooltip": "search article",

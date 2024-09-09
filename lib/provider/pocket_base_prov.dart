@@ -1,21 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shoppinglist/provider/fetch_dummy.dart'
-    if (dart.library.html) 'package:shoppinglist/provider/fetch_stub.dart';
-import 'package:vibration/vibration.dart' as vib;
 import 'package:pocketbase/pocketbase.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vibration/vibration.dart' as vib;
 
 import 'package:shoppinglist/model/article.dart';
 import 'package:shoppinglist/model/pref_keys.dart';
+import 'package:shoppinglist/provider/fetch_dummy.dart'
+    if (dart.library.html) 'package:shoppinglist/provider/fetch_stub.dart';
 
 class PocketBaseProvider extends ChangeNotifier {
-  final PocketBase _pb = PocketBase(
-    const String.fromEnvironment('SHOPPINGLIST_HOST', defaultValue: 'http://localhost:8090'),
-    lang: const String.fromEnvironment('SHOPPINGLIST_LANG', defaultValue: 'en-US'),
-    httpClientFactory: kIsWeb ? () => getClient() : null,
-  );
+  PocketBase? _pb;
   final collectionName = 'shoppinglist';
   List<Article> _active = [];
   List<Article> _allArticles = [];
@@ -26,7 +22,7 @@ class PocketBaseProvider extends ChangeNotifier {
   String _userName = '';
 
   bool get isAuth {
-    return _pb.authStore.isValid && _pb.authStore.token.isNotEmpty;
+    return (_pb?.authStore.isValid ?? false) && (_pb?.authStore.token.isNotEmpty ?? false);
   }
 
   bool get isHealthy => _healthy;
@@ -34,23 +30,30 @@ class PocketBaseProvider extends ChangeNotifier {
   String get userName => _userName;
 
   List<Article> get activeArticles => _active;
+
   List<Article> get allArticles => _allArticles;
+
   List<Article> get searchArticles => _searchArticles;
 
   Future<void> login(String email, String password) async {
+    await ensurePocketBaseIsLoaded();
     ensureKeepAlive();
-    final authData = await _pb.collection('users').authWithPassword(email, password);
+    if (_pb == null) {
+      return;
+    }
+    final authData = await _pb!.collection('users').authWithPassword(email, password);
     _healthy = true;
     _userName = authData.record?.data['name'].toString() ?? "";
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(PrefKeys.accessTokenPrefsKey, _pb.authStore.token);
-    prefs.setString(PrefKeys.accessModelPrefsKey, _pb.authStore.model.id ?? '');
+    prefs.setString(PrefKeys.accessTokenPrefsKey, _pb!.authStore.token);
+    prefs.setString(PrefKeys.accessModelPrefsKey, _pb!.authStore.model.id ?? '');
     prefs.setString(PrefKeys.accessNamePrefsKey, _userName);
     notifyListeners();
   }
 
   Future<void> doHealthCheck() async {
-    _pb.health.check().then((value) {
+    await ensurePocketBaseIsLoaded();
+    _pb?.health.check().then((value) {
       _healthy = true;
     }).onError((error, stackTrace) {
       _healthy = false;
@@ -64,7 +67,7 @@ class PocketBaseProvider extends ChangeNotifier {
 
   Future<void> ensureKeepAlive() async {
     _healthCheckTimer?.cancel();
-    _healthCheckTimer = Timer.periodic(const Duration(seconds: 15), (timer) {
+    _healthCheckTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
       doHealthCheck();
     });
   }
@@ -72,7 +75,7 @@ class PocketBaseProvider extends ChangeNotifier {
   Future<void> logout() async {
     _healthCheckTimer?.cancel();
     _healthCheckTimer = null;
-    _pb.authStore.clear();
+    _pb?.authStore.clear();
     final prefs = await SharedPreferences.getInstance();
     prefs.remove(PrefKeys.accessTokenPrefsKey);
     prefs.remove(PrefKeys.accessModelPrefsKey);
@@ -80,56 +83,68 @@ class PocketBaseProvider extends ChangeNotifier {
   }
 
   Future<bool> tryAutoLogin() async {
+    await ensurePocketBaseIsLoaded();
     final prefs = await SharedPreferences.getInstance();
     _userName = prefs.getString(PrefKeys.accessNamePrefsKey) ?? '';
-    _pb.authStore.save(prefs.getString(PrefKeys.accessTokenPrefsKey) ?? '',
-        prefs.getString(PrefKeys.accessModelPrefsKey) ?? '');
-    if (!_pb.authStore.isValid) {
+    if (_pb == null) {
+      return false;
+    }
+    _pb!.authStore
+        .save(prefs.getString(PrefKeys.accessTokenPrefsKey) ?? '', prefs.getString(PrefKeys.accessModelPrefsKey) ?? '');
+    if (!_pb!.authStore.isValid) {
       return false;
     }
     ensureKeepAlive();
     notifyListeners();
-    return _pb.authStore.isValid;
+    return _pb!.authStore.isValid;
   }
 
   Future<void> fetchActive([bool doReload = false]) async {
-    final result = await _pb.collection(collectionName).getList(
+    await ensurePocketBaseIsLoaded();
+    final result = await _pb?.collection(collectionName).getList(
           filter: 'active = true',
         );
-    List<Article> al = [];
-    for (var element in result.items) {
-      Article art = Article.fromJson(element.toJson());
-      al.add(art);
+    if (result != null) {
+      List<Article> al = [];
+      for (var element in result.items) {
+        Article art = Article.fromJson(element.toJson());
+        al.add(art);
+      }
+      _active = al.toList();
+      _sortActive(_active);
+      notifyListeners();
     }
-    _active = al.toList();
-    _sortActive(_active);
-    notifyListeners();
   }
 
   Future<void> fetchAllArticles([bool doReload = false]) async {
-    final result = await _pb.collection(collectionName).getFullList();
-    List<Article> al = [];
-    for (var element in result) {
-      Article art = Article.fromJson(element.toJson());
-      al.add(art);
+    await ensurePocketBaseIsLoaded();
+    final result = await _pb?.collection(collectionName).getFullList();
+    if (result != null) {
+      List<Article> al = [];
+      for (var element in result) {
+        Article art = Article.fromJson(element.toJson());
+        al.add(art);
+      }
+      _allArticles = al.toList();
+      _sortActive(_allArticles);
+      notifyListeners();
     }
-    _allArticles = al.toList();
-    _sortActive(_allArticles);
-    notifyListeners();
   }
 
   Future<void> searchForArticles(String what) async {
+    await ensurePocketBaseIsLoaded();
     final searchString = 'active = false && (article ~ "$what" || shop ~ "$what")';
-    final result =
-        await _pb.collection(collectionName).getList(filter: searchString, sort: '+article');
-    List<Article> al = [];
-    for (var element in result.items) {
-      Article art = Article.fromJson(element.toJson());
-      al.add(art);
+    final result = await _pb?.collection(collectionName).getList(filter: searchString, sort: '+article');
+    if (result != null) {
+      List<Article> al = [];
+      for (var element in result.items) {
+        Article art = Article.fromJson(element.toJson());
+        al.add(art);
+      }
+      _searchArticles = al.toList();
+      _sortActive(_searchArticles);
+      notifyListeners();
     }
-    _searchArticles = al.toList();
-    _sortActive(_searchArticles);
-    notifyListeners();
   }
 
   void clearSearchList() {
@@ -165,18 +180,19 @@ class PocketBaseProvider extends ChangeNotifier {
   }
 
   Future<RecordModel> updateArticle(Article article) async {
+    await ensurePocketBaseIsLoaded();
     if (article.id.isEmpty) {
-      return _pb.collection(collectionName).create(body: _articleToMap(article));
+      return _pb!.collection(collectionName).create(body: _articleToMap(article));
     }
-    return _pb.collection(collectionName).update(article.id, body: _articleToMap(article));
+    return _pb!.collection(collectionName).update(article.id, body: _articleToMap(article));
   }
 
   Future<RecordModel> toggleinCart(Article article) async {
     if (article.id.isEmpty) {
       return RecordModel();
     }
-    if (![TargetPlatform.linux, TargetPlatform.macOS, TargetPlatform.windows]
-        .contains(defaultTargetPlatform)) {
+    await ensurePocketBaseIsLoaded();
+    if (![TargetPlatform.linux, TargetPlatform.macOS, TargetPlatform.windows].contains(defaultTargetPlatform)) {
       try {
         if (await vib.Vibration.hasVibrator() ?? false) {
           await vib.Vibration.vibrate(duration: 50);
@@ -186,10 +202,11 @@ class PocketBaseProvider extends ChangeNotifier {
       }
     }
     article.inCart = !article.inCart;
-    return _pb.collection(collectionName).update(article.id, body: _articleToMap(article));
+    return _pb!.collection(collectionName).update(article.id, body: _articleToMap(article));
   }
 
   Future<void> endShopping() async {
+    await ensurePocketBaseIsLoaded();
     final inCartItems = _active.where((element) => element.inCart).toList();
     for (var itm in inCartItems) {
       itm.inCart = false;
@@ -199,7 +216,8 @@ class PocketBaseProvider extends ChangeNotifier {
   }
 
   Future<void> subscribeActive() async {
-    _pb.collection(collectionName).subscribe("*", (e) {
+    await ensurePocketBaseIsLoaded();
+    _pb?.collection(collectionName).subscribe("*", (e) {
       debugPrint(e.action); // create, update, delete
       debugPrint(e.record?.toString()); // the changed record
       Article art = Article.fromJson(e.record?.toJson() ?? {});
@@ -225,14 +243,35 @@ class PocketBaseProvider extends ChangeNotifier {
   }
 
   Future<void> unsubscribeActive() async {
-    return _pb.collection(collectionName).unsubscribe();
+    await ensurePocketBaseIsLoaded();
+    return _pb?.collection(collectionName).unsubscribe();
   }
 
   Future<void> deleteArticle(String id) async {
-    return _pb.collection(collectionName).delete(id);
+    await ensurePocketBaseIsLoaded();
+    return _pb?.collection(collectionName).delete(id);
   }
 
-  Future<void> sendPasswordResetEmail(String email) {
-    return _pb.collection('users').requestPasswordReset(email);
+  Future<void> sendPasswordResetEmail(String email)  {
+    return _pb!.collection('users').requestPasswordReset(email);
+  }
+
+  void setPocketBaseUrl(String url) {
+    // for a local PocketBase installation, the default url is 'http://localhost:8090'
+    _pb = PocketBase(
+      url,
+      httpClientFactory: kIsWeb ? () => getClient() : null,
+    );
+  }
+
+  Future<bool> ensurePocketBaseIsLoaded() async {
+    if (_pb == null) {
+      final prefs = await SharedPreferences.getInstance();
+      final url = prefs.getString(PrefKeys.serverUrlPrefsKey);
+      if (url != null && url.isNotEmpty) {
+        setPocketBaseUrl(url);
+      }
+    }
+    return _pb != null;
   }
 }

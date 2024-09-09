@@ -97,7 +97,7 @@ class SlappDrawer extends StatelessWidget {
                     .then((value) {
                   if (value != null && value) {
                     pbp.endShopping();
-                    Navigator.pop(context);
+                    if (context.mounted) Navigator.pop(context);
                   }
                 });
               },
@@ -113,7 +113,9 @@ class SlappDrawer extends StatelessWidget {
                     .then((value) {
                   if (value != null && value) {
                     pbp.logout();
-                    Navigator.pushNamedAndRemoveUntil(context, LoginPage.routeName, (route) => false);
+                    if (context.mounted) {
+                      Navigator.pushNamedAndRemoveUntil(context, LoginPage.routeName, (route) => false);
+                    }
                   }
                 });
               },

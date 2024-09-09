@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:shoppinglist/application.dart';
 import 'package:shoppinglist/component/i18n_util.dart';
+import 'package:shoppinglist/component/statics.dart';
+import 'package:shoppinglist/model/pref_keys.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
 
 import 'package:theme_provider/theme_provider.dart';
@@ -24,6 +27,26 @@ class SlappAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _SlappAppBarState extends State<SlappAppBar> {
+  var _serverUrl = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPrefs();
+  }
+
+  Future<void> _loadPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _serverUrl = prefs.getString(PrefKeys.serverUrlPrefsKey) ?? '';
+    });
+  }
+
+  Future<void> _savePrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(PrefKeys.serverUrlPrefsKey, _serverUrl);
+  }
+
   @override
   Widget build(BuildContext context) {
     final pbp = Provider.of<PocketBaseProvider>(context, listen: true);
@@ -60,6 +83,26 @@ class _SlappAppBarState extends State<SlappAppBar> {
           },
           icon: const Icon(Icons.language),
           tooltip: i18n(context).com_change_language,
+        ),
+        IconButton(
+          onPressed: () {
+            Statics.showSettingsDialog(
+              context,
+              i18n(context).l_p_server_url,
+              i18n(context).l_p_server_url_info,
+              _serverUrl,
+            ).then((value) {
+              if (value != null && value.isNotEmpty) {
+                setState(() {
+                  _serverUrl = value;
+                });
+                _savePrefs();
+                pbp.setPocketBaseUrl(_serverUrl);
+              }
+            });
+          },
+          icon: const Icon(Icons.settings),
+          tooltip: i18n(context).com_change_server,
         )
       ],
     );

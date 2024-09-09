@@ -11,6 +11,7 @@ import 'package:shoppinglist/provider/pocket_base_prov.dart';
 
 class ArticleEditPage extends StatefulWidget {
   const ArticleEditPage({super.key});
+
   static const routeName = '/articleEdit';
 
   @override
@@ -33,8 +34,7 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
         Navigator.of(context).pop();
       }
     } catch (err) {
-      if (err is ClientException &&
-          err.response['data']?['article']?['code'] == 'validation_not_unique') {
+      if (err is ClientException && err.response['data']?['article']?['code'] == 'validation_not_unique') {
         if (context.mounted) {
           Statics.showErrorSnackbar(context, i18n(context).p_edit_unique_error);
         }
@@ -70,7 +70,11 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
                     i18n(context).p_edit_delete_q(article.article),
                   ).then((value) {
                     if (value != null && value) {
-                      pbp.deleteArticle(article.id).then((_) => Navigator.of(context).pop());
+                      pbp.deleteArticle(article.id).then((_) {
+                        if (context.mounted) {
+                          Navigator.of(context).pop();
+                        }
+                      });
                       pbp.fetchAllArticles();
                     }
                   });

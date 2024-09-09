@@ -1,8 +1,6 @@
 import 'package:email_validator/email_validator.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +17,7 @@ import 'package:shoppinglist/provider/pocket_base_prov.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
+
   static const routeName = '/';
 
   @override
@@ -56,6 +55,7 @@ class _LoginCardState extends State<_LoginCard> {
   var _email = '';
   var _password = '';
   var _isLoading = false;
+  var _serverUrl = '';
 
   @override
   void initState() {
@@ -73,6 +73,7 @@ class _LoginCardState extends State<_LoginCard> {
   Future<void> _loadPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
+      _serverUrl = prefs.getString(PrefKeys.serverUrlPrefsKey) ?? '';
       _email = prefs.getString(PrefKeys.lastUserPrefsKey) ?? '';
       _emailController.text = _email;
     });
@@ -81,6 +82,7 @@ class _LoginCardState extends State<_LoginCard> {
   Future<void> _savePrefs() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(PrefKeys.lastUserPrefsKey, _email);
+    prefs.setString(PrefKeys.serverUrlPrefsKey, _serverUrl);
   }
 
   Future<void> _submit() async {
@@ -192,9 +194,7 @@ class _LoginCardState extends State<_LoginCard> {
                               },
                               child: SizedBox(
                                 width: 50,
-                                child: _hidePW
-                                    ? const Icon(Icons.visibility_off)
-                                    : const Icon(Icons.visibility),
+                                child: _hidePW ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
                               ),
                             ),
                             Padding(
@@ -246,10 +246,8 @@ class _LoginCardState extends State<_LoginCard> {
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(16, 16, 34, 16),
                                 child: ElevatedButton(
+                                  onPressed: _serverUrl.isEmpty ? null : () => _submit(),
                                   child: Text(i18n(context).l_p_login_btn),
-                                  onPressed: () {
-                                    _submit();
-                                  },
                                 ),
                               ),
                             ],
@@ -259,25 +257,54 @@ class _LoginCardState extends State<_LoginCard> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: TextButton(
-                                  onPressed: () {
-                                    Statics.showInputDialog(
-                                      context,
-                                      i18n(context).l_p_forgot_password,
-                                      i18n(context).l_p_forgot_password_info,
-                                      _email,
-                                    ).then((value) {
-                                      if (value != null && value.isNotEmpty) {
-                                        Provider.of<PocketBaseProvider>(context, listen: false)
-                                            .sendPasswordResetEmail(value)
-                                            .then((value) => Statics.showInfoSnackbar(
-                                                context, i18n(context).l_p_email_sent))
-                                            .onError((error, stackTrace) =>
-                                                Statics.showErrorSnackbar(context, error));
-                                      }
-                                    });
-                                  },
-                                  child: Text(i18n(context).l_p_forgot_password)),
+                              child: _serverUrl.isEmpty
+                                  ? TextButton(
+                                      onPressed: () {
+                                        Statics.showSettingsDialog(
+                                          context,
+                                          i18n(context).l_p_server_url,
+                                          i18n(context).l_p_server_url_info,
+                                          '',
+                                        ).then((value) {
+                                          if (value != null && value.isNotEmpty) {
+                                            setState(() {
+                                              _serverUrl = value;
+                                            });
+                                            _savePrefs();
+                                          }
+                                        });
+                                      },
+                                      child: Text(
+                                        i18n(context).l_p_server_url_not_set,
+                                        style: const TextStyle(
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    )
+                                  : TextButton(
+                                      onPressed: () {
+                                        Statics.showInputDialog(
+                                          context,
+                                          i18n(context).l_p_forgot_password,
+                                          i18n(context).l_p_forgot_password_info,
+                                          _email,
+                                        ).then((value) {
+                                          if (value != null && value.isNotEmpty && context.mounted) {
+                                            Provider.of<PocketBaseProvider>(context, listen: false)
+                                                .sendPasswordResetEmail(value)
+                                                .then((value) {
+                                              if (context.mounted) {
+                                                return Statics.showInfoSnackbar(context, i18n(context).l_p_email_sent);
+                                              }
+                                            }).onError((error, stackTrace) {
+                                              if (context.mounted) {
+                                                return Statics.showErrorSnackbar(context, error);
+                                              }
+                                            });
+                                          }
+                                        });
+                                      },
+                                      child: Text(i18n(context).l_p_forgot_password)),
                             ),
                           ],
                         )
