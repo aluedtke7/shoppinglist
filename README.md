@@ -19,43 +19,47 @@ about fly.io further down below.
 - Dart 3 and Flutter 3.24 compatible
 - several themes with custom options including dark modes
 - localization (English and German)
-- works on Android, iOS, Linux, MacOS, Windows and Web
+- works on Android, iOS, Linux, macOS, Windows and Web (also WebAssembly)
 
 ### Screenshots
 
 <p float="left">
-    <img src="./screenshots/login.png" title="The login page" width="30%">
-    <img src="./screenshots/dark_theme.png" title="A dark theme" width="30%">
-    <img src="./screenshots/shoppinglist-1.png" title="The shopping list" width="30%">
+    <img src="./screenshots/login.png" title="The login page" width="30%" alt="The login page">
+    <img src="./screenshots/connection_to_pb.png" title="Connection to PocketBase" width="30%" alt="Connection to PocketBase">
+    <img src="./screenshots/connection_to_pb_local.png" title="Connection to a local PocketBase" width="30%" alt="Connection to a local PocketBase">
 </p>
 <p float="left">
-    <img src="./screenshots/shoppinglist-2.png" title="Swipe right for editing" width="30%">
-    <img src="./screenshots/shoppinglist-3.png" title="Swipe left for marking or double tap" width="30%">
-    <img src="./screenshots/shoppinglist-4.png" title="2 articles in cart" width="30%">
+    <img src="./screenshots/shoppinglist-1.png" title="The shopping list" width="30%" alt="The shopping list">
+    <img src="./screenshots/dark_theme.png" title="A dark theme" width="30%" alt="A dark theme">
+    <img src="./screenshots/shoppinglist-2.png" title="Swipe right for amount" width="30%" alt="Swipe right for amount">
 </p>
 <p float="left">
-    <img src="./screenshots/search_article.png" title="Search article" width="30%">
-    <img src="./screenshots/drawer_open.png" title="Open drawer" width="30%">
-    <img src="./screenshots/end_shopping.png" title="End shopping" width="30%">
+    <img src="./screenshots/shoppinglist-3.png" title="Swipe left for edit or duplicate" width="30%" alt="Swipe left for edit or duplicate">
+    <img src="./screenshots/shoppinglist-4.png" title="2 articles in cart" width="30%" alt="2 articles in cart">
+    <img src="./screenshots/search_article.png" title="Search article" width="30%" alt="Search article">
 </p>
 <p float="left">
-    <img src="./screenshots/article_list.png" title="Article list" width="30%">
-    <img src="./screenshots/logout.png" title="Logout" width="30%">
+    <img src="./screenshots/drawer_open.png" title="Open drawer" width="30%" alt="Open drawer">
+    <img src="./screenshots/article_list.png" title="Article list" width="30%" alt="Article list">
+    <img src="./screenshots/end_shopping.png" title="End shopping" width="30%" alt="End shopping">
+</p>
+<p float="left">
+    <img src="./screenshots/logout.png" title="Logout" width="30%" alt="Logout">
 </p>
 
-Here are some tips for the shopping list:
+### Here are some tips for the shopping list:
 
-- you can mark an article as _inCart_ by double clicking the article itself
+- you can mark an article as _inCart_ by double-clicking the article itself
 - when you swipe the article to the right, a click on the plus or minus sign will change the quantity of that article
 - when you swipe the article to the left, the article can be edited (pen symbol) and duplicated (copy symbol)
 - a long press on the article will also open the edit dialog
 - articles are grouped by shop and sorted alphabetically
 - _inCart_ articles are placed at the end of the list to have a clearer view about what is left
-- in the search dialog, a new article can be be added by pressing the plus sign
+- in the search dialog, a new article can be added by pressing the plus sign
 
 When the server can't be reached, an icon is displayed in the app bar.
 <p float="left">
-    <img src="./screenshots/no_connection.png" title="No connection" width="50%">
+    <img src="./screenshots/no_connection.png" title="No connection" width="50%" alt="No connection">
 </p>
 
 
@@ -75,7 +79,7 @@ has the following fields that must be created beforehand:
 > There is also a schema file in JSON format (`pb_schema.json`) that can be imported in PocketBase to
 > create this collection.
 
-When an article is marked _`active`_, it will be visible on the **shopping list**. Otherwise the article will
+When an article is marked _`active`_, it will be visible on the **shopping list**. Otherwise, the article will
 show up in the **article list**.
 
 ## Get it working
@@ -85,10 +89,10 @@ show up in the **article list**.
 Proceed as follows:
 
 1. deploy or install PocketBase (local is fine)
-1. open the admin page of PocketBase (create PocketBase admin user on the fly)
-1. import `pb_schema.json` to create the shoppinglist collection (via "Sync - Import Collection")
-1. create users with email and password. Mark them as verified and give them a **NAME**. This name is visible in the app.
-1. enter some data in the shoppinglist collection or do it later in the app
+2. open the admin page of PocketBase (create PocketBase admin user on the fly)
+3. import `pb_schema.json` to create the shoppinglist collection (via "Sync - Import Collection")
+4. create users with email and password. Mark them as verified and give them a **NAME**. This name is visible in the app.
+5. enter some data in the shoppinglist collection or do it later in the app
 
 ### Compile / run Shoppinglist
 
