@@ -1,4 +1,4 @@
-library selected_page;
+library;
 
 import 'package:shoppinglist/model/sel_page.dart';
 

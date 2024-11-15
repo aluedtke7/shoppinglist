@@ -166,7 +166,7 @@ I assume, that you're in the folder where the `Dockerfile` and the file `fly.tom
 
 ### Inspect container
 
-If you want to see what is currently in the container:
+If you want to look at the file system inside the container:
 
     > flyctl ssh console
     # ls -l /pb/pb_data
