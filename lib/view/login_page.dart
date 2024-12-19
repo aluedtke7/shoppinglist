@@ -72,8 +72,9 @@ class _LoginCardState extends State<_LoginCard> {
 
   Future<void> _loadPrefs() async {
     final prefs = await SharedPreferences.getInstance();
+    final debugUrl = const String.fromEnvironment('SHOPPINGLIST_HOST', defaultValue: "");
     setState(() {
-      _serverUrl = prefs.getString(PrefKeys.serverUrlPrefsKey) ?? '';
+      _serverUrl = debugUrl.isNotEmpty ? debugUrl : prefs.getString(PrefKeys.serverUrlPrefsKey) ?? '';
       _email = prefs.getString(PrefKeys.lastUserPrefsKey) ?? '';
       _emailController.text = _email;
     });
