@@ -43,10 +43,9 @@ class PocketBaseProvider extends ChangeNotifier {
     }
     final authData = await _pb!.collection('users').authWithPassword(email, password);
     _healthy = true;
-    _userName = authData.record?.data['name'].toString() ?? "";
+    _userName = authData.record.data['name'].toString();
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(PrefKeys.accessTokenPrefsKey, _pb!.authStore.token);
-    prefs.setString(PrefKeys.accessModelPrefsKey, _pb!.authStore.model.id ?? '');
     prefs.setString(PrefKeys.accessNamePrefsKey, _userName);
     notifyListeners();
   }
@@ -89,8 +88,11 @@ class PocketBaseProvider extends ChangeNotifier {
     if (_pb == null) {
       return false;
     }
-    _pb!.authStore
-        .save(prefs.getString(PrefKeys.accessTokenPrefsKey) ?? '', prefs.getString(PrefKeys.accessModelPrefsKey) ?? '');
+    _pb!.authStore.save(
+        prefs.getString(PrefKeys.accessTokenPrefsKey) ?? '',
+        RecordModel({
+          "email": prefs.getString(PrefKeys.lastUserPrefsKey) ?? '',
+        }));
     if (!_pb!.authStore.isValid) {
       return false;
     }
@@ -252,7 +254,7 @@ class PocketBaseProvider extends ChangeNotifier {
     return _pb?.collection(collectionName).delete(id);
   }
 
-  Future<void> sendPasswordResetEmail(String email)  {
+  Future<void> sendPasswordResetEmail(String email) {
     return _pb!.collection('users').requestPasswordReset(email);
   }
 

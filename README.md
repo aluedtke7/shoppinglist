@@ -1,8 +1,8 @@
-# Shoppinglist with Flutter and PocketBase
+# Shopping list made with Flutter and PocketBase
 
 ## Overview
 
-The purpose of this app is to maintain a shoppinglist that can be used by more than one person.
+The purpose of this app is to maintain a shopping list that can be used by more than one person.
 In our family, we all use this app to inform the others about the goods that are wanted. If someone goes shopping,
 he/she can buy the goods for all family members.
 
@@ -10,13 +10,13 @@ The backend software PocketBase informs all running instances of the app about c
 list. So, if you're inside a shop, you will see also articles that are newly put in the list by other members.
 
 This app needs a PocketBase backend, running somewhere. PocketBase is a Firebase clone in one single binary.
-More infos on [the PocketBase homepage](https://pocketbase.io). On that page is a good description to run PocketBase
-on [fly.io](https://github.com/pocketbase/pocketbase/discussions/537) in the discussion area. There are some chapters
-about fly.io further down below.
+More infos on [the PocketBase homepage](https://pocketbase.io). On that page is a good description, how to run PocketBase
+on [fly.io](https://github.com/pocketbase/pocketbase/discussions/537) (discussion area). There are some chapters about fly.io further down below.
 
 ### Features
 
-- Dart 3 and Flutter 3.24 compatible
+- Dart 3 and Flutter 3.27 compatible
+- Works with PocketBase v0.23
 - several themes with custom options including dark modes
 - localization (English and German)
 - works on Android, iOS, Linux, macOS, Windows and Web (also WebAssembly)
@@ -54,7 +54,7 @@ about fly.io further down below.
 - when you swipe the article to the left, the article can be edited (pen symbol) and duplicated (copy symbol)
 - a long press on the article will also open the edit dialog
 - articles are grouped by shop and sorted alphabetically
-- _inCart_ articles are placed at the end of the list to have a clearer view about what is left
+- articles marked _inCart_ are placed at the end of the list to have a clearer view about what is left
 - in the search dialog, a new article can be added by pressing the plus sign
 
 When the server can't be reached, an icon is displayed in the app bar.
@@ -90,9 +90,9 @@ Proceed as follows:
 
 1. deploy or install PocketBase (local is fine)
 2. open the admin page of PocketBase (create PocketBase admin user on the fly)
-3. import `pb_schema.json` to create the shoppinglist collection (via "Sync - Import Collection")
+3. import `pb_schema.json` to create the `shoppinglist` collection (via "Sync - Import Collection")
 4. create users with email and password. Mark them as verified and give them a **NAME**. This name is visible in the app.
-5. enter some data in the shoppinglist collection or do it later in the app
+5. enter some data in the `shoppinglist` collection or do it later in the app
 
 ### Compile / run Shoppinglist
 
@@ -100,14 +100,14 @@ I assume, that Flutter is installed on your machine and that `flutter doctor` do
 for the platform you're using.
 
 1. run `flutter gen-l10n` to compile the localization files
-2. run **`flutter run`** to start the application with a local installed PocketBase
+2. run **`flutter run`** to start the application
 3. click on the settings icon to open the PocketBase connection dialog and enter the url of the PocketBase server (typically http://localhost:8090) 
-4. to create i.e. an Android app, run **`flutter build apk`**. Please use a *real* ip-address and **not** localhost! (see also hint below)
+4. to create i.e. an Android app, run **`flutter build apk`**. Please use a *real* ip-address and **not** localhost! (see also note below)
 5. inside the app, login with email and password of a user that you created on the PocketBase admin page
 
 That's it. Have fun and go shopping!
 
-> ## **Important**
+> **Important**
 >
 > If you run PocketBase locally and want to access it i.e. from the Android Emulator, you need to start
 > PocketBase like this:
@@ -118,6 +118,14 @@ That's it. Have fun and go shopping!
 > connection url with the correct ip-address of your host machine like `http://192.168.0.52:8090`. 
 > The address depends on your network, and you should look it up with tools like `ip a`, 
 > `ipconfig` or `ifconfig`.
+
+### Command line parameter
+There is one parameter that can be set via
+
+    --dart-define="SHOPPINGLIST_HOST=http://localhost:8090"
+
+When this parameter is set, it overrides the URL that is set via the UI. This makes it easy
+to switch between different PocketBase instances while developing.
 
 ## Run a debug Web version with external host
 
@@ -146,6 +154,24 @@ have to create a launch configuration `.vscode/launch.json` and have a configura
                 "name": "shoppinglist",
                 "request": "launch",
                 "type": "dart",
+            },
+            {
+                "name": "shoppinglist local",
+                "request": "launch",
+                "type": "dart",
+                "args": [
+                    "--dart-define",
+                    "SHOPPINGLIST_HOST=http://192.168.0.52:8090"
+                ]
+            },
+            {
+                "name": "shoppinglist LIVE",
+                "request": "launch",
+                "type": "dart",
+                "args": [
+                    "--dart-define",
+                    "SHOPPINGLIST_HOST=https://YOUR-POCKETBASE-DOMAIN.com"
+                ]
             },
         ]
     }
