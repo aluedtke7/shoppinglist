@@ -4,8 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:theme_provider/theme_provider.dart';
-
 import 'package:shoppinglist/component/i18n_util.dart';
 import 'package:shoppinglist/component/selected_page.dart';
 import 'package:shoppinglist/component/slapp_app_bar.dart';
@@ -14,6 +12,7 @@ import 'package:shoppinglist/component/theme_options.dart';
 import 'package:shoppinglist/model/pref_keys.dart';
 import 'package:shoppinglist/model/sel_page.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -72,9 +71,9 @@ class _LoginCardState extends State<_LoginCard> {
 
   Future<void> _loadPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    final debugUrl = const String.fromEnvironment('SHOPPINGLIST_HOST', defaultValue: "");
+    final url = await Statics.getServerUrl();
     setState(() {
-      _serverUrl = debugUrl.isNotEmpty ? debugUrl : prefs.getString(PrefKeys.serverUrlPrefsKey) ?? '';
+      _serverUrl = url;
       _email = prefs.getString(PrefKeys.lastUserPrefsKey) ?? '';
       _emailController.text = _email;
     });

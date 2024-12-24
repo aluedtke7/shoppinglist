@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.1.0+30
+version: 1.1.0+31
 
 environment:
   sdk: '^3.6.0'
@@ -41,7 +41,12 @@ dependencies:
   email_validator: ^3.0.0
   package_info_plus: ^8.0.0
   shared_preferences: ^2.0.17
-  flutter_slidable: ^3.0.0
+#  flutter_slidable: ^3.0.0
+# temporary use of forked version (see https://github.com/letsar/flutter_slidable/issues/512)
+  flutter_slidable:
+    git:
+      url: https://github.com/TimeFinderApp/flutter_slidable
+      ref: 6ab5a79f1f8f984ad5b5733fd94e90c8f97a0c8d
   vibration: ^2.0.1
   vibration_web: ^1.6.5
   theme_provider: ^0.6.0

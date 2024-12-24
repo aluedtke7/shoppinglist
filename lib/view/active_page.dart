@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
-import 'package:theme_provider/theme_provider.dart';
-
 import 'package:shoppinglist/component/article_card.dart';
 import 'package:shoppinglist/component/i18n_util.dart';
 import 'package:shoppinglist/component/selected_page.dart';
@@ -17,9 +15,11 @@ import 'package:shoppinglist/model/article.dart';
 import 'package:shoppinglist/model/sel_page.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
 import 'package:shoppinglist/view/article_edit_page.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class ActivePage extends StatefulWidget {
   const ActivePage({super.key});
+
   static const routeName = '/active';
 
   @override
@@ -120,12 +120,12 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                           children: [
                                             SlidableAction(
                                               autoClose: false,
-                                              borderRadius:
-                                                  const BorderRadius.all(Radius.circular(12)),
+                                              borderRadius: const BorderRadius.all(Radius.circular(12)),
                                               padding: const EdgeInsets.all(8),
-                                              backgroundColor:
-                                                  ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                      .slideBtnBackgroundColor(context),
+                                              backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                  .slideBtnBackgroundColor(context),
+                                              foregroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                  .slideBtnForegroundColor(context),
                                               onPressed: (context) async {
                                                 itm.amount = min(12, itm.amount + 1);
                                                 try {
@@ -140,12 +140,12 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                             ),
                                             SlidableAction(
                                               autoClose: false,
-                                              borderRadius:
-                                                  const BorderRadius.all(Radius.circular(12)),
+                                              borderRadius: const BorderRadius.all(Radius.circular(12)),
                                               padding: const EdgeInsets.all(8),
-                                              backgroundColor:
-                                                  ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                      .slideBtnBackgroundColor(context),
+                                              backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                  .slideBtnBackgroundColor(context),
+                                              foregroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                  .slideBtnForegroundColor(context),
                                               onPressed: (context) async {
                                                 itm.amount = max(1, itm.amount - 1);
                                                 try {
@@ -160,29 +160,26 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                             ),
                                           ],
                                         ),
-                                        endActionPane:
-                                            ActionPane(motion: const StretchMotion(), children: [
+                                        endActionPane: ActionPane(motion: const StretchMotion(), children: [
                                           SlidableAction(
-                                            borderRadius:
-                                                const BorderRadius.all(Radius.circular(12)),
+                                            borderRadius: const BorderRadius.all(Radius.circular(12)),
                                             padding: const EdgeInsets.all(8),
-                                            backgroundColor:
-                                                ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                    .slideBtnBackgroundColor(context),
+                                            backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                .slideBtnBackgroundColor(context),
+                                            foregroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                .slideBtnForegroundColor(context),
                                             onPressed: (context) {
-                                              Navigator.pushNamed(
-                                                  context, ArticleEditPage.routeName,
-                                                  arguments: itm);
+                                              Navigator.pushNamed(context, ArticleEditPage.routeName, arguments: itm);
                                             },
                                             icon: Icons.edit,
                                           ),
                                           SlidableAction(
-                                            borderRadius:
-                                                const BorderRadius.all(Radius.circular(12)),
+                                            borderRadius: const BorderRadius.all(Radius.circular(12)),
                                             padding: const EdgeInsets.all(8),
-                                            backgroundColor:
-                                                ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                    .slideBtnBackgroundColor(context),
+                                            backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                .slideBtnBackgroundColor(context),
+                                            foregroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
+                                                .slideBtnForegroundColor(context),
                                             onPressed: (context) {
                                               final newItm = Article(
                                                 active: true,
@@ -205,9 +202,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                               pbp.toggleinCart(itm);
                                             },
                                             onLongPress: () {
-                                              Navigator.pushNamed(
-                                                  context, ArticleEditPage.routeName,
-                                                  arguments: itm);
+                                              Navigator.pushNamed(context, ArticleEditPage.routeName, arguments: itm);
                                             },
                                             child: ArticleCard(
                                               article: itm,

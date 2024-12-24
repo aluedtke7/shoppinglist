@@ -19,6 +19,7 @@ var customThemes = [
     options: ThemeOptions(
       Colors.grey.shade400,
       Statics.getSlideBtnBackgroundLight,
+      Statics.getSlideBtnForegroundLight,
       1.4,
       FontWeight.bold,
       Statics.getGradientPageDecoration(),
@@ -40,6 +41,7 @@ var customThemes = [
     options: ThemeOptions(
       Colors.grey.shade400,
       Statics.getSlideBtnBackgroundLight,
+      Statics.getSlideBtnForegroundLight,
       1.4,
       FontWeight.bold,
       Statics.getGradientPageDecoration(),
@@ -62,6 +64,7 @@ var customThemes = [
     options: ThemeOptions(
       Colors.grey.shade400,
       Statics.getSlideBtnBackgroundLight,
+      Statics.getSlideBtnForegroundLight,
       1.4,
       FontWeight.bold,
       Statics.getGradientPageDecoration(),
@@ -84,6 +87,7 @@ var customThemes = [
     options: ThemeOptions(
       Colors.grey.shade400,
       Statics.getSlideBtnBackgroundLight,
+      Statics.getSlideBtnForegroundLight,
       1.1,
       FontWeight.normal,
       Statics.getSimplePageDecoration(),
@@ -105,6 +109,7 @@ var customThemes = [
     options: ThemeOptions(
       Colors.grey.shade600,
       Statics.getSlideBtnBackgroundDark,
+      Statics.getSlideBtnForegroundDark,
       1.4,
       FontWeight.bold,
       Statics.getGradientPageDecoration(),
@@ -125,6 +130,7 @@ var customThemes = [
     options: ThemeOptions(
       Colors.grey.shade600,
       Statics.getSlideBtnBackgroundDark,
+      Statics.getSlideBtnForegroundDark,
       1.4,
       FontWeight.bold,
       Statics.getGradientPageDecoration(),

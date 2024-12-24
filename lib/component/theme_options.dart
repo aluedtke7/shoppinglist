@@ -7,6 +7,7 @@ typedef ColorGetter = Color Function(BuildContext context);
 class ThemeOptions implements AppThemeOptions {
   final Color inCartBackgroundColor;
   final ColorGetter slideBtnBackgroundColor;
+  final ColorGetter slideBtnForegroundColor;
   final double cardTextScaleFactor;
   final FontWeight cardTextFontWeight;
   final BoxDecoration pageDecoration;
@@ -16,6 +17,7 @@ class ThemeOptions implements AppThemeOptions {
   ThemeOptions(
     this.inCartBackgroundColor,
     this.slideBtnBackgroundColor,
+    this.slideBtnForegroundColor,
     this.cardTextScaleFactor,
     this.cardTextFontWeight,
     this.pageDecoration,

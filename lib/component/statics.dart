@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:intl/intl.dart';
 import 'package:pocketbase/pocketbase.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import 'package:shoppinglist/component/article_selection_card.dart';
@@ -11,6 +12,8 @@ import 'package:shoppinglist/component/i18n_util.dart';
 import 'package:shoppinglist/model/article.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
 import 'package:shoppinglist/view/article_edit_page.dart';
+
+import '../model/pref_keys.dart';
 
 class Statics {
   static Future<void> showErrorSnackbar(BuildContext ctx, dynamic e) async {
@@ -60,7 +63,7 @@ class Statics {
 
   static BoxDecoration getSimplePageDecoration() {
     return BoxDecoration(
-      color: const Color.fromARGB(255, 200, 200, 200).withOpacity(0.9),
+      color: const Color.fromARGB(255, 200, 200, 200).withValues(alpha: 0.9),
     );
   }
 
@@ -68,8 +71,8 @@ class Statics {
     return BoxDecoration(
       gradient: LinearGradient(
         colors: [
-          const Color.fromARGB(255, 230, 230, 230).withOpacity(0.5),
-          const Color.fromARGB(255, 152, 152, 152).withOpacity(0.9),
+          const Color.fromARGB(255, 230, 230, 230).withValues(alpha: 0.5),
+          const Color.fromARGB(255, 152, 152, 152).withValues(alpha: 0.9),
         ],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
@@ -82,15 +85,23 @@ class Statics {
     return Theme.of(ctx).colorScheme.primary.withAlpha(200);
   }
 
+  static Color getSlideBtnForegroundLight(BuildContext ctx) {
+    return Theme.of(ctx).colorScheme.onPrimary.withAlpha(200);
+  }
+
   static Color getSlideBtnBackgroundDark(BuildContext ctx) {
     return Theme.of(ctx).colorScheme.secondary.withAlpha(200);
+  }
+
+  static Color getSlideBtnForegroundDark(BuildContext ctx) {
+    return Theme.of(ctx).colorScheme.onSecondary.withAlpha(200);
   }
 
   static BoxDecoration getGradientDrawerDecoration(BuildContext ctx) {
     return BoxDecoration(
       gradient: LinearGradient(
         colors: [
-          ThemeProvider.controllerOf(ctx).theme.data.colorScheme.surface.withOpacity(.1),
+          ThemeProvider.controllerOf(ctx).theme.data.colorScheme.surface.withValues(alpha: .1),
           ThemeProvider.controllerOf(ctx).theme.data.colorScheme.onSurfaceVariant.withAlpha(100),
         ],
         begin: Alignment.topLeft,
@@ -102,7 +113,7 @@ class Statics {
 
   static BoxDecoration getSimpleDrawerDecoration(BuildContext ctx) {
     return BoxDecoration(
-      color: ThemeProvider.controllerOf(ctx).theme.data.colorScheme.surface.withOpacity(.1),
+      color: ThemeProvider.controllerOf(ctx).theme.data.colorScheme.surface.withValues(alpha: .1),
     );
   }
 
@@ -353,5 +364,11 @@ class Statics {
             ),
           );
         });
+  }
+
+  static Future<String> getServerUrl() async {
+    final prefs = await SharedPreferences.getInstance();
+    final debugUrl = const String.fromEnvironment('SHOPPINGLIST_HOST', defaultValue: "");
+    return debugUrl.isNotEmpty ? debugUrl : prefs.getString(PrefKeys.serverUrlPrefsKey) ?? '';
   }
 }

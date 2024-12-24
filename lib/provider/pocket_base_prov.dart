@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vibration/vibration.dart' as vib;
-
+import 'package:shoppinglist/component/statics.dart';
 import 'package:shoppinglist/model/article.dart';
 import 'package:shoppinglist/model/pref_keys.dart';
 import 'package:shoppinglist/provider/fetch_dummy.dart'
     if (dart.library.html) 'package:shoppinglist/provider/fetch_stub.dart';
+import 'package:vibration/vibration.dart' as vib;
 
 class PocketBaseProvider extends ChangeNotifier {
   PocketBase? _pb;
@@ -268,9 +268,8 @@ class PocketBaseProvider extends ChangeNotifier {
 
   Future<bool> ensurePocketBaseIsLoaded() async {
     if (_pb == null) {
-      final prefs = await SharedPreferences.getInstance();
-      final url = prefs.getString(PrefKeys.serverUrlPrefsKey);
-      if (url != null && url.isNotEmpty) {
+      final url = await Statics.getServerUrl();
+      if (url.isNotEmpty) {
         setPocketBaseUrl(url);
       }
     }
