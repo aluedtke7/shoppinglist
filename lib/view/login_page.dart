@@ -258,29 +258,36 @@ class _LoginCardState extends State<_LoginCard> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: _serverUrl.isEmpty
-                                  ? TextButton(
-                                      onPressed: () {
-                                        Statics.showSettingsDialog(
-                                          context,
-                                          i18n(context).l_p_server_url,
-                                          i18n(context).l_p_server_url_info,
-                                          '',
-                                        ).then((value) {
-                                          if (value != null && value.isNotEmpty) {
-                                            setState(() {
-                                              _serverUrl = value;
-                                            });
-                                            _savePrefs();
-                                          }
-                                        });
-                                      },
-                                      child: Text(
+                                  ? Column(spacing: 12,
+                                    children: [
+                                      Text(
                                         i18n(context).l_p_server_url_not_set,
                                         style: const TextStyle(
                                           color: Colors.red,
                                         ),
                                       ),
-                                    )
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            Statics.showSettingsDialog(
+                                              context,
+                                              i18n(context).l_p_server_url,
+                                              i18n(context).l_p_server_url_info,
+                                              '',
+                                            ).then((value) {
+                                              if (value != null && value.isNotEmpty) {
+                                                setState(() {
+                                                  _serverUrl = value;
+                                                });
+                                                _savePrefs();
+                                              }
+                                            });
+                                          },
+                                          child: Text(
+                                            i18n(context).l_p_server_url_configure,
+                                          ),
+                                        ),
+                                    ],
+                                  )
                                   : TextButton(
                                       onPressed: () {
                                         Statics.showInputDialog(

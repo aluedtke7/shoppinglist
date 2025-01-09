@@ -171,6 +171,7 @@ class Statics {
     final validator = ValidationBuilder(localeName: Intl.defaultLocale)
         .or((builder) => builder.regExp(RegExp('^http[s]?://localhost'), 'No valid localhost url'),
             (builder) => builder.url())
+        .required()
         .build();
 
     return showDialog<String?>(

@@ -16,7 +16,7 @@ on [fly.io](https://github.com/pocketbase/pocketbase/discussions/537) (discussio
 ### Features
 
 - Dart 3 and Flutter 3.27 compatible
-- Works with PocketBase v0.23
+- Works with PocketBase v0.24
 - several themes with custom options including dark modes
 - localization (English and German)
 - works on Android, iOS, Linux, macOS, Windows and Web (also WebAssembly)
