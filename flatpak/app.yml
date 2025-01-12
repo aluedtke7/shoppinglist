@@ -1,0 +1,36 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/flatpak/flatpak-builder/main/data/flatpak-manifest.schema.json
+
+---
+id: de.luedtke.shoppinglist
+runtime: org.freedesktop.Platform
+runtime-version: "22.08"
+sdk: org.freedesktop.Sdk
+command: shoppinglist
+separate-locales: false
+finish-args:
+  - --device=dri
+  - --share=network
+  - --socket=wayland
+  - --socket=fallback-x11
+modules:
+  - name: shoppinglist
+    buildsystem: simple
+    only-arches:
+      - x86_64
+    build-commands:
+      - "./build-flatpak.sh"
+    sources:
+      - type: file
+        path: ./build-flatpak.sh
+      - type: file
+        path: ./Shoppinglist-Linux-Portable.tar.gz
+      - type: file
+        path: ../assets/app_logo.png
+        dest-filename: de.luedtke.shoppinglist.png
+      - type: file
+        path: ./app.desktop
+        dest-filename: de.luedtke.shoppinglist.desktop
+      - type: file
+        path: ./app.metainfo.xml
+        dest-filename: de.luedtke.shoppinglist.metainfo.xml
+

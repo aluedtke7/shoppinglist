@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+
+Name=Shoppinglist
+Comment=A shopping list made with Flutter
+Categories=Utility;
+
+Icon=de.luedtke.shoppinglist
+Exec=shoppinglist
+Terminal=false
+StartupWMClass=shoppinglist

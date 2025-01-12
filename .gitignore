@@ -52,3 +52,10 @@ deploy
 build-release.sh
 todo.md
 /macos.old/
+
+# Flatpak
+flatpak/*.flatpak
+flatpak/*.tar.gz
+flatpak/.flatpak-builder
+flatpak/build-dir
+flatpak/repo

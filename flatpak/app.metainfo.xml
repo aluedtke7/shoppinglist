@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>de.luedtke.shoppinglist</id>
+  <name>Shoppinglist</name>
+  <summary>A shopping list made with Flutter</summary>
+  <developer_name>Andreas Lüdtke</developer_name>
+  <url type="homepage">https://github.com/aluedtke7/shoppinglist</url>
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+  <description>
+    <p>A shopping list made with Flutter</p>
+    <p>Features</p>
+    <ul>
+      <li>several themes with custom options including dark modes</li>
+      <li>localization (English and German)</li>
+      <li>Works with PocketBase v0.24</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">de.luedtke.shopping.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://github.com/aluedtke7/shoppinglist/blob/0c524fbf85ad78794c89786d90350e71ddeac934/screenshots/shoppinglist-1.png</image>
+    </screenshot>
+  </screenshots>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="1.0.0" date="2025-01-11" />
+  </releases>
+</component>
