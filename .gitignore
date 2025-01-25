@@ -52,6 +52,7 @@ deploy
 build-release.sh
 todo.md
 /macos.old/
+/devtools_options.yaml
 
 # Flatpak
 flatpak/*.flatpak

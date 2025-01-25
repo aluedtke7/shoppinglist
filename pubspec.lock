@@ -158,12 +158,11 @@ packages:
   flutter_slidable:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "6ab5a79f1f8f984ad5b5733fd94e90c8f97a0c8d"
-      resolved-ref: "6ab5a79f1f8f984ad5b5733fd94e90c8f97a0c8d"
-      url: "https://github.com/TimeFinderApp/flutter_slidable"
-    source: git
-    version: "3.1.2"
+      name: flutter_slidable
+      sha256: ab7dbb16f783307c9d7762ede2593ce32c220ba2ba0fd540a3db8e9a3acba71a
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -394,18 +393,18 @@ packages:
     dependency: "direct main"
     description:
       name: shared_preferences
-      sha256: a752ce92ea7540fc35a0d19722816e04d0e72828a4200e83a98cf1a1eb524c9a
+      sha256: c59819dacc6669a1165d54d2735a9543f136f9b3cec94ca65cea6ab8dffc422e
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.5"
+    version: "2.4.0"
   shared_preferences_android:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: "138b7bbbc7f59c56236e426c37afb8f78cbc57b094ac64c440e0bb90e380a4f5"
+      sha256: "986dc7b7d14f38064bfa85ace28df1f1a66d4fba32e4b1079d4ea537d9541b01"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.2"
+    version: "2.4.3"
   shared_preferences_foundation:
     dependency: transitive
     description:
@@ -535,10 +534,10 @@ packages:
     dependency: "direct main"
     description:
       name: vibration
-      sha256: "6c5a0e959fc61b0e3ad8108258c1c4375804d987c9c6c8364de411b03fbeb696"
+      sha256: "0bc2bd906a35e78bad49df0945ec02d39441a5c31735fbc42f4c67ce4e44aaeb"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.0"
+    version: "3.1.1"
   vibration_platform_interface:
     dependency: transitive
     description:
@@ -613,4 +612,4 @@ packages:
     version: "3.1.3"
 sdks:
   dart: ">=3.6.0 <4.0.0"
-  flutter: ">=3.24.0"
+  flutter: ">=3.27.0"
