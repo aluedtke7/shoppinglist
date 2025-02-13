@@ -92,17 +92,13 @@ class SlappDrawer extends StatelessWidget {
             ListTile(
               title: Text(i18n(context).drawer_end_shopping),
               onTap: () {
-                Statics.showConfirmDialog(
-                        context, i18n(context).drawer_end_shopping, i18n(context).drawer_end_shopping_q)
-                    .then((value) {
-                  if (value != null && value) {
-                    pbp.endShopping();
-                    if (context.mounted) Navigator.pop(context);
-                  }
+                Statics.showEndShoppingDialog(context, pbp).then((b) {
+                  if (context.mounted) Navigator.pop(context);
                 });
               },
-              leading: const Icon(
-                Icons.shopping_bag_outlined,
+              leading: ImageIcon(
+                size: 24,
+                AssetImage('assets/race_flag.png'),
               ),
             ),
             const Divider(),

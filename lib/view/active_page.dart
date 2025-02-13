@@ -222,20 +222,37 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          pbp.clearSearchList();
-          Statics.searchForArticle(context, pbp).then((value) {
-            if (value != null) {
-              value.active = true;
-              value.amount = max(1, value.amount);
-              pbp.updateArticle(value);
-            }
-          });
-        },
-        tooltip: i18n(context).p_active_tooltip,
-        backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        spacing: 16,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              Statics.showEndShoppingDialog(context, pbp);
+            },
+            tooltip: i18n(context).drawer_end_shopping,
+            backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
+            child: ImageIcon(
+              size: 24,
+              AssetImage('assets/race_flag.png'),
+            ),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              pbp.clearSearchList();
+              Statics.searchForArticle(context, pbp).then((value) {
+                if (value != null) {
+                  value.active = true;
+                  value.amount = max(1, value.amount);
+                  pbp.updateArticle(value);
+                }
+              });
+            },
+            tooltip: i18n(context).p_active_tooltip,
+            backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
+            child: const Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }

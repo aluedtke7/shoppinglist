@@ -163,6 +163,16 @@ class Statics {
     );
   }
 
+  static Future<bool?> showEndShoppingDialog(BuildContext context, PocketBaseProvider pbp) async {
+    return showConfirmDialog(context, i18n(context).drawer_end_shopping, i18n(context).drawer_end_shopping_q)
+        .then((value) {
+      if (value != null && value) {
+        pbp.endShopping();
+      }
+      return false;
+    });
+  }
+
   static Future<String?> showSettingsDialog(BuildContext context, String title, String info, String initVal) async {
     var input = initVal;
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
