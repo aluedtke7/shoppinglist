@@ -40,7 +40,7 @@
   "drawer_end_shopping": "end shopping",
   "drawer_end_shopping_q": "Shall all articles in the cart be moved to the article list?",
   "drawer_logout": "logout",
-  "drawer_logout_q": "Really close the app?",
+  "drawer_logout_q": "Do you really want to logout?",
 
   "l_p_error": "An Error Occurred!",
   "l_p_okay": "Okay",
