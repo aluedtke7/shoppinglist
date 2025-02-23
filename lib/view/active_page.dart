@@ -227,6 +227,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
+            heroTag: 'end_shopping',
             onPressed: () {
               Statics.showEndShoppingDialog(context, pbp);
             },
@@ -238,6 +239,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
             ),
           ),
           FloatingActionButton(
+            heroTag: 'add_item',
             onPressed: () {
               pbp.clearSearchList();
               Statics.searchForArticle(context, pbp).then((value) {

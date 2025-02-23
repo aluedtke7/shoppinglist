@@ -14,7 +14,7 @@ var customThemes = [
         brightness: Brightness.light,
         seedColor: Colors.lightBlue,
       ),
-      dialogBackgroundColor: const Color.fromARGB(255, 240, 240, 240),
+      dialogTheme: DialogThemeData(backgroundColor: const Color.fromARGB(255, 240, 240, 240)),
     ),
     options: ThemeOptions(
       Colors.grey.shade400,
@@ -36,7 +36,7 @@ var customThemes = [
         brightness: Brightness.light,
         seedColor: Colors.lightGreen,
       ),
-      dialogBackgroundColor: const Color.fromARGB(255, 240, 240, 240),
+      dialogTheme: DialogThemeData(backgroundColor: const Color.fromARGB(255, 240, 240, 240)),
     ),
     options: ThemeOptions(
       Colors.grey.shade400,
@@ -59,7 +59,7 @@ var customThemes = [
         primary: Colors.orange,
         seedColor: Colors.orange,
       ),
-      dialogBackgroundColor: const Color.fromARGB(255, 240, 240, 240),
+      dialogTheme: DialogThemeData(backgroundColor: const Color.fromARGB(255, 240, 240, 240)),
     ),
     options: ThemeOptions(
       Colors.grey.shade400,
@@ -82,7 +82,7 @@ var customThemes = [
         primary: Colors.orange,
         brightness: Brightness.light,
       ),
-      dialogBackgroundColor: const Color.fromARGB(255, 240, 240, 240),
+      dialogTheme: DialogThemeData(backgroundColor: const Color.fromARGB(255, 240, 240, 240)),
     ),
     options: ThemeOptions(
       Colors.grey.shade400,
@@ -104,7 +104,7 @@ var customThemes = [
         brightness: Brightness.dark,
         seedColor: Colors.cyan,
       ),
-      dialogBackgroundColor: const Color.fromARGB(255, 50, 50, 50),
+      dialogTheme: DialogThemeData(backgroundColor: const Color.fromARGB(255, 50, 50, 50)),
     ),
     options: ThemeOptions(
       Colors.grey.shade600,

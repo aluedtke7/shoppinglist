@@ -326,7 +326,7 @@ class Statics {
               contentPadding: const EdgeInsets.only(left: 12, right: 12),
               actionsPadding: const EdgeInsets.only(left: 12, right: 12, bottom: 8),
               title: Text(i18n(context).p_active_tooltip),
-              backgroundColor: Theme.of(context).dialogBackgroundColor,
+              backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
               actionsAlignment: MainAxisAlignment.spaceBetween,
               content: SizedBox(
                 width: isMobile ? double.maxFinite : mq.size.width * 0.7,

@@ -196,7 +196,7 @@ class PocketBaseProvider extends ChangeNotifier {
     await ensurePocketBaseIsLoaded();
     if (![TargetPlatform.linux, TargetPlatform.macOS, TargetPlatform.windows].contains(defaultTargetPlatform)) {
       try {
-        if (await vib.Vibration.hasVibrator() ?? false) {
+        if (await vib.Vibration.hasVibrator()) {
           await vib.Vibration.vibrate(duration: 50);
         }
       } catch (e) {
