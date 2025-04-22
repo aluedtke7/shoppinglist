@@ -60,3 +60,4 @@ flatpak/*.tar.gz
 flatpak/.flatpak-builder
 flatpak/build-dir
 flatpak/repo
+/lib/src/generated/i18n/
