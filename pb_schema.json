@@ -1,128 +1,108 @@
 [
   {
-    "id": "_pb_users_auth_",
-    "name": "users",
-    "type": "auth",
-    "system": false,
-    "schema": [
-      {
-        "id": "users_name",
-        "name": "name",
-        "type": "text",
-        "system": false,
-        "required": false,
-        "unique": false,
-        "options": {
-          "min": null,
-          "max": null,
-          "pattern": ""
-        }
-      },
-      {
-        "id": "users_avatar",
-        "name": "avatar",
-        "type": "file",
-        "system": false,
-        "required": false,
-        "unique": false,
-        "options": {
-          "maxSelect": 1,
-          "maxSize": 5242880,
-          "mimeTypes": [
-            "image/jpeg",
-            "image/png",
-            "image/svg+xml",
-            "image/gif",
-            "image/webp"
-          ],
-          "thumbs": null
-        }
-      }
-    ],
-    "listRule": "id = @request.auth.id",
-    "viewRule": "id = @request.auth.id",
-    "createRule": "",
-    "updateRule": "id = @request.auth.id",
-    "deleteRule": "id = @request.auth.id",
-    "options": {
-      "allowEmailAuth": true,
-      "allowOAuth2Auth": true,
-      "allowUsernameAuth": true,
-      "exceptEmailDomains": null,
-      "manageRule": null,
-      "minPasswordLength": 8,
-      "onlyEmailDomains": null,
-      "requireEmail": true
-    }
-  },
-  {
     "id": "3mv593ieqawcouz",
-    "name": "shoppinglist",
-    "type": "base",
-    "system": false,
-    "schema": [
-      {
-        "id": "u13k0nxy",
-        "name": "active",
-        "type": "bool",
-        "system": false,
-        "required": false,
-        "unique": false,
-        "options": {}
-      },
-      {
-        "id": "pinqrobn",
-        "name": "amount",
-        "type": "number",
-        "system": false,
-        "required": false,
-        "unique": false,
-        "options": {
-          "min": 0,
-          "max": 100
-        }
-      },
-      {
-        "id": "l6vkoreu",
-        "name": "inCart",
-        "type": "bool",
-        "system": false,
-        "required": false,
-        "unique": false,
-        "options": {}
-      },
-      {
-        "id": "u7ot6v3e",
-        "name": "article",
-        "type": "text",
-        "system": false,
-        "required": true,
-        "unique": true,
-        "options": {
-          "min": 1,
-          "max": 120,
-          "pattern": ""
-        }
-      },
-      {
-        "id": "mk1md3hr",
-        "name": "shop",
-        "type": "text",
-        "system": false,
-        "required": false,
-        "unique": false,
-        "options": {
-          "min": null,
-          "max": 80,
-          "pattern": ""
-        }
-      }
-    ],
     "listRule": "",
     "viewRule": "",
     "createRule": "",
     "updateRule": "",
     "deleteRule": "",
-    "options": {}
+    "name": "shoppinglist",
+    "type": "base",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "hidden": false,
+        "id": "u13k0nxy",
+        "name": "active",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "hidden": false,
+        "id": "pinqrobn",
+        "max": 100,
+        "min": 0,
+        "name": "amount",
+        "onlyInt": false,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "hidden": false,
+        "id": "l6vkoreu",
+        "name": "inCart",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "u7ot6v3e",
+        "max": 120,
+        "min": 1,
+        "name": "article",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "mk1md3hr",
+        "max": 80,
+        "min": 0,
+        "name": "shop",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate3332085495",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [],
+    "system": false
   }
 ]

@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> {
     APPLIC().onLocaleChanged = onLocaleChange;
   }
 
-  onLocaleChange(Locale locale) {
+  void onLocaleChange(Locale locale) {
     setState(() {
       debugPrint('onLocaleChange: ${locale.languageCode}');
       _localeOverrideDelegate = SpecificLocalizationDelegate(locale);

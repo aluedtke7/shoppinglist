@@ -15,11 +15,11 @@ on [fly.io](https://github.com/pocketbase/pocketbase/discussions/537) (discussio
 
 ### Features
 
-- Dart 3 and Flutter 3.27 compatible
-- Works with PocketBase v0.24
+- Dart 3 and Flutter 3.32 compatible
+- Works with PocketBase v0.29
 - several themes with custom options including dark modes
 - localization (English and German)
-- works on Android, iOS, Linux, macOS, Windows and Web (also WebAssembly)
+- it works on Android, iOS, Linux, macOS, Windows and Web (also WebAssembly)
 
 ### Screenshots
 
@@ -96,25 +96,25 @@ Proceed as follows:
 
 ### Compile / run Shoppinglist
 
-I assume, that Flutter is installed on your machine and that `flutter doctor` doesn't show errors 
+I assume that Flutter is installed on your machine and that `flutter doctor` doesn't show errors 
 for the platform you're using.
 
 1. run `flutter gen-l10n` to compile the localization files
 2. run **`flutter run`** to start the application
 3. click on the settings icon to open the PocketBase connection dialog and enter the url of the PocketBase server (typically http://localhost:8090) 
-4. to create i.e. an Android app, run **`flutter build apk`**. Please use a *real* ip-address and **not** localhost! (see also note below)
-5. inside the app, login with email and password of a user that you created on the PocketBase admin page
+4. to create i.e., an Android app, run **`flutter build apk`**. Please use a *real* ip-address and **not** localhost! (see also note below)
+5. inside the app, login with the email and password of a user that you created on the PocketBase admin page
 
 That's it. Have fun and go shopping!
 
 > **Important**
 >
-> If you run PocketBase locally and want to access it i.e. from the Android Emulator, you need to start
+> If you run PocketBase locally and want to access it, i.e. from the Android Emulator, you need to start
 > PocketBase like this:
 >
 > `> pocketbase serve --http 0.0.0.0:8090`
 >
-> This ensures, that PocketBase will listen on all addresses. Furthermore, you need to set the 
+> This ensures that PocketBase will listen on all addresses. Furthermore, you need to set the 
 > connection url with the correct ip-address of your host machine like `http://192.168.0.52:8090`. 
 > The address depends on your network, and you should look it up with tools like `ip a`, 
 > `ipconfig` or `ifconfig`.
@@ -127,7 +127,7 @@ There is one parameter that can be set via
 When this parameter is set, it overrides the URL that is set via the UI. This makes it easy
 to switch between different PocketBase instances while developing.
 
-## Run a debug Web version with external host
+## Run a debug Web version with an external host
 
 If you want to run the app as a Web app, you have to use a commandline like this:
 
@@ -135,7 +135,7 @@ If you want to run the app as a Web app, you have to use a commandline like this
 
 ## Create release builds
 
-To create a release build, run a command like these:
+To create a release build, run a command like this:
 
     > flutter build apk
     > flutter build ios
@@ -144,7 +144,7 @@ To create a release build, run a command like these:
 
 ## Using Visual Studio Code
 
-In order to have the right environment variable when running or debugging the app in VSCode, you
+To have the right environment variable when running or debugging the app in VSCode, you
 have to create a launch configuration `.vscode/launch.json` and have a configuration like this:
 
     {
@@ -188,7 +188,7 @@ This will update or create the files in `.dart_tool/flutter_gen/gen_l10n`.
 ## PocketBase running on fly.io
 
 In the following chapters I show some useful commands to help you manage PocketBase on fly.io. 
-I assume, that you're in the folder where the `Dockerfile` and the file `fly.toml` reside.
+I assume that you're in the folder where the `Dockerfile` and the file `fly.toml` reside.
 
 ### Inspect container
 
@@ -210,7 +210,7 @@ Restore a database backup on fly.io:
     > flyctl ssh sftp shell
     >> put ./LOCAL-PATH-WITH-DB/data.db /pb/pb_data/data.db
 
-After that, you should restart PocketBase, in order to use the restored database:
+After that, you should restart PocketBase to use the restored database:
 
     > flyctl apps restart YOUR_APPLICATION_NAME
 
@@ -226,9 +226,9 @@ Your database will not be affected and remains as it is. Check the fly dashboard
 ### General
 We need a special Docker image for building the app and the flatpak version of it. It's best to use the oldest 
 supported Linux OS for this task, to get the widest OS support for our flatpak app. I'm using the LTS version 
-Ubuntu 20.04. The [Dockerfile](./flatpak/Dockerfile) takes this as the base image and installs then all the needed dependencies 
-to be able to compile the source code for Linux. In additon, the flatpak utilities are also installed. It's also 
-important to install all the dependencies, that the Linux version of the used Flutter packages needs. You find 
+Ubuntu 20.04. The [Dockerfile](./flatpak/Dockerfile) takes this as the base image and installs then all the necessary dependencies 
+to be able to compile the source code for Linux. In addition, the flatpak utilities are also installed. It's also 
+important to install all the dependencies that the Linux version of the used Flutter packages needs. You find 
 this information typically on pub.dev at the Linux version of the used package.
 
 The build time for this image is approx. 10 minutes on my machine and the resulting image size is around 8.2GB.
@@ -252,7 +252,7 @@ In order to run the flatpak app, you need to have the following two runtimes ins
     flatpak install org.freedesktop.Sdk/x86_64/22.08
     flatpak install org.freedesktop.Platform/x86_64/22.08
 
-Now install the app loacally:
+Now install the app locally:
 
     flatpak install --user de.luedtke.shoppinglist.flatpak
 

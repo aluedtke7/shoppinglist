@@ -91,7 +91,7 @@ class PocketBaseProvider extends ChangeNotifier {
     _pb!.authStore.save(
         prefs.getString(PrefKeys.accessTokenPrefsKey) ?? '',
         RecordModel({
-          "email": prefs.getString(PrefKeys.lastUserPrefsKey) ?? '',
+          'email': prefs.getString(PrefKeys.lastUserPrefsKey) ?? '',
         }));
     if (!_pb!.authStore.isValid) {
       return false;
@@ -219,13 +219,13 @@ class PocketBaseProvider extends ChangeNotifier {
 
   Future<void> subscribeActive() async {
     await ensurePocketBaseIsLoaded();
-    _pb?.collection(collectionName).subscribe("*", (e) {
+    _pb?.collection(collectionName).subscribe('*', (e) {
       debugPrint(e.action); // create, update, delete
       debugPrint(e.record?.toString()); // the changed record
       Article art = Article.fromJson(e.record?.toJson() ?? {});
-      if (e.action == "create") {
+      if (e.action == 'create') {
         _active.insert(0, art);
-      } else if (e.action == "delete") {
+      } else if (e.action == 'delete') {
         _active.removeWhere((element) => element.id == art.id);
       } else {
         if (!art.active) {

@@ -10,10 +10,9 @@ import 'package:theme_provider/theme_provider.dart';
 import 'package:shoppinglist/component/article_selection_card.dart';
 import 'package:shoppinglist/component/i18n_util.dart';
 import 'package:shoppinglist/model/article.dart';
+import 'package:shoppinglist/model/pref_keys.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
 import 'package:shoppinglist/view/article_edit_page.dart';
-
-import '../model/pref_keys.dart';
 
 class Statics {
   static Future<void> showErrorSnackbar(BuildContext ctx, dynamic e) async {
@@ -379,7 +378,7 @@ class Statics {
 
   static Future<String> getServerUrl() async {
     final prefs = await SharedPreferences.getInstance();
-    final debugUrl = const String.fromEnvironment('SHOPPINGLIST_HOST', defaultValue: "");
+    final debugUrl = const String.fromEnvironment('SHOPPINGLIST_HOST', defaultValue: '');
     return debugUrl.isNotEmpty ? debugUrl : prefs.getString(PrefKeys.serverUrlPrefsKey) ?? '';
   }
 }
