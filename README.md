@@ -15,8 +15,8 @@ on [fly.io](https://github.com/pocketbase/pocketbase/discussions/537) (discussio
 
 ### Features
 
-- Dart 3 and Flutter 3.32 compatible
-- Works with PocketBase v0.29
+- Dart 3 and Flutter 3.35 compatible
+- Works with PocketBase v0.31
 - several themes with custom options including dark modes
 - localization (English and German)
 - it works on Android, iOS, Linux, macOS, Windows and Web (also WebAssembly)
@@ -220,7 +220,7 @@ You have to update the `fly.toml` in respect of the PocketBase version (`PB_VERS
 
     > flyctl deploy
 
-Your database will not be affected and remains as it is. Check the fly dashboard for errors and messages.
+Your database will not be affected and remain as it is. Check the fly dashboard for errors and messages.
 
 ## Build Linux Flatpak
 ### General
