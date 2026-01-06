@@ -10,6 +10,7 @@ import 'package:shoppinglist/component/theme_options.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
 import 'package:shoppinglist/view/active_page.dart';
 import 'package:shoppinglist/view/article_page.dart';
+import 'package:shoppinglist/view/recipe_page.dart';
 import 'package:shoppinglist/view/login_page.dart';
 
 class SlappDrawer extends StatelessWidget {
@@ -83,6 +84,16 @@ class SlappDrawer extends StatelessWidget {
               selected: ModalRoute.of(context)?.settings.name == ArticlePage.routeName,
               onTap: () {
                 Navigator.pushNamed(context, ArticlePage.routeName);
+              },
+              leading: const Icon(
+                Icons.list,
+              ),
+            ),
+            ListTile(
+              title: Text(i18n(context).p_recipes_title),
+              selected: ModalRoute.of(context)?.settings.name == RecipePage.routeName,
+              onTap: () {
+                Navigator.pushNamed(context, RecipePage.routeName);
               },
               leading: const Icon(
                 Icons.list,

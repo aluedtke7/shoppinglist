@@ -3,20 +3,21 @@
 ## Overview
 
 The purpose of this app is to maintain a shopping list that can be used by more than one person.
-In our family, we all use this app to inform the others about the goods that are wanted. If someone goes shopping,
-he/she can buy the goods for all family members.
+In our family, we all use this app to inform the others about the articles that are wanted. If someone goes shopping,
+he/she can buy the articles for all family members.
 
 The backend software PocketBase informs all running instances of the app about changes in the
 list. So, if you're inside a shop, you will see also articles that are newly put in the list by other members.
 
 This app needs a PocketBase backend, running somewhere. PocketBase is a Firebase clone in one single binary.
-More infos on [the PocketBase homepage](https://pocketbase.io). On that page is a good description, how to run PocketBase
+More information on [the PocketBase homepage](https://pocketbase.io). On that page is a good description, how to run PocketBase
 on [fly.io](https://github.com/pocketbase/pocketbase/discussions/537) (discussion area). There are some chapters about fly.io further down below.
 
 ### Features
 
-- Dart 3 and Flutter 3.35 compatible
-- Works with PocketBase v0.31
+- Dart 3 and Flutter 3.38 compatible
+- Works with PocketBase v0.35
+- New feature: recipes
 - several themes with custom options including dark modes
 - localization (English and German)
 - it works on Android, iOS, Linux, macOS, Windows and Web (also WebAssembly)
@@ -37,6 +38,11 @@ on [fly.io](https://github.com/pocketbase/pocketbase/discussions/537) (discussio
     <img src="./screenshots/shoppinglist-3.png" title="Swipe left for edit or duplicate" width="30%" alt="Swipe left for edit or duplicate">
     <img src="./screenshots/shoppinglist-4.png" title="2 articles in cart" width="30%" alt="2 articles in cart">
     <img src="./screenshots/search_article.png" title="Search article" width="30%" alt="Search article">
+</p>
+<p float="left">
+    <img src="./screenshots/recipe_list.png" title="Open drawer" width="30%" alt="Recipe list">
+    <img src="./screenshots/change_recipe.png" title="Article list" width="30%" alt="Change recipe">
+    <img src="./screenshots/select_recipe.png" title="End shopping" width="30%" alt="Select recipe">
 </p>
 <p float="left">
     <img src="./screenshots/drawer_open.png" title="Open drawer" width="30%" alt="Open drawer">
@@ -65,19 +71,31 @@ When the server can't be reached, an icon is displayed in the app bar.
 
 ## Technical description
 
-There is only one database table 'shoppinglist' that is used in this app. This table (or collection)
-has the following fields that must be created beforehand:
+There are database tables (PocketBase Collections) used in this app:
+- 'shoppinglist'
+- 'recipes'
+- 'recipe_articles'
 
+The 'shoppinglist' collection has the following fields:
 - `active` : Bool
 - `amount` : Number, Min=0, Max=100
 - `inCart` : Bool
 - `article` : Plain text, Min length=1, Max length=120, Nonempty, Unique
 - `shop` : Plain text, Max length=80
 
+The 'recipes' collection has the following fields:
+- `name` : Plain text, Min length=1, Max length=120
+- `notes` : Plain text, Max length=200
+
+The 'recipe_articles' collection has the following fields:
+- `recipe` : Relation to 'recipes'
+- `article` : Relation to 'shoppinglist'
+- `quantity` : Number, Min=0, Max=100
+
 > **Info**
 >
-> There is also a schema file in JSON format (`pb_schema.json`) that can be imported in PocketBase to
-> create this collection.
+> There is a schema file in JSON format (`pb_schema.json`) that can be imported in PocketBase to
+> create these collections.
 
 When an article is marked _`active`_, it will be visible on the **shopping list**. Otherwise, the article will
 show up in the **article list**.

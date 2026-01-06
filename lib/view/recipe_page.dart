@@ -1,31 +1,29 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
-import 'package:shoppinglist/component/article_card.dart';
 import 'package:shoppinglist/component/i18n_util.dart';
 import 'package:shoppinglist/component/selected_page.dart';
 import 'package:shoppinglist/component/slapp_app_bar.dart';
 import 'package:shoppinglist/component/slapp_drawer.dart';
-import 'package:shoppinglist/component/statics.dart';
 import 'package:shoppinglist/component/theme_options.dart';
-import 'package:shoppinglist/model/article.dart';
+import 'package:shoppinglist/component/recipe_card.dart';
+import 'package:shoppinglist/model/recipe.dart';
 import 'package:shoppinglist/model/sel_page.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
-import 'package:shoppinglist/view/article_edit_page.dart';
+import 'package:shoppinglist/view/recipe_edit_page.dart';
 
-class ArticlePage extends StatefulWidget {
-  const ArticlePage({super.key});
-  static const routeName = '/articles';
+class RecipePage extends StatefulWidget {
+  const RecipePage({super.key});
+  static const routeName = '/recipes';
 
   @override
-  State<ArticlePage> createState() => _ArticlePageState();
+  State<RecipePage> createState() => _RecipePageState();
 }
 
-class _ArticlePageState extends State<ArticlePage> {
+class _RecipePageState extends State<RecipePage> {
   var _isLoading = false;
   var _searchFor = '';
   Timer? _delayedSearch;
@@ -39,12 +37,11 @@ class _ArticlePageState extends State<ArticlePage> {
   @override
   void initState() {
     super.initState();
-
     _fetchAll();
   }
 
-  Future<void> _fetchAllArticles(PocketBaseProvider pbp) async {
-    return pbp.fetchAllArticles();
+  Future<void> _fetchAllRecipes(PocketBaseProvider pbp) async {
+    return pbp.fetchAllRecipes();
   }
 
   Future<void> _fetchAll() async {
@@ -53,11 +50,7 @@ class _ArticlePageState extends State<ArticlePage> {
       _isLoading = true;
     });
     try {
-      await Future.wait([_fetchAllArticles(pbp)]);
-    } on ClientException catch (e) {
-      if (mounted) {
-        Statics.showErrorSnackbar(context, e);
-      }
+      await Future.wait([_fetchAllRecipes(pbp)]);
     } finally {
       setState(() {
         _isLoading = false;
@@ -68,15 +61,13 @@ class _ArticlePageState extends State<ArticlePage> {
   @override
   Widget build(BuildContext context) {
     final pbp = Provider.of<PocketBaseProvider>(context, listen: true);
-    final filteredArticles = pbp.allArticles
-        .where((art) =>
-            art.shop.toUpperCase().contains(_searchFor.toUpperCase()) ||
-            art.article.toUpperCase().contains(_searchFor.toUpperCase()))
+    final filteredRecipes = pbp.allRecipes
+        .where((r) => r.name.toUpperCase().contains(_searchFor.toUpperCase()))
         .toList();
-    page = SelPage.articleList;
+    page = SelPage.articleList; // reuse for highlighting
 
     return Scaffold(
-      appBar: SlappAppBar(title: i18n(context).p_articles_title),
+      appBar: SlappAppBar(title: i18n(context).p_recipes_title),
       drawer: const SlappDrawer(),
       body: RefreshIndicator(
         onRefresh: _fetchAll,
@@ -98,7 +89,6 @@ class _ArticlePageState extends State<ArticlePage> {
                           flex: 5,
                           child: TextField(
                             decoration: InputDecoration(labelText: i18n(context).com_search_term),
-                            autofocus: true,
                             onChanged: (text) {
                               _delayedSearch?.cancel();
                               _delayedSearch = Timer(const Duration(milliseconds: 750), () {
@@ -112,7 +102,7 @@ class _ArticlePageState extends State<ArticlePage> {
                         const SizedBox(width: 8),
                         Flexible(
                           flex: 2,
-                          child: Text(i18n(context).com_num_articles(filteredArticles.length)),
+                          child: Text(i18n(context).com_num_recipes(filteredRecipes.length)),
                         ),
                       ],
                     ),
@@ -122,18 +112,17 @@ class _ArticlePageState extends State<ArticlePage> {
                       : Expanded(
                           child: ListView.builder(
                             itemBuilder: (ctx, idx) {
-                              return GestureDetector(
+                              final rec = filteredRecipes[idx];
+                              final count = pbp.recipeArticleCount[rec.id] ?? 0;
+                              return RecipeCard(
+                                recipe: rec,
+                                articleCount: count,
                                 onTap: () {
-                                  Navigator.pushNamed(context, ArticleEditPage.routeName,
-                                      arguments: filteredArticles[idx]);
+                                  Navigator.pushNamed(context, RecipeEditPage.routeName, arguments: rec);
                                 },
-                                child: ArticleCard(
-                                  article: filteredArticles[idx],
-                                  isArticleList: true,
-                                ),
                               );
                             },
-                            itemCount: filteredArticles.length,
+                            itemCount: filteredRecipes.length,
                           ),
                         ),
                 ],
@@ -144,10 +133,10 @@ class _ArticlePageState extends State<ArticlePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, ArticleEditPage.routeName, arguments: Article());
+          Navigator.pushNamed(context, RecipeEditPage.routeName, arguments: Recipe());
         },
         backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-        tooltip: i18n(context).p_article_add,
+        tooltip: i18n(context).p_recipes_tooltip,
         child: const Icon(Icons.add),
       ),
     );

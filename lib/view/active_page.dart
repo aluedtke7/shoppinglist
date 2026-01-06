@@ -16,6 +16,8 @@ import 'package:shoppinglist/model/sel_page.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
 import 'package:shoppinglist/view/article_edit_page.dart';
 import 'package:theme_provider/theme_provider.dart';
+import 'package:shoppinglist/model/recipe.dart';
+import 'package:shoppinglist/component/no_article_widget.dart';
 
 class ActivePage extends StatefulWidget {
   const ActivePage({super.key});
@@ -65,7 +67,10 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
     });
     try {
       pbp?.subscribeActive();
-      await Future.wait([_fetchActive()]);
+      await Future.wait([
+        _fetchActive(),
+        pbp!.fetchAllRecipes(),
+      ]);
     } on ClientException catch (e) {
       if (mounted) {
         Statics.showErrorSnackbar(context, e);
@@ -100,16 +105,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                           padding: const EdgeInsets.all(8.0),
                           child: SlidableAutoCloseBehavior(
                             child: pbp.activeArticles.isEmpty
-                                ? Center(
-                                    child: Text(
-                                      textAlign: TextAlign.center,
-                                      i18n(context).p_active_empty,
-                                      style: const TextStyle(
-                                        fontSize: 30,
-                                        height: 1.5,
-                                      ),
-                                    ),
-                                  )
+                                ? const NoArticleWidget(height: 1.5)
                                 : ListView.builder(
                                     itemBuilder: (ctx, idx) {
                                       final itm = pbp.activeArticles[idx];
@@ -237,6 +233,21 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
               size: 24,
               AssetImage('assets/race_flag.png'),
             ),
+          ),
+          FloatingActionButton(
+            heroTag: 'select_recipe',
+            onPressed: () async {
+              // ensure recipes loaded
+              await pbp.fetchAllRecipes();
+              if (!context.mounted) return;
+              final Recipe? selected = await Statics.selectRecipeDialog(context, pbp);
+              if (selected != null) {
+                await pbp.selectRecipeSetInCart(selected.id);
+              }
+            },
+            tooltip: i18n(context).p_recipes_select,
+            backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
+            child: const Icon(Icons.menu_book),
           ),
           FloatingActionButton(
             heroTag: 'add_item',

@@ -6,16 +6,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shoppinglist/component/statics.dart';
 import 'package:shoppinglist/model/article.dart';
 import 'package:shoppinglist/model/pref_keys.dart';
+import 'package:shoppinglist/model/recipe.dart';
 import 'package:shoppinglist/provider/fetch_dummy.dart'
     if (dart.library.html) 'package:shoppinglist/provider/fetch_stub.dart';
 import 'package:vibration/vibration.dart' as vib;
 
 class PocketBaseProvider extends ChangeNotifier {
   PocketBase? _pb;
-  final collectionName = 'shoppinglist';
+  final shoppingListCollection = 'shoppinglist';
+  final recipesCollection = 'recipes';
+  final recipeArticlesCollection = 'recipe_articles';
   List<Article> _active = [];
   List<Article> _allArticles = [];
   List<Article> _searchArticles = [];
+  List<Recipe> _allRecipes = [];
+  Map<String, int> _recipeArticleCount = {};
   Timer? _healthCheckTimer;
   bool _lastHealthy = true;
   bool _healthy = true;
@@ -34,6 +39,10 @@ class PocketBaseProvider extends ChangeNotifier {
   List<Article> get allArticles => _allArticles;
 
   List<Article> get searchArticles => _searchArticles;
+
+  List<Recipe> get allRecipes => _allRecipes;
+
+  Map<String, int> get recipeArticleCount => _recipeArticleCount;
 
   Future<void> login(String email, String password) async {
     await ensurePocketBaseIsLoaded();
@@ -103,7 +112,7 @@ class PocketBaseProvider extends ChangeNotifier {
 
   Future<void> fetchActive([bool doReload = false]) async {
     await ensurePocketBaseIsLoaded();
-    final result = await _pb?.collection(collectionName).getList(
+    final result = await _pb?.collection(shoppingListCollection).getList(
           filter: 'active = true',
         );
     if (result != null) {
@@ -120,7 +129,7 @@ class PocketBaseProvider extends ChangeNotifier {
 
   Future<void> fetchAllArticles([bool doReload = false]) async {
     await ensurePocketBaseIsLoaded();
-    final result = await _pb?.collection(collectionName).getFullList();
+    final result = await _pb?.collection(shoppingListCollection).getFullList();
     if (result != null) {
       List<Article> al = [];
       for (var element in result) {
@@ -133,10 +142,158 @@ class PocketBaseProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> searchForArticles(String what) async {
+  // --- Recipes ---
+  Future<void> fetchAllRecipes([bool doReload = false]) async {
     await ensurePocketBaseIsLoaded();
-    final searchString = 'active = false && (article ~ "$what" || shop ~ "$what")';
-    final result = await _pb?.collection(collectionName).getList(filter: searchString, sort: '+article');
+    final result = await _pb?.collection(recipesCollection).getFullList(sort: '+name');
+    if (result != null) {
+      _allRecipes = result.map((e) => Recipe.fromJson(e.toJson())).toList();
+      // refresh counts alongside recipes
+      await fetchRecipeArticleCounts();
+      notifyListeners();
+    }
+  }
+
+  /// Loads all recipe-article links once and computes counts per recipe.
+  Future<void> fetchRecipeArticleCounts() async {
+    await ensurePocketBaseIsLoaded();
+    final res = await _pb?.collection(recipeArticlesCollection).getFullList();
+    final Map<String, int> cnt = {};
+    if (res != null) {
+      for (final r in res) {
+        final rid = (r.data['recipe'] as String?) ?? '';
+        if (rid.isEmpty) continue;
+        cnt.update(rid, (value) => value + 1, ifAbsent: () => 1);
+      }
+    }
+    _recipeArticleCount = cnt;
+    // don't notify here unconditionally; callers will decide, to avoid double rebuilds
+  }
+
+  Future<RecordModel> updateRecipe(Recipe recipe) async {
+    await ensurePocketBaseIsLoaded();
+    if (recipe.id.isEmpty) {
+      return _pb!.collection(recipesCollection).create(body: recipe.toMap());
+    }
+    return _pb!.collection(recipesCollection).update(recipe.id, body: recipe.toMap());
+  }
+
+  Future<void> deleteRecipe(String id) async {
+    await ensurePocketBaseIsLoaded();
+    if (id.isEmpty) return;
+    await _pb!.collection(recipesCollection).delete(id);
+  }
+
+  Future<List<String>> fetchRecipeArticleIds(String recipeId) async {
+    await ensurePocketBaseIsLoaded();
+    final res = await _pb?.collection(recipeArticlesCollection).getFullList(
+          filter: 'recipe = "$recipeId"',
+        );
+    if (res == null) return [];
+    return res.map((e) => e.data['article'] as String).toList();
+  }
+
+  /// Returns a map of articleId -> quantity for the given recipe.
+  Future<Map<String, int>> fetchRecipeArticleQuantities(String recipeId) async {
+    await ensurePocketBaseIsLoaded();
+    final res = await _pb?.collection(recipeArticlesCollection).getFullList(
+      filter: 'recipe = "$recipeId"',
+    );
+    if (res == null) return {};
+    final Map<String, int> out = {};
+    for (final rec in res) {
+      final aid = rec.data['article'] as String? ?? '';
+      if (aid.isEmpty) continue;
+      final q = rec.data['quantity'];
+      int qty;
+      if (q is num) {
+        qty = q.toInt();
+      } else if (q is String) {
+        qty = int.tryParse(q) ?? 1;
+      } else {
+        qty = 1;
+      }
+      out[aid] = qty;
+    }
+    return out;
+  }
+
+  Future<void> linkArticleToRecipe(String recipeId, String articleId, {int quantity = 1}) async {
+    await ensurePocketBaseIsLoaded();
+    await _pb!.collection(recipeArticlesCollection).create(body: {
+      'recipe': recipeId,
+      'article': articleId,
+      'quantity': quantity,
+    });
+  }
+
+  Future<void> unlinkArticleFromRecipe(String recipeId, String articleId) async {
+    await ensurePocketBaseIsLoaded();
+    // Find link records then delete
+    final res = await _pb!.collection(recipeArticlesCollection).getList(
+          filter: 'recipe = "$recipeId" && article = "$articleId"',
+        );
+    for (final it in res.items) {
+      await _pb!.collection(recipeArticlesCollection).delete(it.id);
+    }
+  }
+
+  /// Updates quantity for an existing recipe-article link; if it doesn't exist, creates it.
+  Future<void> updateRecipeArticleQuantity(String recipeId, String articleId, int quantity) async {
+    await ensurePocketBaseIsLoaded();
+    final q = quantity.clamp(1, 999);
+    final res = await _pb!.collection(recipeArticlesCollection).getList(
+      filter: 'recipe = "$recipeId" && article = "$articleId"',
+    );
+    if (res.items.isEmpty) {
+      await _pb!.collection(recipeArticlesCollection).create(body: {
+        'recipe': recipeId,
+        'article': articleId,
+        'quantity': q,
+      });
+      return;
+    }
+    for (final it in res.items) {
+      await _pb!.collection(recipeArticlesCollection).update(it.id, body: {
+        'quantity': q,
+      });
+    }
+  }
+
+  Future<void> selectRecipeSetInCart(String recipeId) async {
+    await ensurePocketBaseIsLoaded();
+    // Get all article quantities linked to this recipe
+    final qtyById = await fetchRecipeArticleQuantities(recipeId);
+    if (qtyById.isEmpty) return;
+    // For each article, mark as active and set inCart=false; set amount from quantity if not active yet
+    for (final id in qtyById.keys) {
+      try {
+        final rec = await _pb!.collection(shoppingListCollection).getOne(id);
+        final art = Article.fromJson(rec.toJson());
+        art.inCart = false;
+        if (!art.active) {
+          art.active = true;
+          final q = qtyById[id] ?? 1;
+          art.amount = q > 0 ? q : 1;
+        }
+        await _pb!.collection(shoppingListCollection).update(id, body: _articleToMap(art));
+      } catch (e) {
+        debugPrint('Failed to set inCart for article $id: $e');
+      }
+    }
+    // Refresh active and all to reflect changes
+    await fetchActive(true);
+    await fetchAllArticles(true);
+  }
+
+  Future<void> searchForArticles(String what, bool showAll) async {
+    await ensurePocketBaseIsLoaded();
+    var searchString = '';
+    if (!showAll) {
+      searchString += 'active = false && ';
+    }
+    searchString += '(article ~ "$what" || shop ~ "$what")';
+    final result = await _pb?.collection(shoppingListCollection).getList(filter: searchString, sort: '+article');
     if (result != null) {
       List<Article> al = [];
       for (var element in result.items) {
@@ -184,9 +341,9 @@ class PocketBaseProvider extends ChangeNotifier {
   Future<RecordModel> updateArticle(Article article) async {
     await ensurePocketBaseIsLoaded();
     if (article.id.isEmpty) {
-      return _pb!.collection(collectionName).create(body: _articleToMap(article));
+      return _pb!.collection(shoppingListCollection).create(body: _articleToMap(article));
     }
-    return _pb!.collection(collectionName).update(article.id, body: _articleToMap(article));
+    return _pb!.collection(shoppingListCollection).update(article.id, body: _articleToMap(article));
   }
 
   Future<RecordModel> toggleinCart(Article article) async {
@@ -204,7 +361,7 @@ class PocketBaseProvider extends ChangeNotifier {
       }
     }
     article.inCart = !article.inCart;
-    return _pb!.collection(collectionName).update(article.id, body: _articleToMap(article));
+    return _pb!.collection(shoppingListCollection).update(article.id, body: _articleToMap(article));
   }
 
   Future<void> endShopping() async {
@@ -219,7 +376,7 @@ class PocketBaseProvider extends ChangeNotifier {
 
   Future<void> subscribeActive() async {
     await ensurePocketBaseIsLoaded();
-    _pb?.collection(collectionName).subscribe('*', (e) {
+    _pb?.collection(shoppingListCollection).subscribe('*', (e) {
       debugPrint(e.action); // create, update, delete
       debugPrint(e.record?.toString()); // the changed record
       Article art = Article.fromJson(e.record?.toJson() ?? {});
@@ -246,12 +403,31 @@ class PocketBaseProvider extends ChangeNotifier {
 
   Future<void> unsubscribeActive() async {
     await ensurePocketBaseIsLoaded();
-    return _pb?.collection(collectionName).unsubscribe();
+    return _pb?.collection(shoppingListCollection).unsubscribe();
   }
 
   Future<void> deleteArticle(String id) async {
     await ensurePocketBaseIsLoaded();
-    return _pb?.collection(collectionName).delete(id);
+    // First remove any links from recipe_articles referencing this article
+    try {
+      final links = await _pb!
+          .collection(recipeArticlesCollection)
+          .getList(filter: 'article = "$id"');
+      for (final it in links.items) {
+        await _pb!.collection(recipeArticlesCollection).delete(it.id);
+      }
+    } catch (e) {
+      debugPrint('Failed to remove recipe links for deleted article $id: $e');
+    }
+
+    // Then delete the article itself
+    await _pb?.collection(shoppingListCollection).delete(id);
+    // keep local caches in sync so UI updates immediately
+    _allArticles.removeWhere((element) => element.id == id);
+    _active.removeWhere((element) => element.id == id);
+    // refresh recipe article counts after link removals
+    await fetchRecipeArticleCounts();
+    notifyListeners();
   }
 
   Future<void> sendPasswordResetEmail(String email) {

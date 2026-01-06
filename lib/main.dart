@@ -16,6 +16,8 @@ import 'package:shoppinglist/specific_localization_delegate.dart';
 import 'package:shoppinglist/view/active_page.dart';
 import 'package:shoppinglist/view/article_edit_page.dart';
 import 'package:shoppinglist/view/article_page.dart';
+import 'package:shoppinglist/view/recipe_edit_page.dart';
+import 'package:shoppinglist/view/recipe_page.dart';
 import 'package:shoppinglist/view/login_page.dart';
 import 'package:shoppinglist/view/splash_screen.dart';
 
@@ -69,14 +71,8 @@ class _MyAppState extends State<MyApp> {
       saveThemesOnChange: true,
       themes: customThemes,
       child: ThemeConsumer(
-        child: MultiProvider(
-          providers: [
-            ChangeNotifierProvider.value(
-              value: PocketBaseProvider(),
-            ),
-          ],
-          child: Consumer<PocketBaseProvider>(
-            builder: (context, pbp, _) => MaterialApp(
+        child: Consumer<PocketBaseProvider>(
+          builder: (context, pbp, _) => MaterialApp(
               title: 'Shoppinglist',
               theme: ThemeProvider.themeOf(context).data,
               localizationsDelegates: [
@@ -99,10 +95,11 @@ class _MyAppState extends State<MyApp> {
                 // --- Views/Pages ---
                 ActivePage.routeName: (context) => const ActivePage(),
                 ArticlePage.routeName: (context) => const ArticlePage(),
+                RecipePage.routeName: (context) => const RecipePage(),
                 // --- Edits ---
                 ArticleEditPage.routeName: (context) => const ArticleEditPage(),
+                RecipeEditPage.routeName: (context) => const RecipeEditPage(),
               },
-            ),
           ),
         ),
       ),

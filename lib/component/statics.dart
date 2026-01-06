@@ -9,7 +9,9 @@ import 'package:theme_provider/theme_provider.dart';
 
 import 'package:shoppinglist/component/article_selection_card.dart';
 import 'package:shoppinglist/component/i18n_util.dart';
+import 'package:shoppinglist/component/recipe_card.dart';
 import 'package:shoppinglist/model/article.dart';
+import 'package:shoppinglist/model/recipe.dart';
 import 'package:shoppinglist/model/pref_keys.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
 import 'package:shoppinglist/view/article_edit_page.dart';
@@ -222,7 +224,7 @@ class Statics {
               ),
             ),
             actions: <Widget>[
-              ElevatedButton(
+              TextButton(
                 autofocus: false,
                 onPressed: () {
                   Navigator.of(ctx).pop(null);
@@ -288,7 +290,41 @@ class Statics {
     );
   }
 
-  static Future<Article?> searchForArticle(BuildContext context, PocketBaseProvider pbp) async {
+  static Future<Recipe?> selectRecipeDialog(BuildContext context, PocketBaseProvider pbp) async {
+    return showDialog<Recipe>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(i18n(context).p_recipes_select),
+          content: SizedBox(
+            width: 400,
+            height: 400,
+            child: ListView.builder(
+              itemCount: pbp.allRecipes.length,
+              itemBuilder: (c, i) {
+                final r = pbp.allRecipes[i];
+                final count = pbp.recipeArticleCount[r.id] ?? 0;
+                return RecipeCard(
+                  recipe: r,
+                  articleCount: count,
+                  onTap: () => Navigator.of(c).pop(r),
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(i18n(context).com_cancel),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  static Future<Article?> searchForArticle(BuildContext context, PocketBaseProvider pbp,
+      {bool dontAdd = false, bool showAll = false}) async {
     Timer? delayedSearch;
     var textController = TextEditingController();
     var textField = TextField(
@@ -301,7 +337,7 @@ class Statics {
           if (text.length < 3) {
             pbp.clearSearchList();
           } else {
-            pbp.searchForArticles(text).catchError((e) {
+            pbp.searchForArticles(text, showAll).catchError((e) {
               if (e is ClientException && context.mounted) {
                 Statics.showErrorSnackbar(context, e);
               }
@@ -357,19 +393,20 @@ class Statics {
                   child: Text(i18n(context).com_back),
                 ),
                 Text(i18n(context).com_num_articles(pbp.searchArticles.length)),
-                ElevatedButton.icon(
-                    onPressed: textController.text.isNotEmpty
-                        ? () {
-                            Navigator.pushReplacementNamed(context, ArticleEditPage.routeName,
-                                arguments: Article(
-                                  active: true,
-                                  amount: 1,
-                                  article: textController.text,
-                                ));
-                          }
-                        : null,
-                    icon: const Icon(Icons.add_sharp),
-                    label: Text(i18n(context).com_new)),
+                if (!dontAdd)
+                  ElevatedButton.icon(
+                      onPressed: textController.text.isNotEmpty
+                          ? () {
+                              Navigator.pushReplacementNamed(context, ArticleEditPage.routeName,
+                                  arguments: Article(
+                                    active: !dontAdd,
+                                    amount: 1,
+                                    article: textController.text,
+                                  ));
+                            }
+                          : null,
+                      icon: const Icon(Icons.add_sharp),
+                      label: Text(i18n(context).com_new)),
               ],
             ),
           );

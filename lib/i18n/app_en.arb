@@ -7,14 +7,23 @@
   "com_back": "Back",
   "com_new": "New",
   "com_save": "Save",
+  "com_delete": "Delete",
+  "com_required": "This field is required",
   "com_article": "article",
   "com_shop": "shop",
+  "com_unknown": "Unknown",
   "com_change_theme": "change theme",
   "com_change_language": "change language",
   "com_change_server": "change server connection",
-  "com_search_term": "search term (enter 3 or more character)",
+  "com_search_term": "search term (min. 3 characters)",
   "com_num_articles": "{count, plural, =0{no articles} =1{one article} other{{count} articles}}",
   "@com_num_articles": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "com_num_recipes": "{count, plural, =0{no recipes} =1{one recipe} other{{count} recipes}}",
+  "@com_num_recipes": {
     "placeholders": {
       "count": {}
     }
@@ -73,8 +82,19 @@
   "p_active_empty": "No article\nhas been\nselected.",
 
   "p_articles_title": "article list",
-  "p_articles_tooltip": "add article",
-  
+  "p_article_add": "add article",
+
+  "p_recipe": "Recipe",
+  "p_recipe_name": "Name",
+  "p_recipe_notes": "Notes",
+  "p_recipe_new": "New recipe",
+  "p_recipe_change": "Change recipe",
+  "p_recipe_delete": "delete recipe",
+  "p_recipe_delete_confirm": "Do you really want to delete this recipe?",
+  "p_recipes_title": "recipe list",
+  "p_recipes_tooltip": "add recipe",
+  "p_recipes_select": "select recipe",
+
   "p_edit_new": "new article",
   "p_edit_change": "change article",
   "p_edit_delete": "delete article",

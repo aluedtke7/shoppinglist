@@ -15,6 +15,11 @@ var customThemes = [
         seedColor: Colors.lightBlue,
       ),
       dialogTheme: DialogThemeData(backgroundColor: const Color.fromARGB(255, 240, 240, 240)),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          backgroundColor: Colors.grey.shade300,
+        ),
+      ),
     ),
     options: ThemeOptions(
       Colors.grey.shade400,
@@ -37,6 +42,11 @@ var customThemes = [
         seedColor: Colors.lightGreen,
       ),
       dialogTheme: DialogThemeData(backgroundColor: const Color.fromARGB(255, 240, 240, 240)),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          backgroundColor: Colors.grey.shade300,
+        ),
+      ),
     ),
     options: ThemeOptions(
       Colors.grey.shade400,
@@ -60,6 +70,11 @@ var customThemes = [
         seedColor: Colors.orange,
       ),
       dialogTheme: DialogThemeData(backgroundColor: const Color.fromARGB(255, 240, 240, 240)),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          backgroundColor: Colors.grey.shade300,
+        ),
+      ),
     ),
     options: ThemeOptions(
       Colors.grey.shade400,
@@ -83,6 +98,18 @@ var customThemes = [
         brightness: Brightness.light,
       ),
       dialogTheme: DialogThemeData(backgroundColor: const Color.fromARGB(255, 240, 240, 240)),
+      inputDecorationTheme: const InputDecorationTheme(
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.black),
+        ),
+        floatingLabelStyle: TextStyle(color: Colors.black),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          backgroundColor: Colors.orange.shade200,
+          foregroundColor: Colors.white,
+        ),
+      ),
     ),
     options: ThemeOptions(
       Colors.grey.shade400,
@@ -105,6 +132,11 @@ var customThemes = [
         seedColor: Colors.cyan,
       ),
       dialogTheme: DialogThemeData(backgroundColor: const Color.fromARGB(255, 50, 50, 50)),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          backgroundColor: Colors.grey.shade700,
+        ),
+      ),
     ),
     options: ThemeOptions(
       Colors.grey.shade600,
@@ -125,6 +157,11 @@ var customThemes = [
       colorScheme: ColorScheme.fromSeed(
         brightness: Brightness.dark,
         seedColor: Colors.orange,
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          backgroundColor: Colors.grey.shade700,
+        ),
       ),
     ),
     options: ThemeOptions(
