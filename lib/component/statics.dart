@@ -139,6 +139,8 @@ class Statics {
   }
 
   static Future<bool?> showConfirmDialog(BuildContext context, String title, String message) async {
+    var noText = i18n(context).com_no;
+    var yesText = i18n(context).com_yes;
     return showDialog<bool?>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -150,14 +152,14 @@ class Statics {
             onPressed: () {
               Navigator.of(ctx).pop(false);
             },
-            child: Text(i18n(context).com_no),
+            child: Text(noText),
           ),
           ElevatedButton(
             autofocus: false,
             onPressed: () {
               Navigator.of(ctx).pop(true);
             },
-            child: Text(i18n(context).com_yes),
+            child: Text(yesText),
           ),
         ],
       ),

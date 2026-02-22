@@ -45,6 +45,9 @@
   "l_p_server_url": "Verbindung zum PocketBase Server",
   "l_p_server_example": "z.B. https://Ihr_PocketBase_Server.de",
   "l_p_server_url_info": "Bitte geben Sie die URL Ihres PocketBase Server ein.\nInkl. http/https und evtl. nötiger Portnummer.",
+  "l_p_biometric_tooltip": "Biometrisches Anmelden",
+  "l_p_biometric_reason": "Bitte authentifizieren Sie sich",
+  "l_p_biometric_title": "Authentifizieren für Anmeldung",
 
   "p_active_title": "Einkaufsliste",
   "p_active_tooltip": "Artikel suchen",

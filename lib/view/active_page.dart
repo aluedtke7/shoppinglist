@@ -62,6 +62,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
   }
 
   Future<void> _fetchAll() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
     });
@@ -76,9 +77,11 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
         Statics.showErrorSnackbar(context, e);
       }
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 

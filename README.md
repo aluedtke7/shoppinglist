@@ -15,9 +15,10 @@ on [fly.io](https://github.com/pocketbase/pocketbase/discussions/537) (discussio
 
 ### Features
 
-- Dart 3 and Flutter 3.38 compatible
+- Dart 3 and Flutter 3.41 compatible
 - Works with PocketBase v0.35
-- New feature: recipes
+- New feature: biometric authentication (fingerprint, face recognition)
+- recipes
 - several themes with custom options including dark modes
 - localization (English and German)
 - it works on Android, iOS, Linux, macOS, Windows and Web (also WebAssembly)
@@ -71,15 +72,15 @@ When the server can't be reached, an icon is displayed in the app bar.
 
 ## Technical description
 
-There are database tables (PocketBase Collections) used in this app:
+These are the database tables (PocketBase Collections) used in this app:
 - 'shoppinglist'
 - 'recipes'
 - 'recipe_articles'
 
 The 'shoppinglist' collection has the following fields:
-- `active` : Bool
+- `active` : Bool – when true, the article is shown in the shopping list, else it's shown in the article list
 - `amount` : Number, Min=0, Max=100
-- `inCart` : Bool
+- `inCart` : Bool – when true, the article is displayed struck through in the shopping list
 - `article` : Plain text, Min length=1, Max length=120, Nonempty, Unique
 - `shop` : Plain text, Max length=80
 

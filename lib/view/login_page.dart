@@ -1,6 +1,10 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:local_auth_android/local_auth_android.dart';
+import 'package:local_auth_darwin/local_auth_darwin.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,21 +49,61 @@ class _LoginCard extends StatefulWidget {
 }
 
 class _LoginCardState extends State<_LoginCard> {
+  static bool _globalBiometricInProgress = false;
+
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
+  final LocalAuthentication _localAuth = LocalAuthentication();
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
   var _hidePW = true;
   var _email = '';
   var _password = '';
   var _isLoading = false;
   var _serverUrl = '';
+  var _savedPassword = '';
+  var _canUseBiometric = false;
+  var _biometricAttempted = false;
 
   @override
   void initState() {
     super.initState();
-    _loadPrefs();
+    // Reset global flag and local flag when returning to login page (after logout)
+    _globalBiometricInProgress = false;
+    _biometricAttempted = false;
+    _initBiometricLogin();
+  }
+
+  @override
+  void dispose() {
+    try {
+      _localAuth.stopAuthentication();
+    } catch (_) {
+      // Ignore errors during dispose
+    }
+    _emailController.dispose();
+    _passwordController.dispose();
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
+    super.dispose();
+  }
+
+  Future<void> _initBiometricLogin() async {
+    await _loadPrefs();
+    await _checkBiometric();
+    if (mounted && _canUseBiometric && _savedPassword.isNotEmpty && _email.isNotEmpty && !_biometricAttempted && !_globalBiometricInProgress) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (mounted && !_isLoading && !_biometricAttempted && !_globalBiometricInProgress) {
+          // Small delay to ensure UI is fully rendered (helps on Android after logout)
+          await Future.delayed(const Duration(milliseconds: 300));
+          if (mounted && !_isLoading && !_biometricAttempted && !_globalBiometricInProgress) {
+            _authenticateWithBiometric();
+          }
+        }
+      });
+    }
   }
 
   @override
@@ -69,20 +113,128 @@ class _LoginCardState extends State<_LoginCard> {
     }
   }
 
+  Future<void> _checkBiometric() async {
+    try {
+      final canAuthenticate = await _localAuth.canCheckBiometrics;
+      final isDeviceSupported = await _localAuth.isDeviceSupported();
+      setState(() {
+        _canUseBiometric = canAuthenticate && isDeviceSupported;
+      });
+    } catch (_) {
+      setState(() {
+        _canUseBiometric = false;
+      });
+    }
+  }
+
   Future<void> _loadPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     final url = await Statics.getServerUrl();
+    var savedEmail = await _secureStorage.read(key: PrefKeys.lastUserEmailSecureKey) ?? '';
+    var savedPassword = await _secureStorage.read(key: PrefKeys.lastUserPasswordSecureKey) ?? '';
+    if (savedEmail.isEmpty) {
+      final legacyEmail = prefs.getString(PrefKeys.lastUserPrefsKey) ?? '';
+      if (legacyEmail.isNotEmpty) {
+        await _secureStorage.write(key: PrefKeys.lastUserEmailSecureKey, value: legacyEmail);
+        await prefs.remove(PrefKeys.lastUserPrefsKey);
+        savedEmail = legacyEmail;
+      }
+    }
+    if (savedPassword.isEmpty) {
+      final legacyPassword = prefs.getString(PrefKeys.lastUserPasswordPrefsKey) ?? '';
+      if (legacyPassword.isNotEmpty) {
+        await _secureStorage.write(key: PrefKeys.lastUserPasswordSecureKey, value: legacyPassword);
+        await prefs.remove(PrefKeys.lastUserPasswordPrefsKey);
+        savedPassword = legacyPassword;
+      }
+    }
     setState(() {
       _serverUrl = url;
-      _email = prefs.getString(PrefKeys.lastUserPrefsKey) ?? '';
+      _email = savedEmail;
       _emailController.text = _email;
+      _savedPassword = savedPassword;
     });
   }
 
   Future<void> _savePrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(PrefKeys.lastUserPrefsKey, _email);
     prefs.setString(PrefKeys.serverUrlPrefsKey, _serverUrl);
+    if (_email.isNotEmpty) {
+      await _secureStorage.write(key: PrefKeys.lastUserEmailSecureKey, value: _email);
+    }
+    if (_password.isNotEmpty) {
+      await _secureStorage.write(key: PrefKeys.lastUserPasswordSecureKey, value: _password);
+    }
+  }
+
+  Future<void> _authenticateWithBiometric() async {
+    if (!mounted || !_canUseBiometric || _savedPassword.isEmpty || _email.isEmpty || _isLoading) {
+      return;
+    }
+
+    // Prevent concurrent authentication attempts globally
+    if (_globalBiometricInProgress || _biometricAttempted) {
+      return;
+    }
+    _biometricAttempted = true;
+    _globalBiometricInProgress = true;
+
+    // Capture context-dependent values before async gap
+    final biometricReason = i18n(context).l_p_biometric_reason;
+    final biometricTitle = i18n(context).l_p_biometric_title;
+    final cancelButton = i18n(context).com_cancel;
+    final pbProvider = Provider.of<PocketBaseProvider>(context, listen: false);
+
+    try {
+      final authenticated = await _localAuth.authenticate(
+        localizedReason: biometricReason,
+        biometricOnly: true,
+        authMessages: <AuthMessages>[
+          AndroidAuthMessages(
+            signInTitle: biometricTitle,
+            signInHint: '',
+            cancelButton: cancelButton,
+          ),
+          IOSAuthMessages(
+            localizedFallbackTitle: biometricTitle,
+            cancelButton: cancelButton,
+          ),
+        ],
+      );
+
+      if (!mounted) return;
+
+      if (authenticated) {
+        setState(() {
+          _isLoading = true;
+        });
+        try {
+          await pbProvider.login(_email, _savedPassword);
+          // Success - don't reset flag so it never shows again this session
+        } on ClientException catch (error) {
+          if (mounted) {
+            Statics.showErrorSnackbar(context, error);
+          }
+          _globalBiometricInProgress = false;
+        } finally {
+          if (mounted) {
+            setState(() {
+              _isLoading = false;
+            });
+          }
+        }
+      }
+    } on LocalAuthException catch (_) {
+      // User canceled or system canceled - allow retry
+      _biometricAttempted = false;
+      _globalBiometricInProgress = false;
+    } on PlatformException catch (e) {
+      _biometricAttempted = false;
+      _globalBiometricInProgress = false;
+      if (mounted) {
+        Statics.showErrorSnackbar(context, e);
+      }
+    }
   }
 
   Future<void> _submit() async {
@@ -143,6 +295,15 @@ class _LoginCardState extends State<_LoginCard> {
                               ),
                             ),
                             const Spacer(),
+                            if (_canUseBiometric && _savedPassword.isNotEmpty && _email.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(right: 16),
+                                child: IconButton(
+                                  icon: const Icon(Icons.fingerprint, size: 32),
+                                  onPressed: _authenticateWithBiometric,
+                                  tooltip: i18n(context).l_p_biometric_tooltip,
+                                ),
+                              ),
                           ],
                         ),
                         Row(
@@ -162,7 +323,7 @@ class _LoginCardState extends State<_LoginCard> {
                                   autofillHints: const [AutofillHints.email],
                                   controller: _emailController,
                                   focusNode: _emailFocus,
-                                  autofocus: true,
+                                  autofocus: !_canUseBiometric || _savedPassword.isEmpty,
                                   textInputAction: TextInputAction.next,
                                   keyboardType: TextInputType.emailAddress,
                                   decoration: InputDecoration(
@@ -205,7 +366,7 @@ class _LoginCardState extends State<_LoginCard> {
                                   autofillHints: const [AutofillHints.password],
                                   controller: _passwordController,
                                   focusNode: _passwordFocus,
-                                  autofocus: true,
+                                  autofocus: !_canUseBiometric || _savedPassword.isEmpty,
                                   obscureText: _hidePW,
                                   keyboardType: TextInputType.text,
                                   textInputAction: TextInputAction.done,
@@ -258,15 +419,16 @@ class _LoginCardState extends State<_LoginCard> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: _serverUrl.isEmpty
-                                  ? Column(spacing: 12,
-                                    children: [
-                                      Text(
-                                        i18n(context).l_p_server_url_not_set,
-                                        style: const TextStyle(
-                                          color: Colors.red,
+                                  ? Column(
+                                      spacing: 12,
+                                      children: [
+                                        Text(
+                                          i18n(context).l_p_server_url_not_set,
+                                          style: const TextStyle(
+                                            color: Colors.red,
+                                          ),
                                         ),
-                                      ),
-                                      ElevatedButton(
+                                        ElevatedButton(
                                           onPressed: () {
                                             Statics.showSettingsDialog(
                                               context,
@@ -286,8 +448,8 @@ class _LoginCardState extends State<_LoginCard> {
                                             i18n(context).l_p_server_url_configure,
                                           ),
                                         ),
-                                    ],
-                                  )
+                                      ],
+                                    )
                                   : TextButton(
                                       onPressed: () {
                                         Statics.showInputDialog(

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shoppinglist/component/statics.dart';
@@ -13,6 +14,7 @@ import 'package:vibration/vibration.dart' as vib;
 
 class PocketBaseProvider extends ChangeNotifier {
   PocketBase? _pb;
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
   final shoppingListCollection = 'shoppinglist';
   final recipesCollection = 'recipes';
   final recipeArticlesCollection = 'recipe_articles';
@@ -93,6 +95,15 @@ class PocketBaseProvider extends ChangeNotifier {
   Future<bool> tryAutoLogin() async {
     await ensurePocketBaseIsLoaded();
     final prefs = await SharedPreferences.getInstance();
+    var email = await _secureStorage.read(key: PrefKeys.lastUserEmailSecureKey) ?? '';
+    if (email.isEmpty) {
+      final legacyEmail = prefs.getString(PrefKeys.lastUserPrefsKey) ?? '';
+      if (legacyEmail.isNotEmpty) {
+        await _secureStorage.write(key: PrefKeys.lastUserEmailSecureKey, value: legacyEmail);
+        await prefs.remove(PrefKeys.lastUserPrefsKey);
+        email = legacyEmail;
+      }
+    }
     _userName = prefs.getString(PrefKeys.accessNamePrefsKey) ?? '';
     if (_pb == null) {
       return false;
@@ -100,7 +111,7 @@ class PocketBaseProvider extends ChangeNotifier {
     _pb!.authStore.save(
         prefs.getString(PrefKeys.accessTokenPrefsKey) ?? '',
         RecordModel({
-          'email': prefs.getString(PrefKeys.lastUserPrefsKey) ?? '',
+          'email': email,
         }));
     if (!_pb!.authStore.isValid) {
       return false;
