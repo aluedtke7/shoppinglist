@@ -128,30 +128,12 @@ class _LoginCardState extends State<_LoginCard> {
   }
 
   Future<void> _loadPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
     final url = await Statics.getServerUrl();
-    var savedEmail = await _secureStorage.read(key: PrefKeys.lastUserEmailSecureKey) ?? '';
-    var savedPassword = await _secureStorage.read(key: PrefKeys.lastUserPasswordSecureKey) ?? '';
-    if (savedEmail.isEmpty) {
-      final legacyEmail = prefs.getString(PrefKeys.lastUserPrefsKey) ?? '';
-      if (legacyEmail.isNotEmpty) {
-        await _secureStorage.write(key: PrefKeys.lastUserEmailSecureKey, value: legacyEmail);
-        await prefs.remove(PrefKeys.lastUserPrefsKey);
-        savedEmail = legacyEmail;
-      }
-    }
-    if (savedPassword.isEmpty) {
-      final legacyPassword = prefs.getString(PrefKeys.lastUserPasswordPrefsKey) ?? '';
-      if (legacyPassword.isNotEmpty) {
-        await _secureStorage.write(key: PrefKeys.lastUserPasswordSecureKey, value: legacyPassword);
-        await prefs.remove(PrefKeys.lastUserPasswordPrefsKey);
-        savedPassword = legacyPassword;
-      }
-    }
+    var savedEmail = await _secureStorage.read(key: PrefKeys.lastEmailSecureKey) ?? '';
+    var savedPassword = await _secureStorage.read(key: PrefKeys.lastPasswordSecureKey) ?? '';
     setState(() {
       _serverUrl = url;
       _email = savedEmail;
-      _emailController.text = _email;
       _savedPassword = savedPassword;
     });
   }
@@ -160,10 +142,10 @@ class _LoginCardState extends State<_LoginCard> {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(PrefKeys.serverUrlPrefsKey, _serverUrl);
     if (_email.isNotEmpty) {
-      await _secureStorage.write(key: PrefKeys.lastUserEmailSecureKey, value: _email);
+      await _secureStorage.write(key: PrefKeys.lastEmailSecureKey, value: _email);
     }
     if (_password.isNotEmpty) {
-      await _secureStorage.write(key: PrefKeys.lastUserPasswordSecureKey, value: _password);
+      await _secureStorage.write(key: PrefKeys.lastPasswordSecureKey, value: _password);
     }
   }
 

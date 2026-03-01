@@ -56,7 +56,7 @@ class PocketBaseProvider extends ChangeNotifier {
     _healthy = true;
     _userName = authData.record.data['name'].toString();
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(PrefKeys.accessTokenPrefsKey, _pb!.authStore.token);
+    await _secureStorage.write(key: PrefKeys.accessTokenSecureKey, value: _pb!.authStore.token);
     prefs.setString(PrefKeys.accessNamePrefsKey, _userName);
     notifyListeners();
   }
@@ -86,30 +86,20 @@ class PocketBaseProvider extends ChangeNotifier {
     _healthCheckTimer?.cancel();
     _healthCheckTimer = null;
     _pb?.authStore.clear();
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove(PrefKeys.accessTokenPrefsKey);
-    prefs.remove(PrefKeys.accessModelPrefsKey);
-    prefs.remove(PrefKeys.accessNamePrefsKey);
+    await _secureStorage.delete(key: PrefKeys.accessTokenSecureKey);
   }
 
   Future<bool> tryAutoLogin() async {
     await ensurePocketBaseIsLoaded();
     final prefs = await SharedPreferences.getInstance();
-    var email = await _secureStorage.read(key: PrefKeys.lastUserEmailSecureKey) ?? '';
-    if (email.isEmpty) {
-      final legacyEmail = prefs.getString(PrefKeys.lastUserPrefsKey) ?? '';
-      if (legacyEmail.isNotEmpty) {
-        await _secureStorage.write(key: PrefKeys.lastUserEmailSecureKey, value: legacyEmail);
-        await prefs.remove(PrefKeys.lastUserPrefsKey);
-        email = legacyEmail;
-      }
-    }
+    var email = await _secureStorage.read(key: PrefKeys.lastEmailSecureKey) ?? '';
     _userName = prefs.getString(PrefKeys.accessNamePrefsKey) ?? '';
     if (_pb == null) {
       return false;
     }
+    var token = await _secureStorage.read(key: PrefKeys.accessTokenSecureKey) ?? '';
     _pb!.authStore.save(
-        prefs.getString(PrefKeys.accessTokenPrefsKey) ?? '',
+        token,
         RecordModel({
           'email': email,
         }));
@@ -207,9 +197,7 @@ class PocketBaseProvider extends ChangeNotifier {
   /// Returns a map of articleId -> quantity for the given recipe.
   Future<Map<String, int>> fetchRecipeArticleQuantities(String recipeId) async {
     await ensurePocketBaseIsLoaded();
-    final res = await _pb?.collection(recipeArticlesCollection).getFullList(
-      filter: 'recipe = "$recipeId"',
-    );
+    final res = await _pb?.collection(recipeArticlesCollection).getFullList(filter: 'recipe = "$recipeId"');
     if (res == null) return {};
     final Map<String, int> out = {};
     for (final rec in res) {
@@ -254,8 +242,8 @@ class PocketBaseProvider extends ChangeNotifier {
     await ensurePocketBaseIsLoaded();
     final q = quantity.clamp(1, 999);
     final res = await _pb!.collection(recipeArticlesCollection).getList(
-      filter: 'recipe = "$recipeId" && article = "$articleId"',
-    );
+          filter: 'recipe = "$recipeId" && article = "$articleId"',
+        );
     if (res.items.isEmpty) {
       await _pb!.collection(recipeArticlesCollection).create(body: {
         'recipe': recipeId,
@@ -421,9 +409,7 @@ class PocketBaseProvider extends ChangeNotifier {
     await ensurePocketBaseIsLoaded();
     // First remove any links from recipe_articles referencing this article
     try {
-      final links = await _pb!
-          .collection(recipeArticlesCollection)
-          .getList(filter: 'article = "$id"');
+      final links = await _pb!.collection(recipeArticlesCollection).getList(filter: 'article = "$id"');
       for (final it in links.items) {
         await _pb!.collection(recipeArticlesCollection).delete(it.id);
       }
