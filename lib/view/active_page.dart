@@ -226,16 +226,20 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-            heroTag: 'end_shopping',
+            heroTag: 'add_item',
             onPressed: () {
-              Statics.showEndShoppingDialog(context, pbp);
+              pbp.clearSearchList();
+              Statics.searchForArticle(context, pbp).then((value) {
+                if (value != null) {
+                  value.active = true;
+                  value.amount = max(1, value.amount);
+                  pbp.updateArticle(value);
+                }
+              });
             },
-            tooltip: i18n(context).drawer_end_shopping,
+            tooltip: i18n(context).p_active_tooltip,
             backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-            child: ImageIcon(
-              size: 24,
-              AssetImage('assets/race_flag.png'),
-            ),
+            child: const Icon(Icons.add),
           ),
           FloatingActionButton(
             heroTag: 'select_recipe',
@@ -253,20 +257,16 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
             child: const Icon(Icons.menu_book),
           ),
           FloatingActionButton(
-            heroTag: 'add_item',
+            heroTag: 'end_shopping',
             onPressed: () {
-              pbp.clearSearchList();
-              Statics.searchForArticle(context, pbp).then((value) {
-                if (value != null) {
-                  value.active = true;
-                  value.amount = max(1, value.amount);
-                  pbp.updateArticle(value);
-                }
-              });
+              Statics.showEndShoppingDialog(context, pbp);
             },
-            tooltip: i18n(context).p_active_tooltip,
+            tooltip: i18n(context).drawer_end_shopping,
             backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-            child: const Icon(Icons.add),
+            child: ImageIcon(
+              size: 24,
+              AssetImage('assets/race_flag.png'),
+            ),
           ),
         ],
       ),

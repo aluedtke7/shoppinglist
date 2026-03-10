@@ -73,33 +73,33 @@ class _MyAppState extends State<MyApp> {
       child: ThemeConsumer(
         child: Consumer<PocketBaseProvider>(
           builder: (context, pbp, _) => MaterialApp(
-              title: 'Shoppinglist',
-              theme: ThemeProvider.themeOf(context).data,
-              localizationsDelegates: [
-                _localeOverrideDelegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: APPLIC().supportedLocales(),
-              home: pbp.isAuth
-                  ? const ActivePage()
-                  : FutureBuilder(
-                      future: pbp.tryAutoLogin(),
-                      builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
-                          ? const SplashScreen()
-                          : const LoginPage(),
-                    ),
-              routes: {
-                // LoginPage.routeName: (context) => const LoginPage(),
-                // --- Views/Pages ---
-                ActivePage.routeName: (context) => const ActivePage(),
-                ArticlePage.routeName: (context) => const ArticlePage(),
-                RecipePage.routeName: (context) => const RecipePage(),
-                // --- Edits ---
-                ArticleEditPage.routeName: (context) => const ArticleEditPage(),
-                RecipeEditPage.routeName: (context) => const RecipeEditPage(),
-              },
+            title: 'Shoppinglist',
+            builder: (ctx, child) => SafeArea(top: false, bottom: true, child: child!),
+            theme: ThemeProvider.themeOf(context).data,
+            localizationsDelegates: [
+              _localeOverrideDelegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: APPLIC().supportedLocales(),
+            home: pbp.isAuth
+                ? const ActivePage()
+                : FutureBuilder(
+                    future: pbp.tryAutoLogin(),
+                    builder: (context, snapshot) =>
+                        snapshot.connectionState == ConnectionState.waiting ? const SplashScreen() : const LoginPage(),
+                  ),
+            routes: {
+              // LoginPage.routeName: (context) => const LoginPage(),
+              // --- Views/Pages ---
+              ActivePage.routeName: (context) => const ActivePage(),
+              ArticlePage.routeName: (context) => const ArticlePage(),
+              RecipePage.routeName: (context) => const RecipePage(),
+              // --- Edits ---
+              ArticleEditPage.routeName: (context) => const ArticleEditPage(),
+              RecipeEditPage.routeName: (context) => const RecipeEditPage(),
+            },
           ),
         ),
       ),
