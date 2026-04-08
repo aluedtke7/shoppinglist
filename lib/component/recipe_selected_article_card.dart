@@ -28,11 +28,14 @@ class RecipeSelectedArticleCard extends StatelessWidget {
       child: Container(
         width: double.maxFinite,
         margin: const EdgeInsets.all(8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Texts (shop and article name)
-            Expanded(
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -40,10 +43,12 @@ class RecipeSelectedArticleCard extends StatelessWidget {
                   Text(
                     article.article,
                     textScaler: TextScaler.linear(
-                      ThemeProvider.optionsOf<ThemeOptions>(context).cardTextScaleFactor,
+                      // ThemeProvider.optionsOf<ThemeOptions>(context).cardTextScaleFactor,
+                      1.2
                     ),
                     style: TextStyle(
-                      fontWeight: ThemeProvider.optionsOf<ThemeOptions>(context).cardTextFontWeight,
+                      fontWeight: ThemeProvider.optionsOf<ThemeOptions>(context)
+                          .cardTextFontWeight,
                     ),
                   ),
                 ],
@@ -62,10 +67,12 @@ class RecipeSelectedArticleCard extends StatelessWidget {
                   child: Text(
                     '$quantity',
                     textScaler: TextScaler.linear(
-                      ThemeProvider.optionsOf<ThemeOptions>(context).cardTextScaleFactor,
+                      ThemeProvider.optionsOf<ThemeOptions>(context)
+                          .cardTextScaleFactor,
                     ),
                     style: TextStyle(
-                      fontWeight: ThemeProvider.optionsOf<ThemeOptions>(context).cardTextFontWeight,
+                      fontWeight: ThemeProvider.optionsOf<ThemeOptions>(context)
+                          .cardTextFontWeight,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -79,7 +86,7 @@ class RecipeSelectedArticleCard extends StatelessWidget {
                   onPressed: onRemove,
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
