@@ -1,9 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
+import 'package:shoppinglist/component/debounced_search_field.dart';
 import 'package:shoppinglist/component/i18n_util.dart';
 import 'package:shoppinglist/component/selected_page.dart';
 import 'package:shoppinglist/component/slapp_app_bar.dart';
@@ -26,13 +25,6 @@ class RecipePage extends StatefulWidget {
 class _RecipePageState extends State<RecipePage> {
   var _isLoading = false;
   var _searchFor = '';
-  Timer? _delayedSearch;
-
-  @override
-  void dispose() {
-    _delayedSearch?.cancel();
-    super.dispose();
-  }
 
   @override
   void initState() {
@@ -87,16 +79,8 @@ class _RecipePageState extends State<RecipePage> {
                       children: [
                         Flexible(
                           flex: 5,
-                          child: TextField(
-                            decoration: InputDecoration(labelText: i18n(context).com_search_term),
-                            onChanged: (text) {
-                              _delayedSearch?.cancel();
-                              _delayedSearch = Timer(const Duration(milliseconds: 750), () {
-                                setState(() {
-                                  _searchFor = text;
-                                });
-                              });
-                            },
+                          child: DebouncedSearchField(
+                            onChanged: (text) => setState(() => _searchFor = text),
                           ),
                         ),
                         const SizedBox(width: 8),

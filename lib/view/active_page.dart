@@ -8,8 +8,9 @@ import 'package:shoppinglist/component/article_card.dart';
 import 'package:shoppinglist/component/i18n_util.dart';
 import 'package:shoppinglist/component/selected_page.dart';
 import 'package:shoppinglist/component/slapp_app_bar.dart';
+import 'package:shoppinglist/component/dialogs.dart';
 import 'package:shoppinglist/component/slapp_drawer.dart';
-import 'package:shoppinglist/component/statics.dart';
+import 'package:shoppinglist/component/snackbars.dart';
 import 'package:shoppinglist/component/theme_options.dart';
 import 'package:shoppinglist/model/article.dart';
 import 'package:shoppinglist/model/sel_page.dart';
@@ -74,7 +75,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
       ]);
     } on ClientException catch (e) {
       if (mounted) {
-        Statics.showErrorSnackbar(context, e);
+        showErrorSnackbar(context, e);
       }
     } finally {
       if (mounted) {
@@ -89,6 +90,23 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final pbp = Provider.of<PocketBaseProvider>(context, listen: true);
     page = SelPage.activeList;
+
+    final themeOptions = ThemeProvider.optionsOf<ThemeOptions>(context);
+    SlidableAction themedAction({
+      required IconData icon,
+      required void Function(BuildContext) onPressed,
+      bool autoClose = true,
+    }) {
+      return SlidableAction(
+        autoClose: autoClose,
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
+        padding: const EdgeInsets.all(8),
+        backgroundColor: themeOptions.slideBtnBackgroundColor(context),
+        foregroundColor: themeOptions.slideBtnForegroundColor(context),
+        onPressed: onPressed,
+        icon: icon,
+      );
+    }
 
     return Scaffold(
       appBar: SlappAppBar(title: i18n(context).p_active_title),
@@ -117,68 +135,45 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                         startActionPane: ActionPane(
                                           motion: const StretchMotion(),
                                           children: [
-                                            SlidableAction(
+                                            themedAction(
                                               autoClose: false,
-                                              borderRadius: const BorderRadius.all(Radius.circular(12)),
-                                              padding: const EdgeInsets.all(8),
-                                              backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                  .slideBtnBackgroundColor(context),
-                                              foregroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                  .slideBtnForegroundColor(context),
+                                              icon: Icons.add,
                                               onPressed: (context) async {
                                                 itm.amount = min(12, itm.amount + 1);
                                                 try {
                                                   await pbp.updateArticle(itm);
                                                 } catch (e) {
                                                   if (context.mounted) {
-                                                    Statics.showErrorSnackbar(context, e);
+                                                    showErrorSnackbar(context, e);
                                                   }
                                                 }
                                               },
-                                              icon: Icons.add,
                                             ),
-                                            SlidableAction(
+                                            themedAction(
                                               autoClose: false,
-                                              borderRadius: const BorderRadius.all(Radius.circular(12)),
-                                              padding: const EdgeInsets.all(8),
-                                              backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                  .slideBtnBackgroundColor(context),
-                                              foregroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                  .slideBtnForegroundColor(context),
+                                              icon: Icons.remove,
                                               onPressed: (context) async {
                                                 itm.amount = max(1, itm.amount - 1);
                                                 try {
                                                   await pbp.updateArticle(itm);
                                                 } catch (e) {
                                                   if (context.mounted) {
-                                                    Statics.showErrorSnackbar(context, e);
+                                                    showErrorSnackbar(context, e);
                                                   }
                                                 }
                                               },
-                                              icon: Icons.remove,
                                             ),
                                           ],
                                         ),
                                         endActionPane: ActionPane(motion: const StretchMotion(), children: [
-                                          SlidableAction(
-                                            borderRadius: const BorderRadius.all(Radius.circular(12)),
-                                            padding: const EdgeInsets.all(8),
-                                            backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                .slideBtnBackgroundColor(context),
-                                            foregroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                .slideBtnForegroundColor(context),
+                                          themedAction(
+                                            icon: Icons.edit,
                                             onPressed: (context) {
                                               Navigator.pushNamed(context, ArticleEditPage.routeName, arguments: itm);
                                             },
-                                            icon: Icons.edit,
                                           ),
-                                          SlidableAction(
-                                            borderRadius: const BorderRadius.all(Radius.circular(12)),
-                                            padding: const EdgeInsets.all(8),
-                                            backgroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                .slideBtnBackgroundColor(context),
-                                            foregroundColor: ThemeProvider.optionsOf<ThemeOptions>(context)
-                                                .slideBtnForegroundColor(context),
+                                          themedAction(
+                                            icon: Icons.copy,
                                             onPressed: (context) {
                                               final newItm = Article(
                                                 active: true,
@@ -192,7 +187,6 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                                 arguments: newItm,
                                               );
                                             },
-                                            icon: Icons.copy,
                                           ),
                                         ]),
                                         child: Builder(builder: (c) {
@@ -229,7 +223,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
             heroTag: 'add_item',
             onPressed: () {
               pbp.clearSearchList();
-              Statics.searchForArticle(context, pbp).then((value) {
+              searchForArticle(context, pbp).then((value) {
                 if (value != null) {
                   value.active = true;
                   value.amount = max(1, value.amount);
@@ -247,7 +241,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
               // ensure recipes loaded
               await pbp.fetchAllRecipes();
               if (!context.mounted) return;
-              final Recipe? selected = await Statics.selectRecipeDialog(context, pbp);
+              final Recipe? selected = await selectRecipeDialog(context, pbp);
               if (selected != null) {
                 await pbp.selectRecipeSetInCart(selected.id);
               }
@@ -259,7 +253,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
           FloatingActionButton(
             heroTag: 'end_shopping',
             onPressed: () {
-              Statics.showEndShoppingDialog(context, pbp);
+              showEndShoppingDialog(context, pbp);
             },
             tooltip: i18n(context).drawer_end_shopping,
             backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,

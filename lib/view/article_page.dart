@@ -1,16 +1,15 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import 'package:shoppinglist/component/article_card.dart';
+import 'package:shoppinglist/component/debounced_search_field.dart';
 import 'package:shoppinglist/component/i18n_util.dart';
 import 'package:shoppinglist/component/selected_page.dart';
 import 'package:shoppinglist/component/slapp_app_bar.dart';
 import 'package:shoppinglist/component/slapp_drawer.dart';
-import 'package:shoppinglist/component/statics.dart';
+import 'package:shoppinglist/component/snackbars.dart';
 import 'package:shoppinglist/component/theme_options.dart';
 import 'package:shoppinglist/model/article.dart';
 import 'package:shoppinglist/model/sel_page.dart';
@@ -28,13 +27,6 @@ class ArticlePage extends StatefulWidget {
 class _ArticlePageState extends State<ArticlePage> {
   var _isLoading = false;
   var _searchFor = '';
-  Timer? _delayedSearch;
-
-  @override
-  void dispose() {
-    _delayedSearch?.cancel();
-    super.dispose();
-  }
 
   @override
   void initState() {
@@ -56,7 +48,7 @@ class _ArticlePageState extends State<ArticlePage> {
       await Future.wait([_fetchAllArticles(pbp)]);
     } on ClientException catch (e) {
       if (mounted) {
-        Statics.showErrorSnackbar(context, e);
+        showErrorSnackbar(context, e);
       }
     } finally {
       setState(() {
@@ -96,17 +88,9 @@ class _ArticlePageState extends State<ArticlePage> {
                       children: [
                         Flexible(
                           flex: 5,
-                          child: TextField(
-                            decoration: InputDecoration(labelText: i18n(context).com_search_term),
+                          child: DebouncedSearchField(
                             autofocus: true,
-                            onChanged: (text) {
-                              _delayedSearch?.cancel();
-                              _delayedSearch = Timer(const Duration(milliseconds: 750), () {
-                                setState(() {
-                                  _searchFor = text;
-                                });
-                              });
-                            },
+                            onChanged: (text) => setState(() => _searchFor = text),
                           ),
                         ),
                         const SizedBox(width: 8),

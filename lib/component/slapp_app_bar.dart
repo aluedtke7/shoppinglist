@@ -3,10 +3,11 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shoppinglist/application.dart';
+import 'package:shoppinglist/component/dialogs.dart';
 import 'package:shoppinglist/component/i18n_util.dart';
-import 'package:shoppinglist/component/statics.dart';
 import 'package:shoppinglist/model/pref_keys.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
+import 'package:shoppinglist/service/config_service.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 class SlappAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -34,7 +35,7 @@ class _SlappAppBarState extends State<SlappAppBar> {
   }
 
   Future<void> _loadPrefs() async {
-    final url = await Statics.getServerUrl();
+    final url = await getServerUrl();
     setState(() {
       _serverUrl = url;
     });
@@ -84,7 +85,7 @@ class _SlappAppBarState extends State<SlappAppBar> {
         ),
         IconButton(
           onPressed: () {
-            Statics.showSettingsDialog(
+            showSettingsDialog(
               context,
               i18n(context).l_p_server_url,
               i18n(context).l_p_server_url_info,

@@ -4,8 +4,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
+import 'package:shoppinglist/component/dialogs.dart';
 import 'package:shoppinglist/component/i18n_util.dart';
-import 'package:shoppinglist/component/statics.dart';
 import 'package:shoppinglist/component/theme_options.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
 import 'package:shoppinglist/view/active_page.dart';
@@ -103,7 +103,7 @@ class SlappDrawer extends StatelessWidget {
             ListTile(
               title: Text(i18n(context).drawer_end_shopping),
               onTap: () {
-                Statics.showEndShoppingDialog(context, pbp).then((b) {
+                showEndShoppingDialog(context, pbp).then((b) {
                   if (context.mounted) Navigator.pop(context);
                 });
               },
@@ -116,7 +116,7 @@ class SlappDrawer extends StatelessWidget {
             ListTile(
               title: Text(i18n(context).drawer_logout),
               onTap: () {
-                Statics.showConfirmDialog(context, i18n(context).drawer_logout, i18n(context).drawer_logout_q)
+                showConfirmDialog(context, i18n(context).drawer_logout, i18n(context).drawer_logout_q)
                     .then((value) {
                   if (value != null && value) {
                     pbp.logout();

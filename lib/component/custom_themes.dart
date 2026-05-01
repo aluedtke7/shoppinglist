@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 
-import 'package:shoppinglist/component/statics.dart';
+import 'package:shoppinglist/component/theme_decorations.dart';
 import 'package:shoppinglist/component/theme_options.dart';
 
 var customThemes = [
@@ -23,13 +23,13 @@ var customThemes = [
     ),
     options: ThemeOptions(
       Colors.grey.shade400,
-      Statics.getSlideBtnBackgroundLight,
-      Statics.getSlideBtnForegroundLight,
+      getSlideBtnBackgroundLight,
+      getSlideBtnForegroundLight,
       1.4,
       FontWeight.bold,
-      Statics.getGradientPageDecoration(),
-      Statics.getGradientDrawerDecoration,
-      Statics.getGradientDrawerHeaderDecoration,
+      getGradientPageDecoration(),
+      getGradientDrawerDecoration,
+      getGradientDrawerHeaderDecoration,
     ),
   ),
   AppTheme(
@@ -50,13 +50,13 @@ var customThemes = [
     ),
     options: ThemeOptions(
       Colors.grey.shade400,
-      Statics.getSlideBtnBackgroundLight,
-      Statics.getSlideBtnForegroundLight,
+      getSlideBtnBackgroundLight,
+      getSlideBtnForegroundLight,
       1.4,
       FontWeight.bold,
-      Statics.getGradientPageDecoration(),
-      Statics.getGradientDrawerDecoration,
-      Statics.getGradientDrawerHeaderDecoration,
+      getGradientPageDecoration(),
+      getGradientDrawerDecoration,
+      getGradientDrawerHeaderDecoration,
     ),
   ),
   AppTheme(
@@ -78,13 +78,13 @@ var customThemes = [
     ),
     options: ThemeOptions(
       Colors.grey.shade400,
-      Statics.getSlideBtnBackgroundLight,
-      Statics.getSlideBtnForegroundLight,
+      getSlideBtnBackgroundLight,
+      getSlideBtnForegroundLight,
       1.4,
       FontWeight.bold,
-      Statics.getGradientPageDecoration(),
-      Statics.getGradientDrawerDecoration,
-      Statics.getGradientDrawerHeaderDecoration,
+      getGradientPageDecoration(),
+      getGradientDrawerDecoration,
+      getGradientDrawerHeaderDecoration,
     ),
   ),
   AppTheme(
@@ -113,13 +113,13 @@ var customThemes = [
     ),
     options: ThemeOptions(
       Colors.grey.shade400,
-      Statics.getSlideBtnBackgroundLight,
-      Statics.getSlideBtnForegroundLight,
+      getSlideBtnBackgroundLight,
+      getSlideBtnForegroundLight,
       1.1,
       FontWeight.normal,
-      Statics.getSimplePageDecoration(),
-      Statics.getSimpleDrawerDecoration,
-      Statics.getSimpleDrawerHeaderDecoration,
+      getSimplePageDecoration(),
+      getSimpleDrawerDecoration,
+      getSimpleDrawerHeaderDecoration,
     ),
   ),
   AppTheme(
@@ -140,13 +140,13 @@ var customThemes = [
     ),
     options: ThemeOptions(
       Colors.grey.shade600,
-      Statics.getSlideBtnBackgroundDark,
-      Statics.getSlideBtnForegroundDark,
+      getSlideBtnBackgroundDark,
+      getSlideBtnForegroundDark,
       1.4,
       FontWeight.bold,
-      Statics.getGradientPageDecoration(),
-      Statics.getGradientDrawerDecoration,
-      Statics.getGradientDrawerHeaderDecoration,
+      getGradientPageDecoration(),
+      getGradientDrawerDecoration,
+      getGradientDrawerHeaderDecoration,
     ),
   ),
   AppTheme(
@@ -166,13 +166,13 @@ var customThemes = [
     ),
     options: ThemeOptions(
       Colors.grey.shade600,
-      Statics.getSlideBtnBackgroundDark,
-      Statics.getSlideBtnForegroundDark,
+      getSlideBtnBackgroundDark,
+      getSlideBtnForegroundDark,
       1.4,
       FontWeight.bold,
-      Statics.getGradientPageDecoration(),
-      Statics.getGradientDrawerDecoration,
-      Statics.getGradientDrawerHeaderDecoration,
+      getGradientPageDecoration(),
+      getGradientDrawerDecoration,
+      getGradientDrawerHeaderDecoration,
     ),
   ),
 ];

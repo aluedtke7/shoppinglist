@@ -3,8 +3,9 @@ import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
+import 'package:shoppinglist/component/dialogs.dart';
 import 'package:shoppinglist/component/i18n_util.dart';
-import 'package:shoppinglist/component/statics.dart';
+import 'package:shoppinglist/component/snackbars.dart';
 import 'package:shoppinglist/component/theme_options.dart';
 import 'package:shoppinglist/model/article.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
@@ -36,11 +37,11 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
     } catch (err) {
       if (err is ClientException && err.response['data']?['article']?['code'] == 'validation_not_unique') {
         if (context.mounted) {
-          Statics.showErrorSnackbar(context, i18n(context).p_edit_unique_error);
+          showErrorSnackbar(context, i18n(context).p_edit_unique_error);
         }
       } else {
         if (context.mounted) {
-          Statics.showErrorSnackbar(context, err);
+          showErrorSnackbar(context, err);
         }
       }
     } finally {
@@ -64,7 +65,7 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
           onPressed: (article.id.isEmpty)
               ? null
               : () {
-                  Statics.showConfirmDialog(
+                  showConfirmDialog(
                     context,
                     i18n(context).p_edit_delete,
                     i18n(context).p_edit_delete_q(article.article),

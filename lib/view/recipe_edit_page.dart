@@ -5,8 +5,9 @@ import 'package:shoppinglist/component/theme_options.dart';
 import 'package:shoppinglist/component/i18n_util.dart';
 import 'package:shoppinglist/component/slapp_app_bar.dart';
 import 'package:shoppinglist/component/slapp_drawer.dart';
+import 'package:shoppinglist/component/dialogs.dart';
 import 'package:shoppinglist/component/recipe_selected_article_card.dart';
-import 'package:shoppinglist/component/statics.dart';
+import 'package:shoppinglist/component/snackbars.dart';
 import 'package:shoppinglist/model/article.dart';
 import 'package:shoppinglist/model/recipe.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
@@ -101,6 +102,30 @@ class _RecipeEditPageState extends State<RecipeEditPage> {
     navigator.pop();
   }
 
+  Future<void> _delete() async {
+    final sure = await showDeleteConfirmDialog(
+      context,
+      i18n(context).p_recipe_delete,
+      i18n(context).p_recipe_delete_confirm,
+    );
+    if (sure != true || !mounted) return;
+    final pbp = context.read<PocketBaseProvider>();
+    try {
+      // remove links first (best effort)
+      final ids = await pbp.fetchRecipeArticleIds(_recipe.id);
+      for (final id in ids) {
+        await pbp.unlinkArticleFromRecipe(_recipe.id, id);
+      }
+      await pbp.deleteRecipe(_recipe.id);
+      await pbp.fetchAllRecipes();
+      if (mounted) Navigator.pop(context);
+    } catch (e) {
+      if (mounted) {
+        showErrorSnackbar(context, 'Failed to delete: $e');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final pbp = context.watch<PocketBaseProvider>();
@@ -136,10 +161,9 @@ class _RecipeEditPageState extends State<RecipeEditPage> {
                               onPressed: () async {
                                 pbp.clearSearchList();
                                 final Article? found =
-                                    await Statics.searchForArticle(context, pbp, dontAdd: true, showAll: true);
+                                    await searchForArticle(context, pbp, dontAdd: true, showAll: true);
                                 if (found != null) {
                                   setState(() {
-                                    // add with default quantity 1; prevent duplicates
                                     _selectedArticles.putIfAbsent(found.id, () => 1);
                                   });
                                 }
@@ -153,108 +177,121 @@ class _RecipeEditPageState extends State<RecipeEditPage> {
                         ),
                         const SizedBox(height: 8),
                         Expanded(
-                          child: _selectedArticles.isEmpty
-                              ? const NoArticleWidget(height: 1.2)
-                              : ListView(
-                                  children: _selectedArticles.keys
-                                      .map((id) => pbp.allArticles.firstWhere(
-                                            (a) => a.id == id,
-                                            orElse: () => Article(id: id, article: i18n(context).com_unknown, shop: ''),
-                                          ))
-                                      .map((a) {
-                                    final qty = _selectedArticles[a.id] ?? 1;
-                                    return RecipeSelectedArticleCard(
-                                      article: a,
-                                      quantity: qty,
-                                      onDecrease: () {
-                                        setState(() {
-                                          final v = (_selectedArticles[a.id] ?? 1) - 1;
-                                          _selectedArticles[a.id] = v < 1 ? 1 : v;
-                                        });
-                                      },
-                                      onIncrease: () {
-                                        setState(() {
-                                          final v = (_selectedArticles[a.id] ?? 1) + 1;
-                                          _selectedArticles[a.id] = v > 100 ? 100 : v;
-                                        });
-                                      },
-                                      onRemove: () {
-                                        setState(() {
-                                          _selectedArticles.remove(a.id);
-                                        });
-                                      },
-                                    );
-                                  }).toList(),
-                                ),
+                          child: _RecipeArticlesList(
+                            selectedArticles: _selectedArticles,
+                            allArticles: pbp.allArticles,
+                            onIncrease: (id) => setState(() {
+                              final v = (_selectedArticles[id] ?? 1) + 1;
+                              _selectedArticles[id] = v > 100 ? 100 : v;
+                            }),
+                            onDecrease: (id) => setState(() {
+                              final v = (_selectedArticles[id] ?? 1) - 1;
+                              _selectedArticles[id] = v < 1 ? 1 : v;
+                            }),
+                            onRemove: (id) => setState(() {
+                              _selectedArticles.remove(id);
+                            }),
+                          ),
                         ),
                         const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            if (_recipe.id.isNotEmpty)
-                              OutlinedButton(
-                                onPressed: () async {
-                                  final bool? sure = await showDialog<bool>(
-                                    context: context,
-                                    builder: (ctx) => AlertDialog(
-                                      title: Text(i18n(context).p_recipe_delete),
-                                      content: Text(i18n(context).p_recipe_delete_confirm),
-                                      actions: [
-                                        OutlinedButton(
-                                          onPressed: () => Navigator.of(ctx).pop(false),
-                                          child: Text(i18n(context).com_cancel),
-                                        ),
-                                        OutlinedButton(
-                                          onPressed: () => Navigator.of(ctx).pop(true),
-                                          style: TextButton.styleFrom(foregroundColor: Colors.red),
-                                          child: Text(i18n(context).com_delete),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                  if (sure == true) {
-                                    try {
-                                      // remove links first (best effort)
-                                      final ids = await pbp.fetchRecipeArticleIds(_recipe.id);
-                                      for (final id in ids) {
-                                        await pbp.unlinkArticleFromRecipe(_recipe.id, id);
-                                      }
-                                      await pbp.deleteRecipe(_recipe.id);
-                                      await pbp.fetchAllRecipes();
-                                      if (context.mounted) Navigator.pop(context);
-                                    } catch (e) {
-                                      if (context.mounted) {
-                                        Statics.showErrorSnackbar(context, 'Failed to delete: $e');
-                                      }
-                                    }
-                                  }
-                                },
-                                style: OutlinedButton.styleFrom(foregroundColor: Colors.red),
-                                child: Text(i18n(context).com_delete),
-                              )
-                            else
-                              const SizedBox.shrink(),
-                            Row(
-                              children: [
-                                OutlinedButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text(i18n(context).com_cancel),
-                                ),
-                                const SizedBox(width: 8),
-                                ElevatedButton(
-                                  onPressed: _save,
-                                  child: Text(i18n(context).com_save),
-                                ),
-                              ],
-                            ),
-                          ],
-                        )
+                        _RecipeEditFooter(
+                          showDelete: _recipe.id.isNotEmpty,
+                          onCancel: () => Navigator.pop(context),
+                          onSave: _save,
+                          onDelete: _delete,
+                        ),
                       ],
                     ),
                   ),
                 ),
         ),
       ),
+    );
+  }
+}
+
+class _RecipeArticlesList extends StatelessWidget {
+  const _RecipeArticlesList({
+    required this.selectedArticles,
+    required this.allArticles,
+    required this.onIncrease,
+    required this.onDecrease,
+    required this.onRemove,
+  });
+
+  final Map<String, int> selectedArticles;
+  final List<Article> allArticles;
+  final ValueChanged<String> onIncrease;
+  final ValueChanged<String> onDecrease;
+  final ValueChanged<String> onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    if (selectedArticles.isEmpty) {
+      return const NoArticleWidget(height: 1.2);
+    }
+    final unknownLabel = i18n(context).com_unknown;
+    final articles = selectedArticles.keys.map(
+      (id) => allArticles.firstWhere(
+        (a) => a.id == id,
+        orElse: () => Article(id: id, article: unknownLabel, shop: ''),
+      ),
+    );
+    return ListView(
+      children: articles.map((a) {
+        final qty = selectedArticles[a.id] ?? 1;
+        return RecipeSelectedArticleCard(
+          article: a,
+          quantity: qty,
+          onDecrease: () => onDecrease(a.id),
+          onIncrease: () => onIncrease(a.id),
+          onRemove: () => onRemove(a.id),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _RecipeEditFooter extends StatelessWidget {
+  const _RecipeEditFooter({
+    required this.showDelete,
+    required this.onCancel,
+    required this.onSave,
+    required this.onDelete,
+  });
+
+  final bool showDelete;
+  final VoidCallback onCancel;
+  final VoidCallback onSave;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        if (showDelete)
+          OutlinedButton(
+            onPressed: onDelete,
+            style: OutlinedButton.styleFrom(foregroundColor: Colors.red),
+            child: Text(i18n(context).com_delete),
+          )
+        else
+          const SizedBox.shrink(),
+        Row(
+          children: [
+            OutlinedButton(
+              onPressed: onCancel,
+              child: Text(i18n(context).com_cancel),
+            ),
+            const SizedBox(width: 8),
+            ElevatedButton(
+              onPressed: onSave,
+              child: Text(i18n(context).com_save),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
