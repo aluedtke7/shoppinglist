@@ -33,12 +33,7 @@ class ArticleRepository {
           filter: 'active = true',
         );
     if (result != null) {
-      List<Article> al = [];
-      for (var element in result.items) {
-        Article art = Article.fromJson(element.toJson());
-        al.add(art);
-      }
-      _active = al.toList();
+      _active = result.items.map((e) => Article.fromJson(e.toJson())).toList();
       _sortActive(_active);
       _onChange();
     }
@@ -48,12 +43,7 @@ class ArticleRepository {
     await _ensurePb();
     final result = await _pbSync()?.collection(_shoppingListCollection).getFullList();
     if (result != null) {
-      List<Article> al = [];
-      for (var element in result) {
-        Article art = Article.fromJson(element.toJson());
-        al.add(art);
-      }
-      _allArticles = al.toList();
+      _allArticles = result.map((e) => Article.fromJson(e.toJson())).toList();
       _sortActive(_allArticles);
       _onChange();
     }
@@ -69,12 +59,7 @@ class ArticleRepository {
     final result =
         await _pbSync()?.collection(_shoppingListCollection).getList(filter: searchString, sort: '+article');
     if (result != null) {
-      List<Article> al = [];
-      for (var element in result.items) {
-        Article art = Article.fromJson(element.toJson());
-        al.add(art);
-      }
-      _searchArticles = al.toList();
+      _searchArticles = result.items.map((e) => Article.fromJson(e.toJson())).toList();
       _sortActive(_searchArticles);
       _onChange();
     }
@@ -89,9 +74,9 @@ class ArticleRepository {
     await _ensurePb();
     final pb = _pbSync()!;
     if (article.id.isEmpty) {
-      return pb.collection(_shoppingListCollection).create(body: _articleToMap(article));
+      return pb.collection(_shoppingListCollection).create(body: article.toJson());
     }
-    return pb.collection(_shoppingListCollection).update(article.id, body: _articleToMap(article));
+    return pb.collection(_shoppingListCollection).update(article.id, body: article.toJson());
   }
 
   Future<RecordModel> toggleinCart(Article article) async {
@@ -100,17 +85,16 @@ class ArticleRepository {
     }
     await _ensurePb();
     await vibrateShort();
-    article.inCart = !article.inCart;
-    return _pbSync()!.collection(_shoppingListCollection).update(article.id, body: _articleToMap(article));
+    final updatedArticle = article.copyWith(inCart: !article.inCart);
+    return _pbSync()!.collection(_shoppingListCollection).update(article.id, body: updatedArticle.toJson());
   }
 
   Future<void> endShopping() async {
     await _ensurePb();
     final inCartItems = _active.where((element) => element.inCart).toList();
     for (var itm in inCartItems) {
-      itm.inCart = false;
-      itm.active = false;
-      updateArticle(itm);
+      final updatedItm = itm.copyWith(inCart: false, active: false);
+      updateArticle(updatedItm);
     }
   }
 
@@ -123,14 +107,18 @@ class ArticleRepository {
     for (final id in qtyById.keys) {
       try {
         final rec = await pb.collection(_shoppingListCollection).getOne(id);
-        final art = Article.fromJson(rec.toJson());
-        art.inCart = false;
+        var art = Article.fromJson(rec.toJson());
+        var newAmount = art.amount;
+        var newActive = art.active;
+
         if (!art.active) {
-          art.active = true;
+          newActive = true;
           final q = qtyById[id] ?? 1;
-          art.amount = q > 0 ? q : 1;
+          newAmount = q > 0 ? q : 1;
         }
-        await pb.collection(_shoppingListCollection).update(id, body: _articleToMap(art));
+
+        art = art.copyWith(inCart: false, active: newActive, amount: newAmount);
+        await pb.collection(_shoppingListCollection).update(id, body: art.toJson());
       } catch (e) {
         debugPrint('Failed to set inCart for article $id: $e');
       }
@@ -193,15 +181,5 @@ class ArticleRepository {
       }
       return a.article.compareTo(b.article);
     });
-  }
-
-  Map<String, Object> _articleToMap(Article article) {
-    return {
-      'shop': article.shop,
-      'article': article.article,
-      'amount': article.amount,
-      'inCart': article.inCart,
-      'active': article.active
-    };
   }
 }

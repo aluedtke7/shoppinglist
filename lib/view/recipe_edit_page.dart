@@ -70,9 +70,13 @@ class _RecipeEditPageState extends State<RecipeEditPage> {
     final pbp = context.read<PocketBaseProvider>();
     // Capture navigator before any awaits to avoid using BuildContext across async gaps
     final navigator = Navigator.of(context);
-    // take latest values from controllers
-    _recipe.name = _nameCtl.text.trim();
-    _recipe.notes = _notesCtl.text.trim();
+    
+    // update recipe object with latest values from controllers
+    _recipe = _recipe.copyWith(
+      name: _nameCtl.text.trim(),
+      notes: _notesCtl.text.trim(),
+    );
+
     // save/ensure recipe exists
     final rec = await pbp.updateRecipe(_recipe);
     final recipeId = rec.id;

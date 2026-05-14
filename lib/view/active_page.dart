@@ -36,7 +36,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    pbp = Provider.of<PocketBaseProvider>(context, listen: false);
+    pbp = context.read<PocketBaseProvider>();
     WidgetsBinding.instance.addObserver(this);
     _fetchAll();
   }
@@ -88,7 +88,7 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final pbp = Provider.of<PocketBaseProvider>(context, listen: true);
+    final pbp = context.watch<PocketBaseProvider>();
     page = SelPage.activeList;
 
     final themeOptions = ThemeProvider.optionsOf<ThemeOptions>(context);
@@ -139,9 +139,9 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                               autoClose: false,
                                               icon: Icons.add,
                                               onPressed: (context) async {
-                                                itm.amount = min(12, itm.amount + 1);
+                                                final updatedItm = itm.copyWith(amount: min(12, itm.amount + 1));
                                                 try {
-                                                  await pbp.updateArticle(itm);
+                                                  await pbp.updateArticle(updatedItm);
                                                 } catch (e) {
                                                   if (context.mounted) {
                                                     showErrorSnackbar(context, e);
@@ -153,9 +153,9 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
                                               autoClose: false,
                                               icon: Icons.remove,
                                               onPressed: (context) async {
-                                                itm.amount = max(1, itm.amount - 1);
+                                                final updatedItm = itm.copyWith(amount: max(1, itm.amount - 1));
                                                 try {
-                                                  await pbp.updateArticle(itm);
+                                                  await pbp.updateArticle(updatedItm);
                                                 } catch (e) {
                                                   if (context.mounted) {
                                                     showErrorSnackbar(context, e);
@@ -225,9 +225,11 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
               pbp.clearSearchList();
               searchForArticle(context, pbp).then((value) {
                 if (value != null) {
-                  value.active = true;
-                  value.amount = max(1, value.amount);
-                  pbp.updateArticle(value);
+                  final updatedValue = value.copyWith(
+                    active: true,
+                    amount: max(1, value.amount),
+                  );
+                  pbp.updateArticle(updatedValue);
                 }
               });
             },

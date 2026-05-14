@@ -24,12 +24,29 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
   bool? _isValid;
   final _formKey = GlobalKey<FormState>();
 
-  void copyArticle(PocketBaseProvider pbp, Article article, BuildContext context) async {
+  late String _shop;
+  late String _articleName;
+  late Article _originalArticle;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _originalArticle = ModalRoute.of(context)!.settings.arguments as Article;
+    _shop = _originalArticle.shop;
+    _articleName = _originalArticle.article;
+    _isValid ??= _articleName.length > 1;
+  }
+
+  void _saveArticle(PocketBaseProvider pbp, BuildContext context) async {
     setState(() {
       _isLoading = true;
     });
     try {
-      await pbp.updateArticle(article);
+      final updatedArticle = _originalArticle.copyWith(
+        shop: _shop,
+        article: _articleName,
+      );
+      await pbp.updateArticle(updatedArticle);
       pbp.fetchAllArticles();
       if (context.mounted) {
         Navigator.of(context).pop();
@@ -45,33 +62,33 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
         }
       }
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final pbp = Provider.of<PocketBaseProvider>(context, listen: false);
-    final article = ModalRoute.of(context)!.settings.arguments as Article;
-    _isValid ??= article.article.length > 1;
+    final pbp = context.read<PocketBaseProvider>();
 
     var appBar = AppBar(
-      title: Text(article.id.isEmpty ? i18n(context).p_edit_new : i18n(context).p_edit_change),
+      title: Text(_originalArticle.id.isEmpty ? i18n(context).p_edit_new : i18n(context).p_edit_change),
       actions: [
         IconButton(
           icon: const Icon(Icons.delete_rounded),
-          onPressed: (article.id.isEmpty)
+          onPressed: (_originalArticle.id.isEmpty)
               ? null
               : () {
                   showConfirmDialog(
                     context,
                     i18n(context).p_edit_delete,
-                    i18n(context).p_edit_delete_q(article.article),
+                    i18n(context).p_edit_delete_q(_originalArticle.article),
                   ).then((value) {
                     if (value != null && value) {
-                      pbp.deleteArticle(article.id).then((_) {
+                      pbp.deleteArticle(_originalArticle.id).then((_) {
                         if (context.mounted) {
                           Navigator.of(context).pop();
                         }
@@ -88,7 +105,7 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
               : () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    copyArticle(pbp, article, context);
+                    _saveArticle(pbp, context);
                   }
                 },
         ),
@@ -122,27 +139,28 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
                               padding: const EdgeInsets.all(8),
                               child: TextFormField(
                                 autofocus: true,
-                                initialValue: article.shop,
+                                initialValue: _shop,
                                 textInputAction: TextInputAction.next,
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(labelText: i18n(context).com_shop),
-                                onSaved: (newValue) => article.shop = newValue ?? '',
+                                onSaved: (newValue) => _shop = newValue ?? '',
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8),
                               child: TextFormField(
                                 autofocus: false,
-                                initialValue: article.article,
+                                initialValue: _articleName,
                                 textInputAction: TextInputAction.next,
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(labelText: i18n(context).com_article),
                                 onChanged: (value) {
                                   setState(() {
+                                    _articleName = value;
                                     _isValid = value.length > 1;
                                   });
                                 },
-                                onSaved: (newValue) => article.article = newValue ?? '',
+                                onSaved: (newValue) => _articleName = newValue ?? '',
                               ),
                             ),
                             if (_isLoading) const CircularProgressIndicator(),

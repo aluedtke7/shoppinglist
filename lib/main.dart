@@ -12,7 +12,7 @@ import 'package:theme_provider/theme_provider.dart';
 import 'package:shoppinglist/application.dart';
 import 'package:shoppinglist/component/custom_themes.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
-import 'package:shoppinglist/specific_localization_delegate.dart';
+import 'package:shoppinglist/src/generated/i18n/app_localizations.dart';
 import 'package:shoppinglist/view/active_page.dart';
 import 'package:shoppinglist/view/article_edit_page.dart';
 import 'package:shoppinglist/view/article_page.dart';
@@ -38,7 +38,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late SpecificLocalizationDelegate _localeOverrideDelegate;
+  Locale? _locale;
 
   @override
   void initState() {
@@ -49,7 +49,7 @@ class _MyAppState extends State<MyApp> {
     } else {
       initialLanguage = Platform.localeName.substring(0, 2);
     }
-    _localeOverrideDelegate = SpecificLocalizationDelegate(Locale(initialLanguage));
+    _locale = Locale(initialLanguage);
     Intl.defaultLocale = initialLanguage;
     APPLIC().onLocaleChanged = onLocaleChange;
   }
@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
   void onLocaleChange(Locale locale) {
     setState(() {
       debugPrint('onLocaleChange: ${locale.languageCode}');
-      _localeOverrideDelegate = SpecificLocalizationDelegate(locale);
+      _locale = locale;
     });
   }
 
@@ -76,8 +76,9 @@ class _MyAppState extends State<MyApp> {
             title: 'Shoppinglist',
             builder: (ctx, child) => SafeArea(top: false, bottom: true, child: child!),
             theme: ThemeProvider.themeOf(context).data,
+            locale: _locale,
             localizationsDelegates: [
-              _localeOverrideDelegate,
+              AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
