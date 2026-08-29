@@ -15,8 +15,8 @@ on [fly.io](https://github.com/pocketbase/pocketbase/discussions/537) (discussio
 
 ### Features
 
-- Dart 3 and Flutter 3.41 compatible
-- Works with PocketBase v0.35
+- Dart 3 and Flutter 3.47 compatible
+- Works with PocketBase v0.40
 - New feature: biometric authentication (fingerprint, face recognition)
 - recipes
 - several themes with custom options including dark modes
