@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shoppinglist/application.dart';
-import 'package:shoppinglist/component/dialogs.dart';
-import 'package:shoppinglist/component/i18n_util.dart';
-import 'package:shoppinglist/model/pref_keys.dart';
-import 'package:shoppinglist/provider/pocket_base_prov.dart';
-import 'package:shoppinglist/service/config_service.dart';
-import 'package:theme_provider/theme_provider.dart';
 
-class SlappAppBar extends StatefulWidget implements PreferredSizeWidget {
+import 'package:shoppinglist/component/i18n_util.dart';
+import 'package:shoppinglist/component/slapp_menu_sheet.dart';
+import 'package:shoppinglist/provider/pocket_base_prov.dart';
+
+class SlappAppBar extends StatelessWidget implements PreferredSizeWidget {
   const SlappAppBar({
     super.key,
     required this.title,
@@ -19,90 +14,45 @@ class SlappAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
 
   @override
-  State<SlappAppBar> createState() => _SlappAppBarState();
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-}
-
-class _SlappAppBarState extends State<SlappAppBar> {
-  var _serverUrl = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadPrefs();
-  }
-
-  Future<void> _loadPrefs() async {
-    final url = await getServerUrl();
-    setState(() {
-      _serverUrl = url;
-    });
-  }
-
-  Future<void> _savePrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString(PrefKeys.serverUrlPrefsKey, _serverUrl);
-  }
+  Size get preferredSize => const Size.fromHeight(64);
 
   @override
   Widget build(BuildContext context) {
-    final pbp = Provider.of<PocketBaseProvider>(context, listen: true);
+    final pbp = context.watch<PocketBaseProvider>();
+    final scheme = Theme.of(context).colorScheme;
+    final initial = pbp.isAuth && pbp.userName.isNotEmpty ? pbp.userName.characters.first.toUpperCase() : '';
 
     return AppBar(
-      iconTheme: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      toolbarHeight: 64,
+      titleSpacing: 20,
       title: Text(
-        widget.title,
-        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+        title,
+        style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w800, letterSpacing: -0.5),
       ),
       actions: [
         if (!pbp.isHealthy)
-          const Padding(
-            padding: EdgeInsets.only(right: 32),
-            child: Icon(Icons.cloud_off),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Icon(Icons.cloud_off, color: scheme.error),
           ),
-        IconButton(
-          onPressed: () {
-            ThemeProvider.controllerOf(context).nextTheme();
-          },
-          icon: const Icon(Icons.color_lens),
-          tooltip: i18n(context).com_change_theme,
+        Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: IconButton.filledTonal(
+            onPressed: () => showSlappMenu(context),
+            tooltip: i18n(context).com_menu,
+            style: IconButton.styleFrom(
+              backgroundColor: scheme.primaryContainer,
+              foregroundColor: scheme.primary,
+              fixedSize: const Size(44, 44),
+            ),
+            icon: initial.isEmpty
+                ? const Icon(Icons.person_outline)
+                : Text(
+                    initial,
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: scheme.primary),
+                  ),
+          ),
         ),
-        IconButton(
-          onPressed: () {
-            if ((Intl.defaultLocale ?? '').contains('de')) {
-              Intl.defaultLocale = 'en';
-              APPLIC().onLocaleChanged(const Locale('en', ''));
-            } else {
-              Intl.defaultLocale = 'de';
-              APPLIC().onLocaleChanged(const Locale('de', ''));
-            }
-          },
-          icon: const Icon(Icons.language),
-          tooltip: i18n(context).com_change_language,
-        ),
-        IconButton(
-          onPressed: () {
-            showSettingsDialog(
-              context,
-              i18n(context).l_p_server_url,
-              i18n(context).l_p_server_url_info,
-              _serverUrl,
-            ).then((value) {
-              if (value != null && value.isNotEmpty) {
-                setState(() {
-                  _serverUrl = value;
-                });
-                _savePrefs();
-                pbp.setPocketBaseUrl(_serverUrl);
-              }
-            });
-          },
-          icon: const Icon(Icons.settings),
-          tooltip: i18n(context).com_change_server,
-        )
       ],
     );
   }

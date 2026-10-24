@@ -61,6 +61,7 @@
       }
     }
   },
+  "l_p_login_info": "Sign in with your PocketBase account.",
   "l_p_login": "Login",
   "l_p_login_btn": "Login...",
   "l_p_email": "E-mail",
@@ -83,8 +84,39 @@
   "p_active_title": "shopping list",
   "p_active_tooltip": "search article",
   "p_active_empty": "No article\nhas been\nselected.",
+  "p_active_progress": "{inCart} of {total} in cart",
+  "@p_active_progress": {
+    "placeholders": {
+      "inCart": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "p_active_open": "{count} open",
+  "@p_active_open": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "p_active_no_shop": "no shop",
+  "p_active_in_cart": "in cart",
+  "p_active_to_cart": "put in cart",
+  "p_active_from_cart": "take out of cart",
+
+  "nav_active": "shopping",
+  "nav_articles": "articles",
+  "nav_recipes": "recipes",
+  "com_edit": "change",
+  "com_menu": "menu",
 
   "p_articles_title": "article list",
+  "p_articles_tap_hint": "tap to edit",
+  "p_articles_search_hint": "search shop or article",
   "p_article_add": "add article",
 
   "p_recipe": "Recipe",
@@ -94,8 +126,9 @@
   "p_recipe_change": "Change recipe",
   "p_recipe_delete": "delete recipe",
   "p_recipe_delete_confirm": "Do you really want to delete this recipe?",
-  "p_recipes_title": "recipe list",
+  "p_recipes_title": "recipes",
   "p_recipes_tooltip": "add recipe",
+  "p_recipes_search_hint": "search recipe",
   "p_recipes_select": "select recipe",
 
   "p_edit_new": "new article",

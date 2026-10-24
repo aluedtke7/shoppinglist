@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:theme_provider/theme_provider.dart';
-import 'package:shoppinglist/component/theme_options.dart';
 import 'package:shoppinglist/component/i18n_util.dart';
-import 'package:shoppinglist/component/slapp_app_bar.dart';
-import 'package:shoppinglist/component/slapp_drawer.dart';
 import 'package:shoppinglist/component/dialogs.dart';
 import 'package:shoppinglist/component/recipe_selected_article_card.dart';
 import 'package:shoppinglist/component/snackbars.dart';
@@ -70,7 +66,7 @@ class _RecipeEditPageState extends State<RecipeEditPage> {
     final pbp = context.read<PocketBaseProvider>();
     // Capture navigator before any awaits to avoid using BuildContext across async gaps
     final navigator = Navigator.of(context);
-    
+
     // update recipe object with latest values from controllers
     _recipe = _recipe.copyWith(
       name: _nameCtl.text.trim(),
@@ -133,82 +129,104 @@ class _RecipeEditPageState extends State<RecipeEditPage> {
   @override
   Widget build(BuildContext context) {
     final pbp = context.watch<PocketBaseProvider>();
+    final scheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      appBar: SlappAppBar(title: _recipe.id == '' ? i18n(context).p_recipe_new : i18n(context).p_recipe_change),
-      drawer: const SlappDrawer(),
-      body: Container(
-        decoration: ThemeProvider.optionsOf<ThemeOptions>(context).pageDecoration,
-        child: SafeArea(
-          child: _loading
-              ? const Center(child: CircularProgressIndicator())
-              : Form(
-                  key: _formKey,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _nameCtl,
-                          autofocus: _recipe.id == '',
-                          decoration: InputDecoration(labelText: i18n(context).p_recipe_name),
-                          validator: (v) => (v == null || v.trim().isEmpty) ? i18n(context).com_required : null,
-                        ),
-                        const SizedBox(height: 8),
-                        TextFormField(
-                          controller: _notesCtl,
-                          decoration: InputDecoration(labelText: i18n(context).p_recipe_notes),
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            ElevatedButton.icon(
-                              onPressed: () async {
-                                pbp.clearSearchList();
-                                final Article? found =
-                                    await searchForArticle(context, pbp, dontAdd: true, showAll: true);
-                                if (found != null) {
-                                  setState(() {
-                                    _selectedArticles.putIfAbsent(found.id, () => 1);
-                                  });
-                                }
-                              },
-                              icon: const Icon(Icons.add),
-                              label: Text(i18n(context).p_article_add),
+      appBar: AppBar(
+        title: Text(_recipe.id == '' ? i18n(context).p_recipe_new : i18n(context).p_recipe_change),
+      ),
+      body: SafeArea(
+        child: _loading
+            ? const Center(child: CircularProgressIndicator())
+            : Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      TextFormField(
+                        controller: _nameCtl,
+                        autofocus: _recipe.id == '',
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                        decoration: InputDecoration(labelText: i18n(context).p_recipe_name),
+                        validator: (v) => (v == null || v.trim().isEmpty) ? i18n(context).com_required : null,
+                      ),
+                      const SizedBox(height: 14),
+                      TextFormField(
+                        controller: _notesCtl,
+                        decoration: InputDecoration(labelText: i18n(context).p_recipe_notes),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        spacing: 12,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              spacing: 2,
+                              children: [
+                                Text(
+                                  i18n(context).com_article,
+                                  style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                                ),
+                                Text(
+                                  i18n(context).com_num_articles(_selectedArticles.length),
+                                  style: TextStyle(fontSize: 13, color: scheme.onSurfaceVariant),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 12),
-                            Text(i18n(context).com_num_articles(_selectedArticles.length))
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Expanded(
-                          child: _RecipeArticlesList(
-                            selectedArticles: _selectedArticles,
-                            allArticles: pbp.allArticles,
-                            onIncrease: (id) => setState(() {
-                              final v = (_selectedArticles[id] ?? 1) + 1;
-                              _selectedArticles[id] = v > 100 ? 100 : v;
-                            }),
-                            onDecrease: (id) => setState(() {
-                              final v = (_selectedArticles[id] ?? 1) - 1;
-                              _selectedArticles[id] = v < 1 ? 1 : v;
-                            }),
-                            onRemove: (id) => setState(() {
-                              _selectedArticles.remove(id);
-                            }),
                           ),
+                          FilledButton.tonalIcon(
+                            onPressed: () async {
+                              pbp.clearSearchList();
+                              final Article? found = await searchForArticle(context, pbp, dontAdd: true, showAll: true);
+                              if (found != null) {
+                                setState(() {
+                                  _selectedArticles.putIfAbsent(found.id, () => 1);
+                                });
+                              }
+                            },
+                            style: FilledButton.styleFrom(
+                              backgroundColor: scheme.primaryContainer,
+                              foregroundColor: scheme.primary,
+                              minimumSize: const Size(0, 44),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                            ),
+                            icon: const Icon(Icons.add),
+                            label: Text(i18n(context).p_article_add),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Expanded(
+                        child: _RecipeArticlesList(
+                          selectedArticles: _selectedArticles,
+                          allArticles: pbp.allArticles,
+                          onIncrease: (id) => setState(() {
+                            final v = (_selectedArticles[id] ?? 1) + 1;
+                            _selectedArticles[id] = v > 100 ? 100 : v;
+                          }),
+                          onDecrease: (id) => setState(() {
+                            final v = (_selectedArticles[id] ?? 1) - 1;
+                            _selectedArticles[id] = v < 1 ? 1 : v;
+                          }),
+                          onRemove: (id) => setState(() {
+                            _selectedArticles.remove(id);
+                          }),
                         ),
-                        const SizedBox(height: 8),
-                        _RecipeEditFooter(
-                          showDelete: _recipe.id.isNotEmpty,
-                          onCancel: () => Navigator.pop(context),
-                          onSave: _save,
-                          onDelete: _delete,
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 12),
+                      _RecipeEditFooter(
+                        showDelete: _recipe.id.isNotEmpty,
+                        onCancel: () => Navigator.pop(context),
+                        onSave: _save,
+                        onDelete: _delete,
+                      ),
+                    ],
                   ),
                 ),
-        ),
+              ),
       ),
     );
   }
@@ -271,29 +289,39 @@ class _RecipeEditFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    // Three buttons share one row, so they need less horizontal padding than the theme default.
+    const padding = EdgeInsets.symmetric(horizontal: 12);
+
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      spacing: 10,
       children: [
         if (showDelete)
-          OutlinedButton(
+          FilledButton(
             onPressed: onDelete,
-            style: OutlinedButton.styleFrom(foregroundColor: Colors.red),
+            style: FilledButton.styleFrom(
+              backgroundColor: scheme.errorContainer,
+              foregroundColor: scheme.error,
+              minimumSize: const Size(0, 56),
+              padding: padding,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 15, fontWeight: FontWeight.w700),
+            ),
             child: Text(i18n(context).com_delete),
-          )
-        else
-          const SizedBox.shrink(),
-        Row(
-          children: [
-            OutlinedButton(
-              onPressed: onCancel,
-              child: Text(i18n(context).com_cancel),
-            ),
-            const SizedBox(width: 8),
-            ElevatedButton(
-              onPressed: onSave,
-              child: Text(i18n(context).com_save),
-            ),
-          ],
+          ),
+        Expanded(
+          child: OutlinedButton(
+            onPressed: onCancel,
+            style: OutlinedButton.styleFrom(padding: padding),
+            child: Text(i18n(context).com_cancel),
+          ),
+        ),
+        Expanded(
+          child: ElevatedButton(
+            onPressed: onSave,
+            style: ElevatedButton.styleFrom(padding: padding),
+            child: Text(i18n(context).com_save),
+          ),
         ),
       ],
     );

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
-import 'package:theme_provider/theme_provider.dart';
 
 import 'package:shoppinglist/component/dialogs.dart';
 import 'package:shoppinglist/component/i18n_util.dart';
 import 'package:shoppinglist/component/snackbars.dart';
-import 'package:shoppinglist/component/theme_options.dart';
 import 'package:shoppinglist/model/article.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
 
@@ -70,90 +68,94 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
     }
   }
 
+  void _confirmDelete(PocketBaseProvider pbp) {
+    showConfirmDialog(
+      context,
+      i18n(context).p_edit_delete,
+      i18n(context).p_edit_delete_q(_originalArticle.article),
+    ).then((value) {
+      if (value != null && value) {
+        pbp.deleteArticle(_originalArticle.id).then((_) {
+          if (mounted) {
+            Navigator.of(context).pop();
+          }
+        });
+        pbp.fetchAllArticles();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final pbp = context.read<PocketBaseProvider>();
-
-    var appBar = AppBar(
-      title: Text(_originalArticle.id.isEmpty ? i18n(context).p_edit_new : i18n(context).p_edit_change),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.delete_rounded),
-          onPressed: (_originalArticle.id.isEmpty)
-              ? null
-              : () {
-                  showConfirmDialog(
-                    context,
-                    i18n(context).p_edit_delete,
-                    i18n(context).p_edit_delete_q(_originalArticle.article),
-                  ).then((value) {
-                    if (value != null && value) {
-                      pbp.deleteArticle(_originalArticle.id).then((_) {
-                        if (context.mounted) {
-                          Navigator.of(context).pop();
-                        }
-                      });
-                      pbp.fetchAllArticles();
-                    }
-                  });
-                },
-        ),
-        IconButton(
-          icon: const Icon(Icons.save_rounded),
-          onPressed: (!(_isValid ?? false))
-              ? null
-              : () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-                    _saveArticle(pbp, context);
-                  }
-                },
-        ),
-      ],
-    );
+    final scheme = Theme.of(context).colorScheme;
+    final canSave = (_isValid ?? false) && !_isLoading;
 
     return Scaffold(
-      appBar: appBar,
-      body: Container(
-        decoration: ThemeProvider.optionsOf<ThemeOptions>(context).pageDecoration,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
+      appBar: AppBar(
+        title: Text(_originalArticle.id.isEmpty ? i18n(context).p_edit_new : i18n(context).p_edit_change),
+        actions: [
+          if (_originalArticle.id.isNotEmpty)
             Padding(
-                padding: const EdgeInsets.all(8),
-                child: Container(
-                  height: null,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: const BorderRadius.all(Radius.circular(15)),
-                  ),
-                  child: Form(
-                      autovalidateMode: AutovalidateMode.always,
-                      key: _formKey,
-                      child: SingleChildScrollView(
+              padding: const EdgeInsets.only(right: 12),
+              child: IconButton.filledTonal(
+                onPressed: () => _confirmDelete(pbp),
+                tooltip: i18n(context).p_edit_delete,
+                style: IconButton.styleFrom(
+                  backgroundColor: scheme.errorContainer,
+                  foregroundColor: scheme.error,
+                ),
+                icon: const Icon(Icons.delete_outline),
+              ),
+            ),
+        ],
+      ),
+      body: SafeArea(
+        child: Form(
+          autovalidateMode: AutovalidateMode.always,
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Card(
+                      margin: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(8),
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          spacing: 18,
+                          children: [
+                            _LabeledField(
+                              label: i18n(context).com_shop,
                               child: TextFormField(
                                 autofocus: true,
                                 initialValue: _shop,
                                 textInputAction: TextInputAction.next,
                                 keyboardType: TextInputType.text,
-                                decoration: InputDecoration(labelText: i18n(context).com_shop),
+                                decoration: InputDecoration(
+                                  fillColor: scheme.surface,
+                                  prefixIcon: const Icon(Icons.storefront_outlined),
+                                ),
                                 onSaved: (newValue) => _shop = newValue ?? '',
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
+                            _LabeledField(
+                              label: i18n(context).com_article,
                               child: TextFormField(
                                 autofocus: false,
                                 initialValue: _articleName,
                                 textInputAction: TextInputAction.next,
                                 keyboardType: TextInputType.text,
-                                decoration: InputDecoration(labelText: i18n(context).com_article),
+                                decoration: InputDecoration(
+                                  fillColor: scheme.surface,
+                                  prefixIcon: const Icon(Icons.sell_outlined),
+                                  helperText: i18n(context).p_edit_unique_error,
+                                ),
                                 onChanged: (value) {
                                   setState(() {
                                     _articleName = value;
@@ -163,14 +165,76 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
                                 onSaved: (newValue) => _articleName = newValue ?? '',
                               ),
                             ),
-                            if (_isLoading) const CircularProgressIndicator(),
                           ],
                         ),
-                      )),
-                )),
-          ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  spacing: 12,
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(i18n(context).com_cancel),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: ElevatedButton.icon(
+                        onPressed: canSave
+                            ? () {
+                                if (_formKey.currentState!.validate()) {
+                                  _formKey.currentState!.save();
+                                  _saveArticle(pbp, context);
+                                }
+                              }
+                            : null,
+                        icon: _isLoading
+                            ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                            : const Icon(Icons.check),
+                        label: Text(i18n(context).com_save),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
+    );
+  }
+}
+
+/// Field with its label above it instead of a floating label, as in the design.
+class _LabeledField extends StatelessWidget {
+  const _LabeledField({required this.label, required this.child});
+
+  final String label;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: 6,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+        child,
+      ],
     );
   }
 }

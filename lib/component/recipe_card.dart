@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
 
-import 'package:shoppinglist/component/theme_options.dart';
 import 'package:shoppinglist/model/recipe.dart';
 import 'package:shoppinglist/component/i18n_util.dart';
 
@@ -19,37 +17,40 @@ class RecipeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scale = ThemeProvider.optionsOf<ThemeOptions>(context).cardTextScaleFactor;
-    final weight = ThemeProvider.optionsOf<ThemeOptions>(context).cardTextFontWeight;
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        elevation: 4,
-        child: Container(
-          width: double.maxFinite,
-          margin: const EdgeInsets.all(8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    final scheme = Theme.of(context).colorScheme;
+
+    return Card(
+      color: Theme.of(context).cardColor,
+      elevation: 4,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            spacing: 12,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 4,
+                  children: [
+                    Text(
                       recipe.name,
-                      textScaler: TextScaler.linear(scale),
-                      style: TextStyle(fontWeight: weight),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                     ),
-                  ),
-                  Text(
-                    i18n(context).com_num_articles(articleCount),
-                  ),
-                ],
+                    if (recipe.notes.isNotEmpty)
+                      Text(
+                        recipe.notes,
+                        style: TextStyle(fontSize: 14, color: scheme.onSurfaceVariant),
+                      ),
+                  ],
+                ),
               ),
-              if (recipe.notes.isNotEmpty) ...[
-                const SizedBox(height: 4),
-                Text(recipe.notes),
-              ],
+              Text(
+                i18n(context).com_num_articles(articleCount),
+                style: TextStyle(fontSize: 13, color: scheme.onSurfaceVariant),
+              ),
             ],
           ),
         ),

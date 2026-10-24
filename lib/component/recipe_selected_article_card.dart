@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
 
-import 'package:shoppinglist/component/theme_options.dart';
 import 'package:shoppinglist/model/article.dart';
 
+/// Article of a recipe: the name spans the full width, shop and controls share the second line.
 class RecipeSelectedArticleCard extends StatelessWidget {
   const RecipeSelectedArticleCard({
     super.key,
@@ -22,67 +21,60 @@ class RecipeSelectedArticleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     return Card(
-      color: Theme.of(context).cardTheme.color,
-      elevation: 4,
-      child: Container(
-        width: double.maxFinite,
-        margin: const EdgeInsets.all(8),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 4, 4),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Texts (shop and article name)
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (article.shop.isNotEmpty) Text(article.shop),
-                  Text(
-                    article.article,
-                    textScaler: TextScaler.linear(
-                      // ThemeProvider.optionsOf<ThemeOptions>(context).cardTextScaleFactor,
-                      1.2
-                    ),
-                    style: TextStyle(
-                      fontWeight: ThemeProvider.optionsOf<ThemeOptions>(context)
-                          .cardTextFontWeight,
-                    ),
-                  ),
-                ],
+              padding: const EdgeInsets.only(right: 12),
+              child: Text(
+                article.article,
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
               ),
             ),
-            // Quantity controls and remove button
             Row(
-              mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.remove),
-                  onPressed: onDecrease,
-                ),
-                SizedBox(
-                  width: 32,
+                Expanded(
                   child: Text(
-                    '$quantity',
-                    textScaler: TextScaler.linear(
-                      ThemeProvider.optionsOf<ThemeOptions>(context)
-                          .cardTextScaleFactor,
-                    ),
-                    style: TextStyle(
-                      fontWeight: ThemeProvider.optionsOf<ThemeOptions>(context)
-                          .cardTextFontWeight,
-                    ),
-                    textAlign: TextAlign.center,
+                    article.shop,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 13, color: scheme.onSurfaceVariant),
+                  ),
+                ),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: scheme.surface,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.remove, size: 18),
+                        onPressed: onDecrease,
+                      ),
+                      SizedBox(
+                        width: 24,
+                        child: Text(
+                          '$quantity',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.add, size: 18),
+                        onPressed: onIncrease,
+                      ),
+                    ],
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: onIncrease,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.redAccent),
+                  icon: Icon(Icons.close, size: 20, color: scheme.onSurfaceVariant),
                   onPressed: onRemove,
                 ),
               ],

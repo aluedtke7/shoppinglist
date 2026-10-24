@@ -2,17 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:shoppinglist/component/i18n_util.dart';
-
 class DebouncedSearchField extends StatefulWidget {
   const DebouncedSearchField({
     super.key,
     required this.onChanged,
+    required this.hintText,
     this.autofocus = false,
     this.debounce = const Duration(milliseconds: 750),
   });
 
   final ValueChanged<String> onChanged;
+  final String hintText;
   final bool autofocus;
   final Duration debounce;
 
@@ -32,7 +32,11 @@ class _DebouncedSearchFieldState extends State<DebouncedSearchField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      decoration: InputDecoration(labelText: i18n(context).com_search_term),
+      decoration: InputDecoration(
+        hintText: widget.hintText,
+        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+        prefixIcon: const Icon(Icons.search),
+      ),
       autofocus: widget.autofocus,
       onChanged: (text) {
         _timer?.cancel();

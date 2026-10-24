@@ -195,10 +195,10 @@ Future<Recipe?> selectRecipeDialog(BuildContext context, PocketBaseProvider pbp)
     builder: (ctx) {
       return AlertDialog(
         title: Text(i18n(context).p_recipes_select),
-        content: SizedBox(
-          width: 400,
-          height: 400,
+        content: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 400, minWidth: 400, maxHeight: 400),
           child: ListView.builder(
+            shrinkWrap: true,
             itemCount: pbp.allRecipes.length,
             itemBuilder: (c, i) {
               final r = pbp.allRecipes[i];
@@ -227,7 +227,11 @@ Future<Article?> searchForArticle(BuildContext context, PocketBaseProvider pbp,
   Timer? delayedSearch;
   var textController = TextEditingController();
   var textField = TextField(
-    decoration: InputDecoration(labelText: i18n(context).com_search_term),
+    decoration: InputDecoration(
+      hintText: i18n(context).com_search_term,
+      hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+      prefixIcon: const Icon(Icons.search),
+    ),
     autofocus: true,
     controller: textController,
     onChanged: (text) {
@@ -256,27 +260,38 @@ Future<Article?> searchForArticle(BuildContext context, PocketBaseProvider pbp,
           body: AlertDialog(
             insetPadding:
                 isMobile ? const EdgeInsets.all(8) : const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
-            titlePadding: const EdgeInsets.only(left: 12, right: 12, top: 12),
-            contentPadding: const EdgeInsets.only(left: 12, right: 12),
-            actionsPadding: const EdgeInsets.only(left: 12, right: 12, bottom: 8),
-            title: Text(i18n(context).p_active_tooltip),
-            backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
+            titlePadding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+            actionsPadding: const EdgeInsets.all(20),
+            title: Text(
+              i18n(context).p_active_tooltip,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800, letterSpacing: -0.3),
+            ),
+            // Ground color, so the white search field and result card stand out as on the pages.
+            backgroundColor: Theme.of(context).colorScheme.surface,
             actionsAlignment: MainAxisAlignment.spaceBetween,
             content: SizedBox(
               width: isMobile ? double.maxFinite : mq.size.width * 0.7,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   textField,
+                  const SizedBox(height: 12),
                   Expanded(
-                    child: ListView.builder(
+                    child: ListView.separated(
                       shrinkWrap: true,
                       itemBuilder: (context, idx) {
                         return ArticleSelectionCard(
                           article: pbp.searchArticles[idx],
+                          isFirst: idx == 0,
+                          isLast: idx == pbp.searchArticles.length - 1,
                         );
                       },
+                      separatorBuilder: (context, idx) => ColoredBox(
+                        color: Theme.of(context).cardTheme.color ?? Theme.of(context).colorScheme.surface,
+                        child: const Divider(indent: 16, endIndent: 16),
+                      ),
                       itemCount: pbp.searchArticles.length,
                     ),
                   ),
@@ -284,14 +299,17 @@ Future<Article?> searchForArticle(BuildContext context, PocketBaseProvider pbp,
               ),
             ),
             actions: <Widget>[
-              ElevatedButton(
+              OutlinedButton(
                 autofocus: false,
                 onPressed: () {
                   Navigator.of(ctx).pop(null);
                 },
                 child: Text(i18n(context).com_back),
               ),
-              Text(i18n(context).com_num_articles(pbp.searchArticles.length)),
+              Text(
+                i18n(context).com_num_articles(pbp.searchArticles.length),
+                style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
+              ),
               if (!dontAdd)
                 ElevatedButton.icon(
                     onPressed: textController.text.isNotEmpty
@@ -304,7 +322,7 @@ Future<Article?> searchForArticle(BuildContext context, PocketBaseProvider pbp,
                                 ));
                           }
                         : null,
-                    icon: const Icon(Icons.add_sharp),
+                    icon: const Icon(Icons.add),
                     label: Text(i18n(context).com_new)),
             ],
           ),

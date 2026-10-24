@@ -44,11 +44,27 @@ flutter:
   assets:
     - assets/race_flag.png
 
+  fonts:
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/fonts/PlusJakartaSans-Regular.ttf
+        - asset: assets/fonts/PlusJakartaSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/PlusJakartaSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/PlusJakartaSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/PlusJakartaSans-ExtraBold.ttf
+          weight: 800
+
 icons_launcher:
   image_path: 'assets/app_logo.png'
   platforms:
     android:
       enable: true
+      adaptive_background_color: '#157A4A'
+      adaptive_foreground_image: 'assets/app_logo_foreground.png'
+      adaptive_monochrome_image: 'assets/app_logo_monochrome.png'
     ios:
       enable: true
     linux:
