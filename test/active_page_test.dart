@@ -76,16 +76,6 @@ void main() {
     expect(find.text('2×'), findsOneWidget);
   });
 
-  testWidgets('tapping the check circle toggles the article', (tester) async {
-    final pbp = FakePocketBaseProvider([milk]);
-    await tester.pumpWidget(_app(pbp));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byTooltip('In den Wagen'));
-
-    expect(pbp.toggled, [milk]);
-  });
-
   testWidgets('double tapping the article name toggles the article', (tester) async {
     final pbp = FakePocketBaseProvider([milk]);
     await tester.pumpWidget(_app(pbp));
@@ -97,6 +87,17 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(pbp.toggled, [milk]);
+  });
+
+  testWidgets('wraps long article names instead of cutting them off', (tester) async {
+    const longName = 'Sehr lange Bezeichnung für einen Artikel, die nicht in eine Zeile passt';
+    const longArticle = Article(id: '4', shop: 'Edeka', article: longName, amount: 1, active: true);
+    await tester.pumpWidget(_app(FakePocketBaseProvider([longArticle])));
+    await tester.pumpAndSettle();
+
+    final text = tester.widget<Text>(find.text(longName));
+    expect(text.maxLines, isNull);
+    expect(tester.getSize(find.text(longName)).height, greaterThan(30));
   });
 
   testWidgets('shows the empty hint without articles', (tester) async {

@@ -105,8 +105,6 @@
   },
   "p_active_no_shop": "no shop",
   "p_active_in_cart": "in cart",
-  "p_active_to_cart": "put in cart",
-  "p_active_from_cart": "take out of cart",
 
   "nav_active": "shopping",
   "nav_articles": "articles",

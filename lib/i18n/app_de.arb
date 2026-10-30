@@ -57,8 +57,6 @@
   "p_active_open": "{count} offen",
   "p_active_no_shop": "Ohne Geschäft",
   "p_active_in_cart": "Im Wagen",
-  "p_active_to_cart": "In den Wagen",
-  "p_active_from_cart": "Aus dem Wagen nehmen",
 
   "nav_active": "Einkauf",
   "nav_articles": "Artikel",
