@@ -53,6 +53,8 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
     debugPrint('Lifecycle changed: $state');
     if (state == AppLifecycleState.resumed) {
       pbp?.doHealthCheck();
+      // The realtime connection may have died while the app was in the background.
+      pbp?.resubscribeActive();
       _fetchActive();
     }
   }
@@ -67,7 +69,8 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
       _isLoading = true;
     });
     try {
-      pbp?.subscribeActive();
+      // Fresh subscription, so pull-to-refresh also revives a dead realtime connection.
+      pbp?.resubscribeActive();
       await Future.wait([
         _fetchActive(),
         pbp!.fetchAllRecipes(),
@@ -266,11 +269,14 @@ class _ActivePageState extends State<ActivePage> with WidgetsBindingObserver {
           ),
           FloatingActionButton(
             heroTag: 'end_shopping',
-            onPressed: () {
-              showEndShoppingDialog(context, pbp);
-            },
+            // Ending the shopping only makes sense with articles in the cart.
+            onPressed: groups.inCart.isEmpty ? null : () => showEndShoppingDialog(context, pbp),
             tooltip: i18n(context).drawer_end_shopping,
-            backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
+            // A FAB has no disabled styling of its own, so use the Material disabled colors.
+            backgroundColor: groups.inCart.isEmpty
+                ? scheme.onSurface.withValues(alpha: 0.12)
+                : Theme.of(context).floatingActionButtonTheme.backgroundColor,
+            foregroundColor: groups.inCart.isEmpty ? scheme.onSurface.withValues(alpha: 0.38) : null,
             child: ImageIcon(
               size: 24,
               AssetImage('assets/race_flag.png'),

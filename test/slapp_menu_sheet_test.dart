@@ -4,11 +4,19 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shoppinglist/component/custom_themes.dart';
 import 'package:shoppinglist/component/slapp_menu_sheet.dart';
+import 'package:shoppinglist/model/article.dart';
 import 'package:shoppinglist/provider/pocket_base_prov.dart';
 import 'package:shoppinglist/src/generated/i18n/app_localizations.dart';
 
 /// Logged-in provider that never talks to a PocketBase server.
 class FakePocketBaseProvider extends PocketBaseProvider {
+  FakePocketBaseProvider([this.articles = const []]);
+
+  final List<Article> articles;
+
+  @override
+  List<Article> get activeArticles => articles;
+
   @override
   bool get isAuth => true;
 
@@ -19,14 +27,14 @@ class FakePocketBaseProvider extends PocketBaseProvider {
   String get userName => 'Anna';
 }
 
-Future<void> _openMenu(WidgetTester tester, Size windowSize) async {
+Future<void> _openMenu(WidgetTester tester, Size windowSize, [List<Article> articles = const []]) async {
   tester.view.physicalSize = windowSize;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
 
   await tester.pumpWidget(
     ChangeNotifierProvider<PocketBaseProvider>.value(
-      value: FakePocketBaseProvider(),
+      value: FakePocketBaseProvider(articles),
       child: MaterialApp(
         theme: customThemes[1].data,
         locale: const Locale('de'),
@@ -67,5 +75,24 @@ void main() {
     await _openMenu(tester, const Size(400, 300));
 
     expect(tester.takeException(), isNull);
+  });
+
+  ButtonStyleButton endShoppingButton(WidgetTester tester) => tester.widget<ButtonStyleButton>(
+      find.ancestor(of: find.text('Einkauf beenden'), matching: find.bySubtype<ButtonStyleButton>()));
+
+  testWidgets('disables ending the shopping without articles in the cart', (tester) async {
+    await _openMenu(tester, const Size(800, 620), [const Article(id: '1', article: 'Milch', amount: 1, active: true)]);
+
+    expect(endShoppingButton(tester).onPressed, isNull);
+  });
+
+  testWidgets('enables ending the shopping with articles in the cart', (tester) async {
+    await _openMenu(
+      tester,
+      const Size(800, 620),
+      [const Article(id: '1', article: 'Milch', amount: 1, active: true, inCart: true)],
+    );
+
+    expect(endShoppingButton(tester).onPressed, isNotNull);
   });
 }

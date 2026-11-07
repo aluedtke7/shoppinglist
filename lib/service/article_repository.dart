@@ -22,6 +22,7 @@ class ArticleRepository {
   List<Article> _active = [];
   List<Article> _allArticles = [];
   List<Article> _searchArticles = [];
+  Future<UnsubscribeFunc?>? _subscription;
 
   List<Article> get active => _active;
   List<Article> get all => _allArticles;
@@ -134,9 +135,41 @@ class ArticleRepository {
     _active.removeWhere((element) => element.id == id);
   }
 
+  /// Listens for changes of the shopping list, e.g. made on other devices.
+  /// Does nothing if already subscribed, so repeated calls don't stack up listeners.
   Future<void> subscribeActive() async {
+    _subscription ??= _subscribe();
+    try {
+      await _subscription;
+    } catch (_) {
+      _subscription = null;
+      rethrow;
+    }
+  }
+
+  /// Removes only this repository's listener, so other subscriptions stay intact.
+  Future<void> unsubscribeActive() async {
+    final subscription = _subscription;
+    _subscription = null;
+    UnsubscribeFunc? unsubscribe;
+    try {
+      unsubscribe = await subscription;
+    } catch (_) {
+      return; // never subscribed
+    }
+    await unsubscribe?.call();
+  }
+
+  /// Replaces the subscription by a fresh one. Dropping the only listener closes the realtime
+  /// connection, so this also recovers from a connection that silently died (e.g. after sleep).
+  Future<void> resubscribeActive() async {
+    await unsubscribeActive();
+    await subscribeActive();
+  }
+
+  Future<UnsubscribeFunc?> _subscribe() async {
     await _ensurePb();
-    _pbSync()?.collection(_shoppingListCollection).subscribe('*', (e) {
+    return _pbSync()?.collection(_shoppingListCollection).subscribe('*', (e) {
       debugPrint(e.action);
       debugPrint(e.record?.toString());
       Article art = Article.fromJson(e.record?.toJson() ?? {});
@@ -159,11 +192,6 @@ class ArticleRepository {
       _sortActive(_active);
       _onChange();
     });
-  }
-
-  Future<void> unsubscribeActive() async {
-    await _ensurePb();
-    return _pbSync()?.collection(_shoppingListCollection).unsubscribe();
   }
 
   void _sortActive(List<Article> list) {

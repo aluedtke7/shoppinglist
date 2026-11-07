@@ -35,6 +35,9 @@ class FakePocketBaseProvider extends PocketBaseProvider {
   Future<void> unsubscribeActive() async {}
 
   @override
+  Future<void> resubscribeActive() async {}
+
+  @override
   Future<void> fetchActive([bool doReload = false]) async {}
 
   @override
@@ -94,6 +97,24 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(tester.getTopRight(find.text('2×')).dx, lessThan(tester.getTopLeft(find.text('Milch')).dx));
+  });
+
+  FloatingActionButton endShoppingButton(WidgetTester tester) => tester.widget<FloatingActionButton>(
+        find.byWidgetPredicate((widget) => widget is FloatingActionButton && widget.heroTag == 'end_shopping'),
+      );
+
+  testWidgets('disables ending the shopping without articles in the cart', (tester) async {
+    await tester.pumpWidget(_app(FakePocketBaseProvider([milk, toothpaste])));
+    await tester.pumpAndSettle();
+
+    expect(endShoppingButton(tester).onPressed, isNull);
+  });
+
+  testWidgets('enables ending the shopping with articles in the cart', (tester) async {
+    await tester.pumpWidget(_app(FakePocketBaseProvider([milk, cheese])));
+    await tester.pumpAndSettle();
+
+    expect(endShoppingButton(tester).onPressed, isNotNull);
   });
 
   testWidgets('wraps long article names instead of cutting them off', (tester) async {

@@ -44,10 +44,13 @@ class SlappMenuSheet extends StatelessWidget {
               if (pbp.isAuth) ...[
                 _UserHeader(userName: pbp.userName),
                 FilledButton.tonalIcon(
-                  onPressed: () async {
-                    await showEndShoppingDialog(context, pbp);
-                    if (context.mounted) Navigator.pop(context);
-                  },
+                  // Ending the shopping only makes sense with articles in the cart.
+                  onPressed: pbp.activeArticles.any((article) => article.inCart)
+                      ? () async {
+                          await showEndShoppingDialog(context, pbp);
+                          if (context.mounted) Navigator.pop(context);
+                        }
+                      : null,
                   style: FilledButton.styleFrom(
                     backgroundColor: scheme.primaryContainer,
                     foregroundColor: scheme.primary,

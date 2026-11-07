@@ -55,6 +55,7 @@ class PocketBaseProvider extends ChangeNotifier {
   Future<void> endShopping() => _articles.endShopping();
   Future<void> subscribeActive() => _articles.subscribeActive();
   Future<void> unsubscribeActive() => _articles.unsubscribeActive();
+  Future<void> resubscribeActive() => _articles.resubscribeActive();
 
   // --- Recipes ---
   List<Recipe> get allRecipes => _recipes.all;
