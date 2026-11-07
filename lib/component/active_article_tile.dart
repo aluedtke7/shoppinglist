@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:shoppinglist/model/article.dart';
 
-/// One row of the shopping list: article name and amount.
+/// One row of the shopping list: amount on the left, then the article name.
 class ActiveArticleTile extends StatelessWidget {
   const ActiveArticleTile({
     super.key,
@@ -31,7 +31,9 @@ class ActiveArticleTile extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Row(
               children: [
-                const SizedBox(width: 16),
+                const SizedBox(width: 12),
+                _Amount(amount: article.amount, inCart: inCart),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     article.article,
@@ -43,9 +45,7 @@ class ActiveArticleTile extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                _Amount(amount: article.amount, inCart: inCart),
-                const SizedBox(width: 12),
+                const SizedBox(width: 16),
               ],
             ),
           ),

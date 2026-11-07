@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -229,11 +231,14 @@ class _LoginCardState extends State<_LoginCard> {
       child: AutofillGroup(
         child: CustomScrollView(
           slivers: [
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 420),
+            // Limits the width via padding instead of a ConstrainedBox: SliverFillRemaining sizes
+            // its child by intrinsic height, which a ConstrainedBox measures at the unconstrained
+            // width, so wrapping text would be under-measured and the Column would overflow.
+            SliverLayoutBuilder(
+              builder: (context, constraints) => SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: math.max(0, (constraints.crossAxisExtent - 420) / 2)),
+                sliver: SliverFillRemaining(
+                  hasScrollBody: false,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
                     child: Column(

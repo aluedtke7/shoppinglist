@@ -89,6 +89,13 @@ void main() {
     expect(pbp.toggled, [milk]);
   });
 
+  testWidgets('shows the amount at the left edge before the article name', (tester) async {
+    await tester.pumpWidget(_app(FakePocketBaseProvider([milk])));
+    await tester.pumpAndSettle();
+
+    expect(tester.getTopRight(find.text('2×')).dx, lessThan(tester.getTopLeft(find.text('Milch')).dx));
+  });
+
   testWidgets('wraps long article names instead of cutting them off', (tester) async {
     const longName = 'Sehr lange Bezeichnung für einen Artikel, die nicht in eine Zeile passt';
     const longArticle = Article(id: '4', shop: 'Edeka', article: longName, amount: 1, active: true);

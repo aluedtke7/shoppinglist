@@ -17,6 +17,8 @@ Future<void> showSlappMenu(BuildContext context) {
   return showModalBottomSheet(
     context: context,
     useSafeArea: true,
+    // Without this the sheet is capped at 9/16 of the window height, which the logged-in menu exceeds.
+    isScrollControlled: true,
     builder: (_) => const SlappMenuSheet(),
   );
 }
@@ -32,63 +34,65 @@ class SlappMenuSheet extends StatelessWidget {
     final language = Localizations.localeOf(context).languageCode == 'de' ? 'Deutsch' : 'English';
 
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (pbp.isAuth) ...[
-              _UserHeader(userName: pbp.userName),
-              FilledButton.tonalIcon(
-                onPressed: () async {
-                  await showEndShoppingDialog(context, pbp);
-                  if (context.mounted) Navigator.pop(context);
-                },
-                style: FilledButton.styleFrom(
-                  backgroundColor: scheme.primaryContainer,
-                  foregroundColor: scheme.primary,
-                  minimumSize: const Size.fromHeight(60),
-                  alignment: AlignmentDirectional.centerStart,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                  textStyle:
-                      Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 16, fontWeight: FontWeight.w700),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (pbp.isAuth) ...[
+                _UserHeader(userName: pbp.userName),
+                FilledButton.tonalIcon(
+                  onPressed: () async {
+                    await showEndShoppingDialog(context, pbp);
+                    if (context.mounted) Navigator.pop(context);
+                  },
+                  style: FilledButton.styleFrom(
+                    backgroundColor: scheme.primaryContainer,
+                    foregroundColor: scheme.primary,
+                    minimumSize: const Size.fromHeight(60),
+                    alignment: AlignmentDirectional.centerStart,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                    textStyle:
+                        Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 16, fontWeight: FontWeight.w700),
+                  ),
+                  icon: const ImageIcon(AssetImage('assets/race_flag.png'), size: 22),
+                  label: Text(i18n(context).drawer_end_shopping),
                 ),
-                icon: const ImageIcon(AssetImage('assets/race_flag.png'), size: 22),
-                label: Text(i18n(context).drawer_end_shopping),
-              ),
-              const SizedBox(height: 8),
-            ],
-            _MenuTile(
-              icon: Icons.palette_outlined,
-              title: i18n(context).com_change_theme,
-              onTap: () => ThemeProvider.controllerOf(context).nextTheme(),
-            ),
-            _MenuTile(
-              icon: Icons.language,
-              title: i18n(context).com_change_language,
-              trailing: Text(language, style: TextStyle(color: scheme.onSurfaceVariant)),
-              onTap: _toggleLanguage,
-            ),
-            _MenuTile(
-              icon: Icons.dns_outlined,
-              title: i18n(context).com_change_server,
-              onTap: () => _changeServerUrl(context, pbp),
-            ),
-            if (pbp.isAuth) ...[
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                child: Divider(),
+                const SizedBox(height: 8),
+              ],
+              _MenuTile(
+                icon: Icons.palette_outlined,
+                title: i18n(context).com_change_theme,
+                onTap: () => ThemeProvider.controllerOf(context).nextTheme(),
               ),
               _MenuTile(
-                icon: Icons.logout,
-                title: i18n(context).drawer_logout,
-                color: scheme.error,
-                onTap: () => _logout(context, pbp),
+                icon: Icons.language,
+                title: i18n(context).com_change_language,
+                trailing: Text(language, style: TextStyle(color: scheme.onSurfaceVariant)),
+                onTap: _toggleLanguage,
               ),
+              _MenuTile(
+                icon: Icons.dns_outlined,
+                title: i18n(context).com_change_server,
+                onTap: () => _changeServerUrl(context, pbp),
+              ),
+              if (pbp.isAuth) ...[
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  child: Divider(),
+                ),
+                _MenuTile(
+                  icon: Icons.logout,
+                  title: i18n(context).drawer_logout,
+                  color: scheme.error,
+                  onTap: () => _logout(context, pbp),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
